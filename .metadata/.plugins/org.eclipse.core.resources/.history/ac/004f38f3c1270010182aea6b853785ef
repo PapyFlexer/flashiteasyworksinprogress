@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="250" height="400" maxWidth="300">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Button;
+			import mx.core.Application;
+			import com.flashiteasy.admin.popUp.FileBrowser;
+			import com.flashiteasy.admin.event.FieAdminEvent;
+			import com.flashiteasy.admin.browser.Browser;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+
+			[Bindable]
+			[Embed(source='../../../../../resources/assets/link.png')]
+			private var Link_ico:Class;
+			
+			[Bindable]
+			private var sourceDP:ArrayCollection;
+ 			
+ 			private function fillDataGridDP():void
+ 			{
+ 				var labelColumn:DataGridColumn = new DataGridColumn(Conf.languageManager.getLanguage("labels"));
+ 				var dataColumn:DataGridColumn = new DataGridColumn(Conf.languageManager.getLanguage("datas"));
+ 				sourceDP.addItem(labelColumn);
+ 				sourceDP.addItem(dataColumn);
+ 			}
+
+			private function buildEditor():void
+			{
+				addLineBtn.label = Conf.languageManager.getLanguage("AddLine");
+				delLineBtn.label = Conf.languageManager.getLanguage("DelLine");
+				addLineBtn.label = Conf.languageManager.getLanguage("EditLine");
+
+				editLineBtn.addEventListener(MouseEvent.CLICK, editLineHandler);
+				addLineBtn.addEventListener(MouseEvent.CLICK, addLineHandler);	
+				delLineBtn.addEventListener(MouseEvent.CLICK, delLineHandler);			
+				this.fieDG.dataProvider = sourceDP;
+				 
+				
+			}
+
+			private function setSelectedFile(e:Event):void
+			{
+				/* var file:String=browser.selectedFile;
+				selectedFile= file;
+				dispatchEvent(new Event(Event.CHANGE)); */
+			}
+			
+			private function addLineHandler( e : MouseEvent ) : void
+			{
+				
+			}
+			
+			private function delLineHandler( e : MouseEvent ) : void
+			{
+				
+			}
+			
+			private function editLineHandler( e : MouseEvent ) : void
+			{
+				
+			}
+			
+ 
+
+		]]>
+	</mx:Script>
+	<mx:VBox>
+	<mx:DataGrid id="fieDG">
+	</mx:DataGrid>
+	
+		
+	</mx:VBox>
+	<mx:HBox>
+		<mx:Button id="addLineBtn" click="addLineHandler(event)" />
+		<mx:Button id="delLineBtn" click="addLineHandler(event)" />
+		<mx:Button id="editLineBtn" click="addLineHandler(event)" />
+	</mx:HBox>
+	
+</mx:VBox>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="PatchWizard">
+		<item value="700" key="DIALOG_WIDTH"/>
+		<item value="68" key="DIALOG_Y_ORIGIN"/>
+		<item value="685" key="DIALOG_HEIGHT"/>
+		<item value="599" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Lucida Grande|11.0|0|CARBON|1|Lucida Grande" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="ResizableDialogBounds">
+		<item value="572" key="height"/>
+		<item value="980" key="width"/>
+		<item value="27" key="y"/>
+		<item value="148" key="x"/>
+	</section>
+</section>

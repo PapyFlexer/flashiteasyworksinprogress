@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<indexation>
+	<googlecode>UA-2973098-1</googlecode>
+	<page url="home" >
+		<title>Accueil</title>
+		<description>Ceci est la page d'accueil</description>
+		<keywords>kwa,kwb,kwc,kwd</keywords>
+	</page>
+	<page url="page1">
+		<title>premiere page</title>
+		<description>Ceci est la page qui vient en première position. C'est donc la première</description>
+		<keywords>kw1,kw2,kw3,kw4</keywords>
+	</page>
+	<page url="page2">
+		<title>page seconde</title>
+		<description>Ceci est la page numéro 2</description>
+		<keywords>kw4,kw5,kw6,kw7</keywords>
+	</page>
+	<page url="page3">
+		<title>page troisieme</title>
+		<description>En page trois, fais c que tu dois</description>
+		<keywords>kw8,kw9,kw10,kw11</keywords>
+	</page>
+</indexation>

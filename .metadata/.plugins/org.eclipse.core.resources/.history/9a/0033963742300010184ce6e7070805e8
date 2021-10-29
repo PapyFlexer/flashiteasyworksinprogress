@@ -1,0 +1,85 @@
+package com.flashiteasy.api.motion
+{
+	import com.flashiteasy.api.core.motion.IStoryboardPlayer;
+	import com.flashiteasy.api.core.project.storyboard.Storyboard;
+	
+	/**
+	 * Flash'Iteasy
+	 * Fie team is
+	 * dany, didier, gilles
+	 * & many thanks to alexis, ghazi, jean-françois
+	 */
+	public class AbstractStoryboardPlayer implements IStoryboardPlayer
+	{
+		protected var storyboard : Storyboard;
+		private var maxTime : Number;
+		private var delayBeforeDestroyPage : Number;
+		
+		/**
+		 * 
+		 * @param s : the Storyboard to play
+		 */
+		public function start( s : Storyboard, t:int=0 ) : void
+		{
+			this.storyboard = s;
+		}
+		
+		/**
+		 * 
+		 * @param s : the Storyboard to play
+		 */
+		public function startOnUnload( s : Storyboard, t:int=0 ) : void
+		{
+			this.storyboard = s;
+		}
+		/**
+		 * 
+		 * @param s : going at a time while stopping
+		 */
+		public function goToTimeAndStop( s : Storyboard , t : int = 0) : void
+		{
+			this.storyboard = s;
+		}
+		/**
+		 * 
+		 * @param s : the Storyboard to play
+		 */
+		public function stop(s : Storyboard) : void
+		{
+			this.storyboard = s;
+		}
+		
+		/**
+		 * 
+		 * @param s : the Storyboard to play
+		 */
+		public function reset(s : Storyboard) : void
+		{
+			this.storyboard = s;
+		}
+		/**
+		 * 
+		 * @param s : the Storyboard to play
+		 */
+		public function getMaxTime() : Number
+		{
+			return maxTime;
+		}
+		
+		public function getDelayBeforeDestroy():Number
+		{
+			return delayBeforeDestroyPage;
+		}
+		
+		/**
+		 * 
+		 * @return  A reference to the storyboard
+		 */
+		public function getStoryboard() : Storyboard
+		{
+			return storyboard;
+		}
+		
+
+	}
+}

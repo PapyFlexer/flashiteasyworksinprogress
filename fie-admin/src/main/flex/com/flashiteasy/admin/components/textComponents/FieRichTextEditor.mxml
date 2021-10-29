@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:RichTextEditor xmlns:mx="http://www.adobe.com/2006/mxml" width="600" height="400" headerHeight="0" creationComplete="allowEmbedFont()">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.VRule;
+			import mx.events.FlexEvent;
+			import mx.events.DropdownEvent;
+			import mx.events.ColorPickerEvent;
+			import com.flashiteasy.admin.components.FieColorPicker;
+			import mx.events.CloseEvent;
+			import com.flashiteasy.admin.components.advancedColorPicker;
+			import mx.controls.TextArea;
+			import mx.core.mx_internal;
+			use namespace mx_internal;
+			public var fieColorPicker : FieColorPicker;
+			public var backgroundColorPicker : FieColorPicker;
+			
+			private function allowEmbedFont():void
+			{
+				// trick to allow embeded font in the textArea
+				textArea.setStyle("fontFamily" , "_Arial" ) ;
+				setColorPicker();
+			}
+			public function getTextArea():TextArea
+			{
+				return textArea;
+			}
+			
+			public function textField():TextField
+			{
+				return textArea.getTextField() as TextField;	
+			}
+
+			public function enableText( value : Boolean ) : void
+			{
+				textArea.enabled = value ;
+			}
+			
+			public function setTextColor(e:Event) : void
+			{
+				colorPicker.selectedColor = fieColorPicker.selectedColor;
+				colorPicker.dispatchEvent(new DropdownEvent(DropdownEvent.CLOSE));
+			}
+			
+			
+			public function setBackgroundColor(e:ColorPickerEvent) : void
+			{
+				//Due to a bug of RichTextEditor resetting to the base style when changing style
+				//We get the actual htmlText
+				var formattedText:String = htmlText;
+				textArea.setStyle("backgroundColor", e.color);
+				htmlText = formattedText;
+			}
+			
+			public function setFieColor(e:Event) : void
+			{
+				fieColorPicker.selectedColor = colorPicker.selectedColor;
+			}
+			
+			public function setColorPicker() : void
+			{
+				this.colorPicker.width = this.colorPicker.height = 0;
+				this.colorPicker.visible=false;
+				var rule:VRule = new VRule;
+				rule.height = 22;
+				fieColorPicker = new FieColorPicker;
+				fieColorPicker.hasNoColor = false;
+				backgroundColorPicker = new FieColorPicker;
+				fieColorPicker.width = 22;
+				backgroundColorPicker.width = 22;
+				fieColorPicker.height = 22;
+				backgroundColorPicker.height = 22;
+				fieColorPicker.addEventListener(ColorPickerEvent.CHANGE, setTextColor);
+				backgroundColorPicker.addEventListener(ColorPickerEvent.CHANGE, setBackgroundColor);
+				colorPicker.addEventListener(FlexEvent.VALUE_COMMIT, setFieColor);
+				alignButtons.parent.addChildAt(fieColorPicker, alignButtons.parent.getChildIndex(colorPicker));
+				alignButtons.parent.addChildAt(backgroundColorPicker, 0);
+				alignButtons.parent.addChildAt(rule, 1);
+			}
+			
+		]]>
+	</mx:Script>
+</mx:RichTextEditor>

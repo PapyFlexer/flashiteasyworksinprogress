@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400" >
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.core.Application;
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.PopUpManager;
+		
+			import mx.validators.Validator;
+			
+			public var userstates:Array = ["edit", "add"];
+			
+			[Bindable]
+			public var currentUserState : String;
+			
+			[Bindable]
+			public var adminLevelList : ArrayCollection = new ArrayCollection ([
+												{label : "Choisissez...", data:-1},
+												{label : "superadmin", data:0},
+												{label : "admin", data:1},
+												{label : "editeur", data:2},
+												{label : "redacteur", data:3},
+												{label : "invité", data:4}
+											]);
+			[Bindable]
+			public var adminLanguages : ArrayCollection = new ArrayCollection ([
+												{label : "Choisissez...", data:"null"},
+												{label:"fr", data:"fr_FR"},
+												{label:"gb", data:"en_US"},	
+												{label:"de", data:"de_DE"}
+												]);
+														
+			public function doValidate(e:MouseEvent):void
+			{
+				var validators : Array = Validator.validateAll([validPassword, validEmail]); 
+				if (!validators.length)
+				{
+					trace (this.currentUserState);
+					if (this.currentUserState == "add")
+					{
+						mx.core.Application.application.validateNewUser(
+																			usrlastname.text,
+																			usrfirstname.text,
+																			usremail.text,
+																			usrlogin.text,
+																			usrpassword.text,
+																			usradminlevel.selectedItem.data,
+																			usrlanguage.selectedItem.label);
+					} else {
+						mx.core.Application.application.saveUser(
+																			usrlastname.text,
+																			usrfirstname.text,
+																			usremail.text,
+																			usrlogin.text,
+																			usrpassword.text,
+																			usradminlevel.selectedItem.data,
+																			usrlanguage.selectedItem.label);
+					}
+					PopUpManager.removePopUp(this);
+					this.currentUserState = null;
+				}
+			}	
+			
+			private function initFields(e : MouseEvent) : void
+			{
+				usrlastname.text = "";
+				usrfirstname.text = "";
+				usremail.text = "";
+				usrlogin.text = "";
+				usrpassword.text = "";
+				usradminlevel.selectedIndex = usrlanguage.selectedIndex = 0;
+			}		
+			
+			
+			public function selectAdminLevelCombo( item:int) : int
+			{
+				var j : int = -1;
+				for each (var o:Object in adminLevelList)
+				{
+					j++;	
+					if (o.data === item)
+					{
+						return j;
+					} 				
+				}
+				return-1;
+			}								
+			
+			
+			public function selectAdminLanguageCombo( item : String ) :int
+			{
+				var i : int = -1;
+				for each (var o:Object in adminLanguages)
+				{
+					i++;	
+					if (o.label === item) return i;
+				}
+				return -1;
+			}								
+		]]>
+	</mx:Script>
+	<mx:StringValidator id="validPassword"
+						source="{usrpassword}"
+						property="text"
+						trigger="{validate}"
+						triggerEvent="click"
+						minLength="4"
+						maxLength="10"
+						tooLongError="trop long!"
+						tooShortError="trop court!"
+						requiredFieldError="password obligatoire!"/>
+
+	
+	<mx:EmailValidator id="validEmail"
+					   source="{usremail}"
+					   property="text"
+					   trigger="{validate}"
+					   triggerEvent="click"
+					   requiredFieldError="le mail est obligatoire!"
+					   missingAtSignError="pas de '@' dans cette adresse"
+					   missingPeriodInDomainError="pas de '.' dans cette adresse"
+					   missingUsernameError="pas de nom d'utilisateur dans cette adresse"/>
+
+	<mx:Form>
+		<mx:FormHeading label="User details">
+			
+		</mx:FormHeading>	
+		<mx:FormItem label="Name">
+			<mx:TextInput id="usrlastname"  width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Firstname">
+			<mx:TextInput id="usrfirstname"  width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Email">
+			<mx:TextInput id="usremail"  width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Login">
+			<mx:TextInput id="usrlogin"  width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Password">
+			<mx:TextInput id="usrpassword"  width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Level">
+			<mx:ComboBox id="usradminlevel" dataProvider="{adminLevelList}" width="200"/>
+		</mx:FormItem>
+		<mx:FormItem label="Language">
+			<mx:ComboBox id="usrlanguage" dataProvider="{adminLanguages}" width="200"/>
+		</mx:FormItem>
+		<mx:ControlBar horizontalAlign="center">
+		<mx:Button label="Close" id="close" click="PopUpManager.removePopUp(this)" />
+		<mx:Button label="Empty fields" id="cancel" click="initFields(event)"/>
+		<mx:Button label = "Validate" id="validate" click="doValidate(event)"/>
+		</mx:ControlBar>
+	</mx:Form>
+</mx:Panel>

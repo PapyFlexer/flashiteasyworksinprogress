@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="package-fie" default="package-fie">
+	
+	<property name="target-version" value="1.0"></property>
+	
+	 <target name="package-fie" >
+	 	
+	 	<delete dir="target" />
+	 	<mkdir dir="target"/>
+
+	 	<antcall target="configure-fie-admin"></antcall>
+	 	
+	 	<!-- create installation directory -->
+	 	<mkdir dir="target/fie-projects"/>
+	 	
+	 	<antcall target="package-php-installer"></antcall>
+	 	<antcall target="configure-sample-app"></antcall>
+	 	<antcall target="configure-fie-service"></antcall>
+	 	<antcall target="version"></antcall>
+	 	
+	 </target>	
+	
+	<target name="configure-fie-admin">
+		<!-- copy fie admin with exec to keep UNIX rights -->
+		<exec executable="cp">
+		       <arg value="-p" />
+		       <arg value="-R" />
+		       <arg value="../fie-admin/bin-release" />
+		       <arg value="target/fie-admin" />
+		     </exec>
+
+		<!--<copy todir="target/fie-admin">
+		 	<fileset dir="../fie-admin/bin-release" id="id" />
+		</copy> -->
+	</target>
+	
+	<target name="package-php-installer">
+		<!-- create installation directory -->
+	 	<mkdir dir="target/install"/>
+	 	<!-- copy all installation scripts -->
+	 	<copy todir="target/install">
+	 		<fileset dir="src/main/php/install"/>
+	 	</copy>
+	</target>
+	
+	<target name="configure-sample-app">
+		<!-- copy the sample application -->
+		<copy file="../fie-app/bin-release/FieApp.swf" tofile="target/fie-projects/fie-sample-app/FieApp.swf"/>
+	 	<copy todir="target/fie-projects/fie-sample-app">
+	 		 <fileset dir="../fie-sample-app"/>
+	 	</copy>
+
+	</target>
+	
+	<target name="configure-fie-service" >
+	 	<!-- copy fie service -->
+		<copy todir="target/fie-service">
+		 	<fileset dir="../fie-service/src/main/php" id="id">
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="version" >
+	 	<!-- version
+		<delete file="target/fie-version.txt"> </delete>
+	 	<echo file="target/fie-version.txt">version ${target-version}</echo> -->
+		<copy file="../fie-admin/src/config/fie-version.xml" tofile="target/fie-version.xml"/>
+	</target>
+	 
+</project>
+	
+	

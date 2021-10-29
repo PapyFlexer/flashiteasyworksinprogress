@@ -1,0 +1,62 @@
+package com.flashiteasy.api.parameters {
+	import com.flashiteasy.api.core.AbstractParameterSet;
+	import com.flashiteasy.api.core.IDescriptor;
+	import com.flashiteasy.api.core.elements.IPHPElementDescriptor;
+	
+	/**
+	 * Flash'Iteasy
+	 * Fie team is
+	 * dany, didier, gilles
+	 * & many thanks to alexis, ghazi, jean-françois
+	 */
+
+	[ParameterSet(description="null",type="Reflection", groupname="Form")]
+	public class PHPParameterSet extends AbstractParameterSet {
+		override public function apply(target: IDescriptor):void
+		{
+			if(target is IPHPElementDescriptor)
+				if(php!=null)
+					( target as IPHPElementDescriptor).php=this.php;
+		}
+		
+		/**
+		 * php source / meta, getter & setter
+		 */
+		private var _php:String="php/customForm.php";
+		[Parameter(type="TextInput", defaultValue="php/customForm.php",row="0", sequence="0", label="Source", groupname="Form")]
+		public function get php():String{
+			return _php;
+		}
+		public function set php(value:String):void{
+			_php=value;
+		}
+
+		/**
+		 * success message / meta, getter & setter
+		 * string returned when form has been successfully sent
+		 */
+		private var _successMessage:String="le formulaire a été correctement soumis";
+		[Parameter(type="TextInput", defaultValue="le formulaire a été correctement soumis",row="0", sequence="0", label="Succes", groupname="Form")]
+		public function get successMessage():String{
+			return _successMessage;
+		}
+		public function set successMessage(value:String):void{
+			_successMessage=value;
+		}
+
+		/**
+		 * failure message / meta, getter & setter
+		 * string returned when form has failed
+		 */
+		private var _successMessage:String="le formulaire a été correctement soumis";
+		[Parameter(type="TextInput", defaultValue="le formulaire a été correctement soumis",row="0", sequence="0", label="Succes", groupname="Form")]
+		public function get successMessage():String{
+			return _successMessage;
+		}
+		public function set successMessage(value:String):void{
+			_successMessage=value;
+		}
+
+
+	}
+}

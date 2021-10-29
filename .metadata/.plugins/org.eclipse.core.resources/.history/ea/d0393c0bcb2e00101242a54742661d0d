@@ -1,0 +1,29 @@
+package com.flashiteasy.api.controls.Validator {
+	import com.flashiteasy.api.controls.Validator.IValidator;
+
+	/**
+	 * Flash'Iteasy
+	 * Fie team is
+	 * dany, didier, gilles
+	 * & many thanks to alexis, ghazi, jean-françois
+	 */
+
+	public class NoValidator extends AbstractValidator implements IValidator {
+		
+		
+		/**
+		 * 
+		 * @param value : the string to validate
+		 * @return boolean : here, as a "no-validator" we allways return true
+		 */
+		override public function check( value : String ) : Boolean {
+			return true;
+		}
+		
+		override public function getErrorString():String
+		{
+			return "";
+		}
+		
+	}
+}

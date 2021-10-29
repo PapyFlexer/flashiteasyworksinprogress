@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+				layout="absolute"
+				paddingTop="0"
+				paddingLeft="0"
+				applicationComplete="doLogUser(event)"
+				preloader="com.flashiteasy.admin.customLoader.Preloader"
+				xmlns:components="com.flashiteasy.admin.components.*"
+				xmlns:manager="com.flashiteasy.admin.manager.*"
+				xmlns:menu="com.flashiteasy.admin.uicontrol.menu.*"
+				xmlns:uicontrol="com.flashiteasy.admin.uicontrol.*"
+				xmlns:story="com.flashiteasy.admin.uicontrol.story.*"
+				currentState="view"
+				xmlns:code="http://code.google.com/p/flexlib/">
+
+	<mx:Style source="style.css"/>
+
+
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.containers.dividedBoxClasses.BoxDivider;
+			import mx.events.DividerEvent;
+			import com.flashiteasy.api.events.FieEvent;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.admin.users.User;
+			import mx.containers.Panel;
+			import mx.core.IFlexDisplayObject;
+			import com.flashiteasy.admin.popUp.LoginPanel;
+			import mx.managers.PopUpManager;
+			import mx.events.ListEvent;
+			import mx.managers.FocusManager;
+			import mx.controls.ButtonBar;
+			import mx.skins.halo.ButtonBarButtonSkin;
+			import com.flashiteasy.admin.xml.XmlSave;
+			import com.flashiteasy.admin.workbench.impl.StoryElementEditorImpl;
+			import com.flashiteasy.admin.workbench.impl.DefaultElementEditorImpl;
+			import com.flashiteasy.admin.workbench.IElementEditor;
+			import com.flashiteasy.admin.workbench.impl.ViewElementEditorImpl;
+			import mx.controls.Tree;
+			import mx.collections.ArrayCollection;
+			import mx.controls.ComboBox;
+			import com.flashiteasy.api.indexation.IndexationManager;
+			import com.flashiteasy.admin.visualEditor.VisualSelector;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+			import mx.events.ItemClickEvent;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.admin.manager.LanguageManager;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.admin.manager.AdminManager;
+			import com.flashiteasy.api.core.IParameterSet;
+
+		
+			// users management
+			[Bindable]
+			private var usersData:XML;
+			public var loggedUser:User;
+			public var userIsRookie:Boolean = false;
+			private var loggedIn:Boolean=false;
+			private var logPanel:Panel;
+
+			// domain security
+			[Bindable]
+			public var allowedDomains:String="";
+			public var allowedPatterns:String="";
+
+			/**
+			 * loads the users file
+			 */
+
+			private function doLogUser(e:Event):void
+			{
+				//this.visible=false;
+				var pathToUsersFile:String="res/users.xml";
+				trace("loading access file...");
+				var ldr:URLLoader=new URLLoader();
+				ldr.dataFormat=URLLoaderDataFormat.BINARY;
+				ldr.addEventListener(Event.COMPLETE, onUsersLoaded);
+				ldr.addEventListener(IOErrorEvent.IO_ERROR, onUsersLoaded);
+				ldr.load(new URLRequest(pathToUsersFile));
+
+			}
+
+			/**
+			 * load users callback
+			 */
+			private function onUsersLoaded(e:Event):void
+			{
+				URLLoader(e.target).removeEventListener(Event.COMPLETE, onUsersLoaded);
+				URLLoader(e.target).removeEventListener(IOErrorEvent.IO_ERROR, onUsersLoaded);
+				if (e.type == Event.COMPLETE)
+				{
+					var data:*=URLLoader(e.target).data;
+					if (data is ByteArray)
+					{
+						try
+						{
+							var i:uint=data.length;
+							while (i--)
+							{
+								data[i]+=128
+							}
+							ByteArray(data).uncompress();
+						}
+						catch (e:Error)
+						{
+						}
+					}
+					usersData=XML(data)
+					//alloweddomains = usersData.alloweddomains[0].toString();
+					allowedDomains=usersData.alloweddomains[0].toString();
+					allowedPatterns="^http(|s)://(?P<name>" + allowedDomains + ")/";
+					checkDomainValidity();
+
+				}
+				else
+				{
+					trace("could not load users file");
+				}
+
+			}
+
+
+			public function checkLogin(login:String, password:String):void
+			{
+				for each (var user:XML in XMLList(usersData.users))
+				{
+					if (user.@usrlogin == login && user.@usrpassword == password)
+					{
+						PopUpManager.removePopUp(p);
+						this.vsMain.selectedChild=mainVBox;
+						loggedIn=true;
+						loggedUser=new User(user.@usrfirstname, user.@usrlastname, user.@usremail, user.@usrlogin, user.@usrpassword, user.@usradminlevel, user.@usrlanguage);
+						
+						this.callLater(init);
+					}
+					else
+					{
+						loggedIn=false;
+						LoginPanel(p).loginTextNotifier.text=this.getLang("invalid_credentials!");
+					}
+				}
+			}
+
+			/**
+			 * Initialize all referenced object for the admin application
+			 */
+			private var p:IFlexDisplayObject;
+
+			private function checkDomainValidity():void
+			{
+				var url:String;
+				if (ExternalInterface.available)
+				{
+					url=ExternalInterface.call("window.location.href.toString");
+				}
+				else
+				{
+					url=loaderInfo.loaderURL;
+				}
+				var domainCheck:RegExp=new RegExp(allowedPatterns, "i");
+				var domainCheckResult:Object=domainCheck.exec(url);
+				if (domainCheckResult == null)
+
+				{
+					var s:String="FIE applications are registered in order to function on a local server (localhost) or on a valid licensed domain.\n";
+					s+="You're trying to execute an application that either is unregistered or has been registered to a different domain than the current one.\n";
+					s+="Please contact Flash'Iteasy team at <a href='mailto:invaliddomain@flashiteasy.com'><i><u>invaliddomain@flashiteasy.com</u></i></a> stating the involved domains.";
+					var domainAlert:Alert=Alert.show(s, "Invalid domain!", 0, this, onInvalidDomain);
+					domainAlert.mx_internal::alertForm.mx_internal::textField.htmlText=s;
+						//AbstractBootstrap.getInstance().setBusinessDelegate(null);
+				}
+				else
+				{
+					var today:Date=new Date;
+					var timeStr:String=usersData.validitydate[0].toString();
+					var validityDate:Date=new Date(Number(timeStr.split("/")[0]), Number(timeStr.split("/")[1]) - 1, timeStr.split("/")[2]);
+					if (validityDate.getTime() < today.getTime())
+					{
+						var s2:String="This Flash'Iteasy licence has ceased to be valid on " + timeStr + ". \n";
+						s2+="Please contact Flash'Iteasy team at <a href='mailto:expired@flashiteasy.com'><i><u>expired@flashiteasy.com</u></i></a> stating the involved date.";
+						var dateAlert:Alert=Alert.show(s2, "Application licence expired!", 0, this, onExpiredDate);
+						dateAlert.mx_internal::alertForm.mx_internal::textField.htmlText=s2;
+							//AbstractBootstrap.getInstance().setBusinessDelegate(null);
+					}
+					else
+					{
+						p=PopUpManager.createPopUp(this, LoginPanel, true);
+						PopUpManager.centerPopUp(p);
+						(p as LoginPanel).loginTextNotifier.text="";
+					}
+				}
+			}
+
+			public function onInvalidDomain(event:CloseEvent):void
+			{
+				//nothing...
+			}
+
+			public function onExpiredDate(event:CloseEvent):void
+			{
+				//nothing...
+			}
+
+
+			/**
+			 * Initialize all referenced object for the admin application
+			 */
+			private function init():void
+			{
+				Ref.adminManager=new AdminManager();
+				Ref.workspaceContainer=workspaceContainer;
+				Ref.workspacePanel=siteEdit;
+				Ref.editorContainer=editorContainer;
+				Ref.controlContainer=controlContainer;
+				Ref.actionContainer=actionContainer;
+				Ref.stageTimeLine=this.stageTimeLine;
+				Ref.timelineComponent=timelineContainer;
+				Ref.storyContainer=storyContainer;
+				Ref.controlList=controlList;
+				Ref.actionList=actionList;
+				
+				Ref.ADMIN_STAGE=stage;
+				Ref.ADMIN_STAGE.addEventListener(KeyboardEvent.KEY_DOWN, Ref.adminManager.keyDown, true);
+				actions.label=Conf.languageManager.getLanguage('Actions');
+				controls.label=Conf.languageManager.getLanguage('Elements');
+				Controls.groupname=Conf.languageManager.getLanguage('Controls');
+				var DPArray:Array
+				if(loggedUser.usradminlevel > 3)//loggedUser.usrlogin == "didier")
+				{//loggedUser.usradminlevel > 4)
+					Ref.adminManager.userIsRookie = true;
+					DPArray=[{data: "view", label: getLang("View_Site")}, {data: "siteSimple", label: getLang("Site_Editor")}];
+
+				} else {
+					DPArray=[{data: "view", label: getLang("View_Site")}, {data: "site", label: getLang("Site_Editor")}, {data: "stories", label: getLang("Story_Editor")}];
+
+				}
+				Ref.adminManager.openAvailableProjects();
+				
+				statesDP=new ArrayCollection(DPArray);
+			}
+
+			private function toggleStatesButtonBar_itemClick(evt:ItemClickEvent):void
+			{
+
+				currentState=evt.item.data;
+				changeState();
+
+			}
+
+			private var timelineDividerY:int=0;
+
+			public function changeState():void
+			{
+				VisualSelector.getInstance().flushElements();
+				Ref.adminManager.checkForCommitParameterChange();
+				//For avoiding bug with loosing keyboard listener
+				//callLater(setFocus);
+				//this.siteDividedBox.invalidateSize();
+				var editor:IElementEditor;
+				if (currentState == "stories")
+				{
+					if (timelineDividerY == 0)
+					{
+						timelineVBox.percentHeight=20;
+					}
+					else
+					{
+						siteDividedBox.getDividerAt(0).y=timelineDividerY;
+					}
+					if (toggleButtonBar.selectedIndex != 2)
+						toggleButtonBar.selectedIndex=2;
+					AbstractBootstrap.getInstance().getTimerStoryboardPlayer().stop(BrowsingManager.getInstance().getCurrentPage().getStoryboard());
+
+					AbstractBootstrap.getInstance().getTimerStoryboardPlayer().resetOriginalValues(BrowsingManager.getInstance().getCurrentPage().getStoryboard());
+					Ref.stageTimeLine.init();
+					Controls.enabled=false;
+					ApplicationController.getInstance().getBlockList().getTree().dragEnabled=false;
+
+					ApplicationController.getInstance().getBlockList().getTree().enabled=true;
+				}
+				else if (currentState == "site" || currentState == "siteSimple")
+				{
+					timelineVBox.height=0;
+					if (toggleButtonBar.selectedIndex != 1)
+						toggleButtonBar.selectedIndex=1;
+					editor=new DefaultElementEditorImpl;
+					ApplicationController.getInstance().changeElementEditor(editor);
+					Controls.enabled=true;
+					ApplicationController.getInstance().getBlockList().getTree().dragEnabled=true;
+					ApplicationController.getInstance().getBlockList().getTree().enabled=true;
+					//AbstractBootstrap.getInstance().getTimerStoryboardPlayer().stop(BrowsingManager.getInstance().getCurrentPage().getStoryboard());
+					AbstractBootstrap.getInstance().getTimerStoryboardPlayer().reset(BrowsingManager.getInstance().getCurrentPage().getStoryboard());
+				}
+				else
+				{
+					timelineVBox.height=0;
+					if (toggleButtonBar.selectedIndex != 0)
+						toggleButtonBar.selectedIndex=0;
+					Controls.enabled=false;
+					ApplicationController.getInstance().getBlockList().getTree().dragEnabled=false;
+					ApplicationController.getInstance().getBlockList().getTree().enabled=false;
+					editor=new ViewElementEditorImpl();
+					ApplicationController.getInstance().changeElementEditor(editor);
+					AbstractBootstrap.getInstance().getTimerStoryboardPlayer().resetOriginalValues(BrowsingManager.getInstance().getCurrentPage().getStoryboard());
+
+						//AbstractBootstrap.getInstance().getTimerStoryboardPlayer().reset(BrowsingManager.getInstance().getCurrentPage().getStoryboard());
+
+				}
+
+			}
+
+			private function changeStorySize(e:DividerEvent):void
+			{
+
+				timelineDividerY=VDividedBox(e.target).getDividerAt(e.dividerIndex).y + e.delta;
+			}
+
+			private function hideWhiteBox(e:Event):void
+			{
+				var wBox:DisplayObject=e.target.rawChildren.getChildByName("whiteBox");
+				wBox.visible=false;
+			}
+
+			private function checkScrollBar(e:Event):void
+			{
+				if (VBox(e.target).verticalScrollBar)
+				{
+					var children:Array=VBox(e.target).getChildren();
+					for each (var child:ControlGroupPanel in children)
+					{
+						child.width=180;
+						child.maxWidth=180;
+						child.validateNow();
+						child.invalidateProperties();
+					}
+				}
+			}
+
+			public function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+
+			[Bindable]
+			private var percentSize:ArrayCollection=new ArrayCollection([{label: "25%", data: 0.25}, {label: "50%", data: 0.5}, {label: "75%", data: 0.75}, {label: "100%", data: 1}, {label: "150%", data: 1.5}, {label: "200%", data: 2}]);
+			[Bindable]
+			private var statesDP:ArrayCollection;
+
+			private function changeSiteSize(e:Event):void
+			{
+				workspaceContainer.scaleX=ComboBox(e.target).selectedItem.data;
+				workspaceContainer.scaleY=ComboBox(e.target).selectedItem.data;
+				//ApplicationController.getInstance().getWorkbench().getApplication().scaleX=ComboBox(e.target).selectedItem.data;
+				//ApplicationController.getInstance().getWorkbench().getApplication().scaleY=ComboBox(e.target).selectedItem.data;
+				//VisualSelector.getInstance().selectionBox.scaleX=1/ComboBox(e.target).selectedItem.data;
+				//VisualSelector.getInstance().selectionBox.scaleY=1/ComboBox(e.target).selectedItem.data;
+				if (VisualSelector.getInstance().tool != null)
+				{
+					var actualTarget:DisplayObject=VisualSelector.getInstance().tool.target;
+					VisualSelector.getInstance().tool.target=actualTarget;
+				}
+			}
+		]]>
+	</mx:Script>
+	<mx:states>
+		<mx:State name="view">
+		</mx:State>
+		<mx:State name="siteSimple">
+		</mx:State>
+		<mx:State name="site">
+			<mx:AddChild relativeTo="{siteEdit}"
+						 creationPolicy="all">
+				<uicontrol:DepthSwapperMenu id="depthSwapper"/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{siteEditorVBox}"
+						 creationPolicy="all">
+				<mx:HBox styleName="secondaryContainer"
+						 id="actionContainer"
+						 height="50"
+						 width="100%"/>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="stories">
+			<mx:AddChild relativeTo="{siteEditorVBox}"
+						 creationPolicy="all">
+				<mx:HDividedBox width="100%">
+					<mx:HBox styleName="secondaryContainer"
+							 id="storyContainer"
+							 height="55"
+							 width="100%"
+							 minWidth="600"/>
+
+					<mx:VBox horizontalAlign="right"
+							 width="120">
+						<story:AddStoryEditor/>
+					</mx:VBox>
+				</mx:HDividedBox>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{siteEditorVBox}"
+						 creationPolicy="all">
+				<components:StageTimeLine id="stageTimeLine"
+										  name="stageTL"/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{timelineVBox}"
+						 creationPolicy="all">
+				<story:TimelineContainer id="timelineContainer"/>
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+	<mx:ViewStack id="vsMain"
+				  width="100%"
+				  height="100%">
+
+		<mx:VBox width="100%"
+				 height="100%"
+				 id="loginVBox"
+				 top="0"
+				 paddingLeft="0"
+				 paddingTop="0"
+				 verticalGap="0">
+		</mx:VBox>
+		<mx:VBox width="100%"
+				 height="100%"
+				 id="mainVBox"
+				 top="0"
+				 paddingLeft="0"
+				 paddingTop="0"
+				 verticalGap="0">
+			<menu:MainMenu width="100%"/>
+			<mx:HDividedBox width="100%"
+							top="0"
+							paddingLeft="0"
+							paddingTop="0"
+							height="100%">
+				<!-- LEFT PANEL -->
+				<mx:VBox top="0"
+						 bottom="0"
+						 left="0"
+						 width="204"
+						 height="100%"
+						 styleName="secondaryContainer"
+						 verticalGap="0"
+						 id="controlContainer">
+					<uicontrol:ControlGroupPanel id="Controls"
+												 opened="false">
+						<mx:TabNavigator id="tabBar"
+										 width="200"
+										 creationPolicy="all">
+							<mx:Canvas id="controls"
+									   width="100%"
+									   top="0"
+									   paddingTop="0">
+								<components:CustomDragList id="controlList"
+														   paddingTop="0"
+														   top="0"
+														   width="100%"/>
+							</mx:Canvas>
+							<mx:Canvas id="actions"
+									   width="100%"
+									   top="0"
+									   paddingTop="0">
+								<components:CustomDragList id="actionList"
+														   paddingTop="0"
+														   top="0"
+														   width="100%"/>
+							</mx:Canvas>
+						</mx:TabNavigator>
+					</uicontrol:ControlGroupPanel>
+				</mx:VBox>
+				<!-- SITE EDITOR -->
+				<mx:VDividedBox id="siteDividedBox"
+								dividerRelease="changeStorySize(event)"
+								width="100%"
+								height="100%"
+								horizontalScrollPolicy="off">
+					<mx:VBox id="siteEditorVBox"
+							 width="100%"
+							 height="100%"
+							 horizontalScrollPolicy="off">
+						<uicontrol:AdvancedPanel id="siteEdit"
+												 headerHeight="30"
+												 width="100%"
+												 height="100%"
+												 title="{getLang('Site_Layout')}"
+												 horizontalScrollPolicy="on"
+												 verticalScrollPolicy="on"
+												 clipContent="true"
+												 creationComplete="hideWhiteBox(event)"
+												 layout="absolute">
+							<uicontrol:titleBarChildren>
+								<mx:ComboBox id="sizer"
+											 dataProvider="{percentSize}"
+											 selectedIndex="3"
+											 change="changeSiteSize(event)"/>
+								<mx:Label text="{getLang('Scale')}"/>
+								<mx:TabBar id="toggleButtonBar"
+										   dataProvider="{statesDP}"
+										   itemClick="toggleStatesButtonBar_itemClick(event);"
+										   creationPolicy="all"/>
+
+							</uicontrol:titleBarChildren>
+							<mx:Canvas styleName="workbench"
+									   id="workspaceContainer">
+							</mx:Canvas>
+
+						</uicontrol:AdvancedPanel>
+					</mx:VBox>
+					<mx:VBox id="timelineVBox"
+							 width="100%"
+							 horizontalScrollPolicy="off">
+					</mx:VBox>
+				</mx:VDividedBox>
+				<!-- RIGHT PANEL -->
+				<mx:VBox top="0"
+						 bottom="0"
+						 right="0"
+						 left="0"
+						 horizontalScrollPolicy="off"
+						 paddingLeft="0"
+						 paddingTop="0"
+						 width="304"
+						 height="100%"
+						 verticalGap="0"
+						 styleName="secondaryContainer"
+						 id="editorContainer">
+				</mx:VBox>
+			</mx:HDividedBox>
+		</mx:VBox>
+	</mx:ViewStack>
+</mx:Application>

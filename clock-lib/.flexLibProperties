@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties version="1">
+  <includeClasses>
+    <classEntry path="com.flashiteasy.clock.lib.ClockElementDescriptor"/>
+    <classEntry path="com.flashiteasy.clock.ExternalLibrary"/>
+    <classEntry path="com.flashiteasy.clock.lib.IClockableElementDescriptor"/>
+    <classEntry path="com.flashiteasy.clock.parameters.ClockParameterSet"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

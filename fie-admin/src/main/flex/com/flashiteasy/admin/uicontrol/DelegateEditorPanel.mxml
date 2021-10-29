@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="100%"
+		 implements="com.flashiteasy.admin.edition.IElementEditorPanel, com.flashiteasy.api.editor.IParameterSetEditorListener">
+
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import mx.utils.ArrayUtil;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.admin.workbench.IElementEditor;
+			import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+			import com.flashiteasy.admin.workbench.IElementEditor;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.api.editor.IParameterSetEditor;
+
+			import mx.core.UIComponent;
+
+
+			private var editor:IElementEditor;
+			private var parameterSetDescriptor:ParameterSetEditionDescriptor;
+			private var wrapper:UIComponent;
+			private var customEditorDisplay:DisplayObject;
+
+			public function reset(editor:IElementEditor, descriptor:ParameterSetEditionDescriptor):void
+			{
+				//We set the focus to prevent a bug with the AdminManager KeyBoardListener not reacting anymore when the component that haved focus is destroy
+				this.setFocus();
+				this.editor=editor;
+				this.parameterSetDescriptor=descriptor;
+				if (wrapper != null && wrapper.contains(customEditorDisplay))
+				{
+					wrapper.removeChild(customEditorDisplay);
+				}
+				description=Conf.languageManager.getLanguage(parameterSetDescriptor.getDescription());
+				// Waiting for the component to be ready.
+				callLater(layoutCustomEditor);
+			}
+
+			private function layoutCustomEditor():void
+			{
+				// Not ready yet
+				if (width < 1)
+				{
+					callLater(layoutCustomEditor);
+					return;
+				}
+				if (this.getChildByName("wrapper") == null)
+				{
+					// Laying out the custom editor
+					wrapper=new UIComponent();
+					// Creating a wrapper, as the editor is not supposed to inherit UIComponent (see Container)
+					addChild(wrapper);
+					wrapper.name="wrapper";
+				}
+				// Creating the instance
+				var customClazz:Class=parameterSetDescriptor.getCustomComponentClass() as Class;
+				var customEditor:IParameterSetEditor=new customClazz() as IParameterSetEditor;
+				customEditorDisplay=wrapper.addChild(DisplayObject(customEditor));
+				customEditor.reset(this, parameterSetDescriptor.getParameterSet());
+				customEditorDisplay.addEventListener(FocusEvent.FOCUS_OUT, outFocusHandler, false, 0, true);
+				customEditor.layout(width);
+			}
+
+			public function getDescriptor():ParameterSetEditionDescriptor
+			{
+				return parameterSetDescriptor;
+			}
+
+			public function update(parameterSet:IParameterSet):void
+			{
+				if (!ArrayUtils.compareArrays(Ref.adminManager.changedParameterList, changedList) && Ref.adminManager.changedParameterList != null)
+					Ref.adminManager.checkForCommitParameterChange();
+
+
+
+				Ref.adminManager.changedDescriptor=parameterSetDescriptor;
+				Ref.adminManager.changedParameterList=changedList;
+				editor.parameterSetUpdated(parameterSet);
+				//We get the values for each selected blocks
+				var newValueList:Object=ApplicationController.getInstance().getElementEditor().getParameterValueList(Ref.adminManager.changedParameterList, Ref.adminManager.changedDescriptor);
+				//
+				addParameterChangeCommand(changedList, parameterSetDescriptor, newValueList, Ref.adminManager.previousValueList);
+			}
+
+			private var changedList:Array=[];
+
+			public function setPreviousValue(changedParameterList:Array=null):void
+			{
+
+				if (changedParameterList != null)
+				{
+					changedList=changedParameterList;
+				}
+				else
+				{
+					changedList=ApplicationController.getInstance().getElementEditor().getParameterList(parameterSetDescriptor.getParameterSet());
+				}
+				if (!ArrayUtils.compareArrays(Ref.adminManager.changedParameterList, changedList))
+				{
+					Ref.adminManager.previousValueList=ApplicationController.getInstance().getElementEditor().getParameterValueList(changedList, parameterSetDescriptor);
+
+
+				}
+			}
+
+			private function outFocusHandler(e:FocusEvent):void
+			{
+
+				trace("delegateoutFocusHandlerchangedParameterList :: ");
+			}
+
+			private function getParameterValues():Array
+			{
+				var valueList:Array=[];
+				for (var i:int=0; i < Ref.adminManager.changedParameterList.length; i++)
+				{
+					valueList.push(Ref.adminManager.changedDescriptor.getParameterSet()[Ref.adminManager.changedParameterList[i]]);
+				}
+				return valueList;
+			}
+
+			public function addParameterChangeCommand(propertyList:Array, descriptor:ParameterSetEditionDescriptor, valueList:Object, oldValueList:Object):void
+			{
+				ApplicationController.getInstance().getElementEditor().notifyParameterChange(propertyList, descriptor, valueList, oldValueList);
+
+
+			}
+
+			[Bindable]
+			private var description:String;
+		]]>
+	</mx:Script>
+
+	<mx:Label text="{description}"
+			  paddingLeft="4"
+			  paddingBottom="0"/>
+</mx:VBox>

@@ -1,0 +1,274 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ *
+ */
+package com.flashiteasy.api.container {
+	import com.flashiteasy.api.controls.SimpleUIElementDescriptor;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.elements.IListElementDescriptor;
+	import com.flashiteasy.api.utils.ArrayUtils;
+	
+	import flash.events.Event;
+	import flash.geom.Point;
+	import flash.utils.Dictionary;
+
+	/**
+	 * The <code><strong>ListElementDescriptor</strong></code> container is different inasmuch it contains elements that are automatically placed.
+	 * The different modes of automatic placement are - as yet for now - HorizontalTiling, VerticalTiling, carrousel, etc.
+	 */
+	public class ListElementDescriptor extends BlockElementDescriptor implements IListElementDescriptor
+	{
+		private var margin:Number = 0;
+		private var type:String;
+
+		
+
+		// Type d affichage de la liste ( horizontal ou vertical )
+		
+		/**
+		 * The type of automatic placement
+		 * @param type
+		 */
+		public function setType(type:String):void
+		{
+			this.type=type;
+			if(isLoaded())
+			{
+				layoutList();
+			}
+		}
+
+		
+		// Marge entre les elements de la liste
+		
+		/**
+		 * Sets the inner (or outer for negative alues) margin of the container.
+		 * @param margin
+		 */
+		public function setMargin( margin : Number ):void
+		{
+			this.margin=margin;
+			if(isLoaded())
+			{
+				layoutList();
+			}
+		}
+		
+		/**
+		 * Sets the spped at which the Carrousel is turning.
+		 * TODO : calculat speed relatively to mouseX position
+		 * @param speed
+		 */
+		public function setCarrouselSpeed( speed : Number ) : void 
+		{
+			this.carrouselSpeed = speed;
+		}
+		
+		// Array containing processed children 
+		
+		private var displayedElements : Array = [];
+		
+		// calculate the position of the child
+		
+		protected override function layoutControl(el:IUIElementDescriptor):void 
+		{
+			// Unlock child to be able to move it
+			SimpleUIElementDescriptor(el).lockPosition(false);
+			
+			// Calculate child position and apply it
+			var nextCoordinate : Point = getNextPosition(SimpleUIElementDescriptor(el));
+			SimpleUIElementDescriptor(el).setY( nextCoordinate.y ) ;
+			SimpleUIElementDescriptor(el).setX( nextCoordinate.x , true ) ;
+			
+			// add the element to displayedElements to notify it has been processed 
+			displayedElements.push(el);
+			face.addChild(el.getFace());
+			
+			// prevent child from beeing moved by external action
+			// don t lock in carrousel type since children is moving on enter_frame 
+			if( type != "carrousel")
+			{
+				
+				SimpleUIElementDescriptor(el).lockPosition(true);
+			}
+		}
+		
+		/**
+		 *  The <coe></code> method cycles through the container children and effects the necessary resizing based on basic (and editable) rules.
+		 */
+		protected function layoutList():void 
+		{
+			removeCarrouselListener();
+			displayedElements=[];
+			for each ( var el : IUIElementDescriptor in child_list )
+			{
+				layoutControl(el);
+			}
+			if( type == "carrousel") 
+			{	
+				animateCarrousel();
+			}
+		}
+		
+		private var angles : Dictionary = new Dictionary(true);
+		private var carrouselSpeed : Number = 0.05;
+		
+		// Start Carrousel
+		
+		private function animateCarrousel():void
+		{
+			face.addEventListener(Event.ENTER_FRAME,onEnter,false,0,true);
+		}
+		
+		// Stop carrousel
+		
+		private function removeCarrouselListener():void
+		{
+			if( face.hasEventListener(Event.ENTER_FRAME))
+			{
+				face.removeEventListener(Event.ENTER_FRAME,onEnter);
+			}
+			angles = new Dictionary(true);
+		}
+		
+		private function arrange():void 
+		{
+		   child_list.sortOn("y", Array.NUMERIC);
+		    var i:int = child_list.length;
+		    while(i--){
+		        if (face.getChildAt(i) != child_list[i].getFace()) {
+		            face.setChildIndex(child_list[i].getFace(), i);
+		        }
+		    }
+		}
+
+		private function onEnter(e:Event ) : void 
+		{
+			var control : SimpleUIElementDescriptor ;
+			var angle:Number;
+			var cos:Number;
+			var sin:Number;
+			var center : Point = new Point( width*0.5 , height*0.5);
+			for each( control in child_list ) 
+			{
+				angle =angles[control]+carrouselSpeed;
+	            cos=Math.cos(angle);
+	            sin=Math.sin(angle);
+	            angles[control]=angle;
+           		control.setX(int((cos*center.x +center.x)- control.width*0.5) );
+            	control.setY(int((sin*center.y +center.y)-control.height*0.5),true);
+			}
+			// arrange children indexes 
+			arrange();
+		}
+		
+		// Calculate the position of the next child
+		
+		private function getNextPosition( el : SimpleUIElementDescriptor ) : Point
+		{
+			var nextX : int = 0 ;
+			var nextY : int = 0 ;
+			var control : SimpleUIElementDescriptor
+			
+			if( type == "vertical" || type == null )
+			{
+				for each ( control in displayedElements )
+				{
+					nextY += control.height;
+					nextY += margin;
+				}
+			}
+			if( type == "horizontal" )
+			{
+				for each ( control in displayedElements )
+				{
+					nextX += control.width;
+					nextX += margin;
+				}
+			}
+			if( type == "tile" )
+			{
+				if(displayedElements.length != 0 )
+				{
+					var previousElement : SimpleUIElementDescriptor = displayedElements[displayedElements.length-1];
+					if( (  previousElement.width + previousElement.x + margin ) + el.width < width )
+					{
+						nextX = previousElement.width + previousElement.x + margin ;
+						nextY = previousElement.y;
+					}
+					else
+					{
+						var tallerElement : SimpleUIElementDescriptor = previousElement ;
+						for each( var element : SimpleUIElementDescriptor in displayedElements )
+						{
+							if( element.y == previousElement.y )
+							{
+								if( element.height > tallerElement.height )
+								{
+									tallerElement = element ;
+								}
+							}
+						}
+						nextY= tallerElement.y + tallerElement.height+margin;
+					}
+				}
+				
+			}
+			if( type =="carrousel" ) 
+			{
+				var center : Point = new Point(this.width/2, this.height/2);
+				var index : int = displayedElements.length ;
+				var numChildren : int = child_list.length;
+				nextX = Math.cos(index*(Math.PI*2)/numChildren)*(width/2) +center.x;
+				nextY = Math.sin(index*(Math.PI*2)/numChildren) *(height/2) +center.y;
+				nextX -= el.width/2;
+				nextY -= el.height/2;
+				angles[el]=index*(Math.PI*2)/numChildren;	
+			}
+			if( type == "coverFlow" ) 
+			{
+			}
+			
+			return new Point(nextX , nextY ) ;
+		}
+		
+		protected override function onChildRemoved( el : IUIElementDescriptor):void
+		{
+			ArrayUtils.removeElement( displayedElements , el );
+			layoutList();
+		}
+		
+		protected override function onControlLoaded():void
+		{
+			layoutList();
+		}
+		
+		protected override function onChildResized( el : IUIElementDescriptor):void
+		{
+			layoutList();
+		}
+		
+		protected override function onSizeChanged():void
+		{
+			if(type == "tile")
+			{
+				layoutList();
+			}
+		}
+		
+		public override function destroy():void
+		{
+			removeCarrouselListener();
+			super.destroy();
+		}
+		
+		public override function getDescriptorType() : Class
+		{
+			return ListElementDescriptor;
+		}
+	}
+}
+

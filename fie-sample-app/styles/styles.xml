@@ -1,0 +1,15 @@
+<styles>
+  <style>
+    <name>texte</name>
+    <align>justify</align>
+    <blockIndent>0</blockIndent>
+    <bold>false</bold>
+    <color>0</color>
+    <font>_Arial</font>
+    <indent>0</indent>
+    <italic>false</italic>
+    <kerning>false</kerning>
+    <underline>false</underline>
+    <size>10</size>
+  </style>
+</styles>

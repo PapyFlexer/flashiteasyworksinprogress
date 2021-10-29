@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<list key="installedFeatures">
+		<item value="com.adobe.flexbuilder.feature.core.osx:3.0.194161"/>
+		<item value="com.adobe.flexbuilder.feature.standalone.osx:3.0.194161"/>
+		<item value="com.sun.jna:3.2.7"/>
+		<item value="org.eclipse.cvs:1.0.1.R33x_r20070802-7C79_9_KKG-mDM9e3H5D"/>
+		<item value="org.eclipse.jdt:3.3.2.r33x_r20080129-7o7jE7_EDhYDiyVEnjb1pFd7ZGD7"/>
+		<item value="org.eclipse.platform:3.3.1.R33x_r20070911-_19UEkpF-B7Uh2hKy75y"/>
+		<item value="org.eclipse.rcp:3.3.1.R33x_r20070802-8y8eE8sEV3Fz0z0GlHJrXvTAUS"/>
+		<item value="org.tigris.subversion.clientadapter.feature:1.6.12"/>
+		<item value="org.tigris.subversion.clientadapter.javahl.feature:1.6.15"/>
+		<item value="org.tigris.subversion.clientadapter.svnkit.feature:1.6.12"/>
+		<item value="org.tigris.subversion.subclipse:1.6.16"/>
+		<item value="org.tmatesoft.svnkit:1.3.4.6888"/>
+	</list>
+	<section name="ChooseWorkspaceDialogSettings">
+		<item value="224" key="DIALOG_Y_ORIGIN"/>
+		<item value="378" key="DIALOG_X_ORIGIN"/>
+	</section>
+	<section name="org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog">
+		<item value="true" key="ShowStatusLine"/>
+		<item value="false" key="ShowDerived"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;workingSet isWindowWorkingSet=&quot;false&quot; workingSetName=&quot;&quot;/&gt;" key="WorkingSet"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History&gt;&#x0A;&lt;historyRootNode&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/core/project/storyboard/Story.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/core/project/storyboard/Update.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/motion/TimerStoryboardPlayerImpl.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/controls/SimpleUIElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/container/DynamicListElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/InternalLinkParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/action/InternalBrowsingAction.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/DynamicListParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/xml/ProjectParser.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/library/BuiltInLibrary.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/ioc/ClassResolver.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/xml/StyleParser.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/components/style/StyleEditor.mxml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/workbench/impl/StoryListEditor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/controls/FLVPlayerElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/selection/ElementList.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/workbench/impl/DefaultWorkbenchImpl.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/SizeParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/container/BlockElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/browser/Version.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/popUp/components/VersionComponent.mxml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/popUp/VersionPopUp.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/FLVPlayerParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/ImgParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/controls/CloneElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/CloneParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/core/elements/ILoopElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/LoopParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/core/project/Page.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/core/action/IPlayableElementAction.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/controls/SwfElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/utils/Carrousel.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/FLVSourceParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/xml/XmlSave.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/xml/XmlSerializer.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/bootstrap/AbstractBootstrap.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/action/FullScreenElementAction.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/core/project/storyboard/Transition.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/container/ListElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/ListTypeParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/utils/DictionaryUtils.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/indexation/IndexationManager.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/popUp/ProjectChooser.mxml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/workbench/impl/DefaultElementEditorImpl.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/index.mxml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/users/User.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-protection/src/user.mxml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/visualEditor/VisualSelector.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/utils/DisplayObjectUtils.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/core/BrowsingManager.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/container/XmlElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/FilterParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/components/filterComponents/FilterWorkbench.mxml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/fieservice/AbstractBusinessDelegate.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-app/src/main/flex/BusinessDelegate.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-app/src/main/flex/FieApp.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/controls/AnimatedTextElementDescriptor.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/parameters/AnimatedTextParameterSet.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/utils/ProjectData.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-admin/src/main/flex/com/flashiteasy/admin/event/ProjectEvent.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/fie-api/src/main/flex/com/flashiteasy/api/ioc/IocContainer.as&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;/historyRootNode&gt;&#x0A;&lt;/History&gt;" key="History"/>
+		<section name="DialogBoundsSettings">
+			<item value="842" key="DIALOG_WIDTH"/>
+			<item value="258" key="DIALOG_Y_ORIGIN"/>
+			<item value="515" key="DIALOG_HEIGHT"/>
+			<item value="438" key="DIALOG_X_ORIGIN"/>
+			<item value="1|Lucida Grande|11.0|0|CARBON|1|Lucida Grande" key="DIALOG_FONT_NAME"/>
+		</section>
+	</section>
+	<section name="WORKBENCH_SETTINGS">
+		<list key="ENABLED_TRANSFERS">
+		</list>
+	</section>
+	<section name="ExternalProjectImportWizard">
+		<item value="false" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
+		<item value="false" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
+	</section>
+	<section name="ResourceNavigator">
+		<item value="" key="ResourceWorkingSetFilter.STORE_WORKING_SET"/>
+		<item value="true" key="LINK_NAVIGATOR_TO_EDITOR"/>
+		<item value="1" key="ResourceViewer.STORE_SORT_TYPE"/>
+	</section>
+	<section name="org.eclipse.ui.views.problem">
+	</section>
+	<section name="CleanDialogSettings">
+		<item value="516" key="DIALOG_WIDTH"/>
+		<item value="160" key="DIALOG_Y_ORIGIN"/>
+		<item value="372" key="DIALOG_HEIGHT"/>
+		<item value="382" key="DIALOG_X_ORIGIN"/>
+		<item value="true" key="TOGGLE_SELECTED"/>
+	</section>
+	<section name="NewWizardAction">
+		<item value="org.tigris.subversion.subclipse.ui.wizards.CheckoutWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
+		<list key="NewWizardSelectionPage.STORE_EXPANDED_CATEGORIES_ID">
+			<item value="org.tigris.subversion.subclipse.ui.svn"/>
+		</list>
+	</section>
+</section>

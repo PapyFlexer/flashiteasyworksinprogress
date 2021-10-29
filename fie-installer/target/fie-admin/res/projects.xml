@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<projects>
+	<project name="FieSampleApp" url="../fie-projects/fie-sample-app" realpath="/Applications/MAMP/htdocs/fie-admin/fie-projects/fie-sample-app/" />
+	<project name="FieApp" url="../fie-projects/fie-app" realpath="/Applications/MAMP/htdocs/fie-admin/fie-projects/fie-app/" />
+</projects>

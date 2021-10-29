@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="360" paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="10"
+		 height="310"
+		 verticalGap="0">
+
+
+	<mx:Script>
+		<![CDATA[
+			import mx.containers.TitleWindow;
+			import com.flashiteasy.admin.conf.Ref;
+			import mx.containers.ControlBar;
+			import com.flashiteasy.admin.popUp.components.newUpdateComponent;
+			import com.flashiteasy.admin.popUp.components.UpdateTimeline;
+			import flash.utils.getTimer;
+			import mx.utils.ArrayUtil;
+			import com.flashiteasy.admin.popUp.NewTransitionPopup;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.api.events.FieEvent;
+			import com.flashiteasy.api.core.project.storyboard.Story;
+			import mx.containers.HBox;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import com.flashiteasy.admin.conf.Conf;
+			import mx.controls.Button;
+			import mx.core.Container;
+
+			import com.flashiteasy.api.core.IDescriptor;
+			import com.flashiteasy.admin.uicontrol.story.TransitionEditor;
+			import com.flashiteasy.api.core.project.storyboard.Transition;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.api.core.IUIElementDescriptor;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.api.ioc.ClassResolver;
+			import mx.controls.ComboBox;
+			import mx.controls.Label;
+			import mx.containers.FormItem;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.ScrollEvent;
+			import mx.events.ScrollEventDirection;
+
+			import com.flashiteasy.api.core.project.storyboard.Update;
+			import com.flashiteasy.api.utils.DisplayListUtils;
+
+			[Bindable]
+			private var _updates:Array;
+			
+			[Bindable]
+			public var target:IDescriptor;
+			
+			
+
+			public function get updates():Array
+			{
+				return _updates;
+			}
+
+			public function set updates(a:Array):void
+			{
+				_updates=a;
+			}
+
+			private var _story : Story ;
+			
+			private function initPanel(story : Story , descr:IDescriptor):void
+			{
+				
+				_story = story ;
+				_updates=story.getUpdates();
+				drawPanel();
+				target=descr;
+				var control:ControlBar = new ControlBar;
+				var newUpdate:Button = new Button;
+				newUpdate.label = Conf.languageManager.getLanguage("add_update");
+				newUpdate.addEventListener(MouseEvent.CLICK, openUpdatePopup, false, 0, true);
+				control.addChild(newUpdate);
+				control.percentWidth = 100;
+				TitleWindow(owner).title = Conf.languageManager.getLanguage("Advanced_story_editing");
+				owner.addChild(control);
+			}
+			
+			private function drawPanel():void
+			{
+				updateContainer.removeAllChildren();
+				for each (var update:Update in _updates)
+				{
+					var updateEditor : UpdateTimeline = new UpdateTimeline;
+					updateEditor.update = update ;
+					updateContainer.addChild( updateEditor ) ;
+					updateEditor.addEventListener(UpdateTimeline.UPDATE_DELETED , deleteUpdate , false , 0 , true );
+
+				}
+			}
+			
+			
+			private function deleteUpdate ( e : Event ) : void 
+			{
+				var ut : UpdateTimeline = UpdateTimeline(e.target);
+				updateContainer.removeChild(ut);
+				Ref.stageTimeLine.refreshTimelines(); 
+			}
+
+
+			private function addUpdate( e:MouseEvent ) : void
+			{
+				var updateIndex : uint = Number(e.target.parent.name.substr(-1));
+				var l:uint=this.updates.length;
+				var newBlankUpdate:Update=new Update;
+				var tr:Transition=new Transition;
+			}
+
+			private function refreshStory():void
+			{
+				var updateArray:Array=new Array;
+				var i:int=-1;
+				// we check each updates
+				for each (var upd:Update in updates)
+				{
+					++i;
+					var prmSet:String=(((this as Container).getChildByName("update" + i) as Container).getChildByName("paramCBox" + i) as ComboBox).selectedItem.toString();
+					var prop:String=(((this as Container).getChildByName("update" + i) as Container).getChildByName("propCBox" + i) as ComboBox).selectedItem.toString();
+					var id:String=upd.getId();
+					var j:int=-1;
+					trace("update #" + i + " changé avec PrmSet=" + prmSet + " et prop=" + prop);
+					var le:uint=upd.getTransitions().length;
+					upd.removeAllTransitions();
+
+					// then we check each transition
+					while (++j < le)
+					{
+						var tr:Transition=new Transition;
+						tr=((this as Container).getChildByName("transition" + j) as TransitionEditor).getTransition();
+						upd.addTransition(tr);
+					}
+					upd.init(prmSet, prop, id, upd.story);
+					updateArray.push(upd);
+				}
+				updates=[];
+				updates=updateArray;
+			}
+
+			public function setUpdates(story : Story , target:IDescriptor):void
+			{
+				callLater(initPanel, [story, target]);
+			}
+			
+			private var newUpdate : PopUp ;
+			private function openUpdatePopup( e : Event ) : void 
+			{
+				newUpdate = new PopUp();
+				var component : newUpdateComponent = new newUpdateComponent ;
+				component.addEventListener( newUpdateComponent.UPDATE_CREATED , updateCreated , false , 0 , true  );
+				component.story = _story;
+				newUpdate.addChild(component);
+				newUpdate.display();
+			}
+			
+			private function updateCreated( e : Event ) : void 
+			{
+				newUpdate.closePopUp();	
+				drawPanel();
+				
+				StageTimeLine(Ref.stageTimeLine).refreshTimelines();
+			}
+				
+		]]>
+	</mx:Script>
+	<!--mx:Button label="{getLang('add_update')}" click="openUpdatePopup(event)" /-->
+	<mx:VBox id="updateContainer" width= "100%"/>
+	</mx:VBox>

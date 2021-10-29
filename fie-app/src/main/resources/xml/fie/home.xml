@@ -1,0 +1,1735 @@
+<page>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="BlockAnim2">
+    <BlockListParameterSet>
+      <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="BlockComment">
+        <BlockListParameterSet>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="galet3">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>489</y>
+              <x>601</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>45</width>
+              <height>31</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <AlphaParameterSet>
+              <alpha>0</alpha>
+            </AlphaParameterSet>
+            <FilterParameterSet>
+              <filterString>[7,89,0x000000,0.63,9,9,1,1,false,false,false||4,45,0xECD6D6,1,0x000000,1,12,12,1,1,inner,false]</filterString>
+              <types>[DropShadowFilter,BevelFilter]</types>
+            </FilterParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/fie_galet.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+            <SmoothParameterSet>
+              <smooth>true</smooth>
+            </SmoothParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TitleComment">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>14</y>
+              <x>60</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>50</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_Arial" SIZE="24" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;Unlimited &lt;FONT COLOR="#666666"&gt;Projects&lt;/FONT&gt;...&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Text">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>58</y>
+              <x>60</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>115</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#000000" LETTERSPACING="0" KERNING="1"&gt;Flash&amp;apos;iteasy lets you create/duplicate/edit any type of projects : Websites, banners, keynotes. As much projects as you want online and on a single licence fee.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TitleComment1">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>14</y>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>middle</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>50</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_Arial" SIZE="24" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;Unlimited &lt;FONT COLOR="#666666"&gt;Designs&lt;/FONT&gt;...&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Text1">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>58</y>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>middle</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>115</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#000000" LETTERSPACING="0" KERNING="1"&gt;With no mandatory template, Flash&amp;apos;iteasy entitles yor designers to work in a familiar environment as well as present their sketches interactively at short notice&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Text2">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>58</y>
+              <x>-60</x>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>right</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>115</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#000000" LETTERSPACING="0" KERNING="1"&gt;Use as many pages as you want, whatever complexity is required by your tree structure. Even the size of pages can vary during navigation so you can change universe.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TitleComment2">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>14</y>
+              <x>-60</x>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>right</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>50</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_Arial" SIZE="24" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;Unlimited &lt;FONT COLOR="#666666"&gt;Structure&lt;/FONT&gt;...&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TitleComment3">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>384</y>
+              <x>60</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>50</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_Arial" SIZE="24" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;Unlimited &lt;FONT COLOR="#666666"&gt;Creation&lt;/FONT&gt;...&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Text3">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>428</y>
+              <x>60</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>115</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#000000" LETTERSPACING="0" KERNING="1"&gt;Use your own specific fonts, animate your contents, design and mix filters and effects, all without a single line of code.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TitleComment4">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>384</y>
+              <x>22.5</x>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>middle</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>305</width>
+              <height>50</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_Arial" SIZE="24" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;Unlimited &lt;FONT COLOR="#666666"&gt;Developpement&lt;/FONT&gt;...&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Text4">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>428</y>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>middle</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>115</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#000000" LETTERSPACING="0" KERNING="1"&gt;If Flash&amp;apos;iteasy doesn&amp;apos;t do it, you can! More than ab API, Flash&amp;apos;iteasy boots your coders with a global framework that entitle them to create complex objects to be added and manage at run time.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Text5">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>428</y>
+              <x>-60</x>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>right</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>115</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#000000" LETTERSPACING="0" KERNING="1"&gt;You can help-us enhance the Flash&amp;apos;iteasy Framework by sharing your developments and join the community..&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TitleComment5">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>384</y>
+              <x>-60</x>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>right</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>260</width>
+              <height>50</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_Arial" SIZE="24" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;Unlimited &lt;FONT COLOR="#666666"&gt;Extensibility&lt;/FONT&gt;...&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>134</y>
+              <x>72</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>238</width>
+              <height>222</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/tds-folders-icons-v1-previe.jpg</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+            <SmoothParameterSet>
+              <smooth>true</smooth>
+            </SmoothParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj1">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>165</y>
+              <x>395</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>165</width>
+              <height>163</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/1027278071674849507.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+            <SmoothParameterSet>
+              <smooth>true</smooth>
+            </SmoothParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj4">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>526</y>
+              <x>380</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>190</width>
+              <height>190</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/photoshop-graphics-tools-logo-icon.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>no_scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::SwfElementDescriptor" id="earth">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>522</y>
+              <x>108</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>136</width>
+              <height>138</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/turningheart.swf</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj3">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>516</y>
+              <x>87</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>213</width>
+              <height>192</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <AlphaParameterSet>
+              <alpha>0.57</alpha>
+            </AlphaParameterSet>
+            <BlendModeParameterSet>
+              <blend_mode>hardlight</blend_mode>
+            </BlendModeParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/icofx-s-br.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>no_scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+          </control>
+          <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="Blockturn">
+            <BlockListParameterSet>
+              <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj11">
+                <PositionParameterSet>
+                  <mode>bottom</mode>
+                  <y>-95</y>
+                  <x>-95</x>
+                </PositionParameterSet>
+                <SizeParameterSet>
+                  <width>190</width>
+                  <height>190</height>
+                </SizeParameterSet>
+                <RotationParameterSet>
+                  <rotationX>0</rotationX>
+                  <rotationY>0</rotationY>
+                </RotationParameterSet>
+                <ImgParameterSet>
+                  <source>media/image/fie/photoshop-graphics-circle.png</source>
+                </ImgParameterSet>
+                <ResizableParameterSet>
+                  <mode>no_scale</mode>
+                  <resizable>true</resizable>
+                </ResizableParameterSet>
+                <SmoothParameterSet>
+                  <smooth>true</smooth>
+                </SmoothParameterSet>
+              </control>
+            </BlockListParameterSet>
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>621</y>
+              <x>475</x>
+            </PositionParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+              <rotation>180</rotation>
+            </RotationParameterSet>
+          </container>
+          <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="container">
+            <BlockListParameterSet>
+              <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj2">
+                <PositionParameterSet>
+                  <mode>bottom</mode>
+                  <y>186</y>
+                </PositionParameterSet>
+                <SizeParameterSet>
+                  <width>226</width>
+                  <height>284</height>
+                </SizeParameterSet>
+                <RotationParameterSet>
+                  <rotationX>0</rotationX>
+                  <rotationY>0</rotationY>
+                </RotationParameterSet>
+                <FilterParameterSet>
+                  <filterString>[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]</filterString>
+                  <types>[ColorMatrixFilter]</types>
+                </FilterParameterSet>
+                <ImgParameterSet>
+                  <source>media/image/fie/plant-large.png</source>
+                </ImgParameterSet>
+                <ResizableParameterSet>
+                  <mode>scale</mode>
+                  <resizable>true</resizable>
+                </ResizableParameterSet>
+                <SmoothParameterSet>
+                  <smooth>true</smooth>
+                </SmoothParameterSet>
+              </control>
+              <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj5">
+                <PositionParameterSet>
+                  <mode>bottom</mode>
+                  <y>240</y>
+                  <x>86</x>
+                </PositionParameterSet>
+                <SizeParameterSet>
+                  <width>56</width>
+                  <height>98</height>
+                </SizeParameterSet>
+                <RotationParameterSet>
+                  <rotationX>0</rotationX>
+                  <rotationY>0</rotationY>
+                </RotationParameterSet>
+                <BlendModeParameterSet>
+                  <blend_mode>layer</blend_mode>
+                </BlendModeParameterSet>
+                <ImgParameterSet>
+                  <source>media/image/fie/plant-large.png</source>
+                </ImgParameterSet>
+                <ResizableParameterSet>
+                  <mode>scale</mode>
+                  <resizable>true</resizable>
+                </ResizableParameterSet>
+                <SmoothParameterSet>
+                  <smooth>true</smooth>
+                </SmoothParameterSet>
+              </control>
+              <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj7">
+                <PositionParameterSet>
+                  <mode>bottom</mode>
+                  <y>174</y>
+                </PositionParameterSet>
+                <SizeParameterSet>
+                  <width>226</width>
+                  <height>284</height>
+                </SizeParameterSet>
+                <RotationParameterSet>
+                  <rotationX>0</rotationX>
+                  <rotationY>0</rotationY>
+                </RotationParameterSet>
+                <MouseEnableParameterSet>
+                  <enableMouseChildren>false</enableMouseChildren>
+                  <enableMouse>false</enableMouse>
+                </MouseEnableParameterSet>
+                <ImgParameterSet>
+                  <source>media/image/fie/plant-trunk.png</source>
+                </ImgParameterSet>
+                <ResizableParameterSet>
+                  <mode>scale</mode>
+                  <resizable>true</resizable>
+                </ResizableParameterSet>
+                <SmoothParameterSet>
+                  <smooth>true</smooth>
+                </SmoothParameterSet>
+              </control>
+            </BlockListParameterSet>
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>-13</y>
+              <x>645</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>227</width>
+              <height>351</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <MaskTypeParameterSet>
+              <enable>true</enable>
+              <MaskTargetParameterSet>
+                <target>container1</target>
+              </MaskTargetParameterSet>
+            </MaskTypeParameterSet>
+            <MouseEnableParameterSet>
+              <enableMouseChildren>false</enableMouseChildren>
+              <enableMouse>false</enableMouse>
+            </MouseEnableParameterSet>
+            <FilterParameterSet>
+              <filterString>[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]</filterString>
+              <types>[ColorMatrixFilter]</types>
+            </FilterParameterSet>
+          </container>
+          <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="container1">
+            <BlockListParameterSet>
+              <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="RectPlant">
+                <PositionParameterSet>
+                  <mode>bottom</mode>
+                  <y>-22</y>
+                </PositionParameterSet>
+                <SizeParameterSet>
+                  <width>299</width>
+                  <height>178</height>
+                </SizeParameterSet>
+                <RotationParameterSet>
+                  <rotationX>0</rotationX>
+                  <rotationY>0</rotationY>
+                </RotationParameterSet>
+                <FilterParameterSet>
+                  <filterString>36,36,1</filterString>
+                  <types>BlurFilter</types>
+                </FilterParameterSet>
+                <BackgroundColorParameterSet>
+                  <backgroundColor>0</backgroundColor>
+                </BackgroundColorParameterSet>
+              </control>
+            </BlockListParameterSet>
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>168</y>
+              <x>605</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>299</width>
+              <height>239</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <MouseEnableParameterSet>
+              <enableMouseChildren>false</enableMouseChildren>
+              <enableMouse>false</enableMouse>
+            </MouseEnableParameterSet>
+            <FilterParameterSet>
+              <filterString>[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]</filterString>
+              <types>[ColorMatrixFilter]</types>
+            </FilterParameterSet>
+          </container>
+          <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="butPlant">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>168</y>
+              <x>649</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>224</width>
+              <height>161</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <BackgroundColorParameterSet>
+              <backgroundAlpha>0</backgroundAlpha>
+              <backgroundColor>16777215</backgroundColor>
+            </BackgroundColorParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj6">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>516</y>
+              <x>87</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>213</width>
+              <height>192</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/icofx-s-detourbr.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>no_scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj8">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>165</y>
+              <x>395</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>165</width>
+              <height>163</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/siteIn1.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+            <SmoothParameterSet>
+              <smooth>true</smooth>
+            </SmoothParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj9">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>165</y>
+              <x>395</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>165</width>
+              <height>163</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/siteIn2.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+            <SmoothParameterSet>
+              <smooth>true</smooth>
+            </SmoothParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj10">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>165</y>
+              <x>395</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>165</width>
+              <height>163</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/siteIn3.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+            <SmoothParameterSet>
+              <smooth>true</smooth>
+            </SmoothParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="galet2">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>523</y>
+              <x>606</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>85</width>
+              <height>59</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <FilterParameterSet>
+              <filterString>[7,89,0x000000,0.63,9,9,1,1,false,false,false||4,45,0xECD6D6,1,0x000000,1,12,12,1,1,inner,false]</filterString>
+              <types>[DropShadowFilter,BevelFilter]</types>
+            </FilterParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/fie_galet.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+            <SmoothParameterSet>
+              <smooth>true</smooth>
+            </SmoothParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="galet1">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>567</y>
+              <x>633</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>129</width>
+              <height>89</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <FilterParameterSet>
+              <filterString>[7,89,0x000000,0.63,9,9,1,1,false,false,false||4,45,0xECD6D6,1,0x000000,1,12,12,1,1,inner,false]</filterString>
+              <types>[DropShadowFilter,BevelFilter]</types>
+            </FilterParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/fie_galet.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="galet">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>575</y>
+              <x>706</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>200</width>
+              <height>138</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <FilterParameterSet>
+              <filterString>[7,89,0x000000,0.63,9,9,1,1,false,false,false||4,45,0xECD6D6,1,0x000000,1,12,12,1,1,inner,false]</filterString>
+              <types>[DropShadowFilter,BevelFilter]</types>
+            </FilterParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/fie_galet.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="FIE">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>603</y>
+              <x>764</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>89</width>
+              <height>89</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <FilterParameterSet>
+              <filterString>[2,228,0xEDEED7,1,0x000000,0.76,3,3,1,2,inner,true]</filterString>
+              <types>[BevelFilter]</types>
+            </FilterParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/FIETypo.swf</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="Light">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>100</y>
+              <x>58</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>33</width>
+              <height>174</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+              <rotation>17</rotation>
+            </RotationParameterSet>
+            <MaskTypeParameterSet>
+              <enable>true</enable>
+              <MaskTargetParameterSet>
+                <target>ImgProj12</target>
+              </MaskTargetParameterSet>
+            </MaskTypeParameterSet>
+            <MouseEnableParameterSet>
+              <enableMouseChildren>false</enableMouseChildren>
+              <enableMouse>false</enableMouse>
+            </MouseEnableParameterSet>
+            <AlphaParameterSet>
+              <alpha>0.7</alpha>
+            </AlphaParameterSet>
+            <FilterParameterSet>
+              <filterString>[20,4,1]</filterString>
+              <types>[BlurFilter]</types>
+            </FilterParameterSet>
+            <BackgroundColorParameterSet>
+              <backgroundColor>16777215</backgroundColor>
+            </BackgroundColorParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="ImgProj12">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>134</y>
+              <x>72</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>238</width>
+              <height>222</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <FilterParameterSet>
+              <filterString>[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]</filterString>
+              <types>[ColorMatrixFilter]</types>
+            </FilterParameterSet>
+            <ImgParameterSet>
+              <source>media/image/fie/tds-folders-icons-v1-front.png</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <mode>scale</mode>
+              <resizable>true</resizable>
+            </ResizableParameterSet>
+            <SmoothParameterSet>
+              <smooth>true</smooth>
+            </SmoothParameterSet>
+          </control>
+        </BlockListParameterSet>
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <y>220</y>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <width>950</width>
+          <height>759</height>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <MaskTypeParameterSet>
+          <enable>true</enable>
+          <RoundedCornerParameterSet>
+            <topRight>10</topRight>
+            <bottomLeft>10</bottomLeft>
+            <bottomRight>10</bottomRight>
+            <topLeft>10</topLeft>
+          </RoundedCornerParameterSet>
+        </MaskTypeParameterSet>
+        <BackgroundColorParameterSet>
+          <backgroundColor>16777215</backgroundColor>
+        </BackgroundColorParameterSet>
+      </container>
+      <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="BlockTop">
+        <BlockListParameterSet>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TextCreate1">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>70</y>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>middle</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>248</width>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;FlashIt easy CMS is created for Flash developers, design studios and freelancers who make money on creating and maintaining Flash websites.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TextCreate2">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>15</y>
+              <x>-66</x>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>right</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>248</width>
+              <height>66</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <BlendModeParameterSet>
+              <blend_mode>erase</blend_mode>
+            </BlendModeParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_Arial" SIZE="36" COLOR="#FFFFFF" LETTERSPACING="0" KERNING="0"&gt;Why use it?&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TextCreate">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>15</y>
+              <x>66</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>248</width>
+              <height>52</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <BlendModeParameterSet>
+              <blend_mode>erase</blend_mode>
+            </BlendModeParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="36" COLOR="#FFFFFF" LETTERSPACING="0" KERNING="0"&gt;What it is?&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TextCreate3">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>70</y>
+              <x>66</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>248</width>
+              <height>129</height>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;FlashitEasy CMS is an advanced Flash content management system that allows you to create attractive, functional and SEO- friendly Flash websites.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#CCCCCC" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TextCreate4">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>15</y>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>middle</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>248</width>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <BlendModeParameterSet>
+              <blend_mode>erase</blend_mode>
+            </BlendModeParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_Arial" SIZE="36" COLOR="#FFFFFF" LETTERSPACING="0" KERNING="0"&gt;Who is it for?&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+          <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="TextCreate5">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>70</y>
+              <x>-66</x>
+            </PositionParameterSet>
+            <AlignParameterSet>
+              <h_align>right</h_align>
+            </AlignParameterSet>
+            <SizeParameterSet>
+              <width>248</width>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <TextOptionParameterSet>
+              <borderColor>0</borderColor>
+              <multiLines>true</multiLines>
+              <autoSize>center</autoSize>
+              <wordWrap>true</wordWrap>
+            </TextOptionParameterSet>
+            <TextParameterSet>
+              <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;With FlashItEasy CMS you can earn more either by creating manageable Flash sites and components for them or by maintaining the created Flash site.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+              <police>Arial</police>
+            </TextParameterSet>
+          </control>
+        </BlockListParameterSet>
+        <PositionParameterSet>
+          <mode>bottom</mode>
+        </PositionParameterSet>
+        <AlignParameterSet>
+          <h_align>middle</h_align>
+        </AlignParameterSet>
+        <SizeParameterSet>
+          <width>950</width>
+          <height>207</height>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <MaskTypeParameterSet>
+          <enable>true</enable>
+          <RoundedCornerParameterSet>
+            <topRight>10</topRight>
+            <bottomLeft>10</bottomLeft>
+            <bottomRight>10</bottomRight>
+            <topLeft>10</topLeft>
+          </RoundedCornerParameterSet>
+        </MaskTypeParameterSet>
+        <FilterParameterSet>
+          <filterString>[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]</filterString>
+          <types>[ColorMatrixFilter]</types>
+        </FilterParameterSet>
+        <BackgroundImageParameterSet>
+          <source>media/image/fonds/degDark.swf</source>
+        </BackgroundImageParameterSet>
+      </container>
+    </BlockListParameterSet>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <is_percent_h>true</is_percent_h>
+      <is_percent_w>true</is_percent_w>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <MaskTypeParameterSet>
+      <enable>true</enable>
+      <MaskParameterSet>
+        <enable>true</enable>
+      </MaskParameterSet>
+    </MaskTypeParameterSet>
+  </container>
+  <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="Sizer">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>1200</y>
+      <x>79</x>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+  </control>
+  <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="trigGalet">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>745</y>
+      <x>626</x>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <width>255</width>
+      <height>175</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <BackgroundColorParameterSet>
+      <backgroundAlpha>0</backgroundAlpha>
+      <backgroundColor>16777215</backgroundColor>
+    </BackgroundColorParameterSet>
+  </control>
+  <action type="com.flashiteasy.api.action::TogglePlayableElementAction" id="ToggleEarth">
+    <TargetsParameterSet>
+      <targets>ImgProj6</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="over">
+          <events>rollOver</events>
+          <type/>
+        </trigger>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="out">
+          <events>rollOut</events>
+          <type/>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <TogglePlayableElementParameterSet>
+      <elementList>earth</elementList>
+    </TogglePlayableElementParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PlayStoryAction" id="PlayPlant">
+    <TargetsParameterSet>
+      <targets>butPlant</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="over">
+          <events>rollOver</events>
+          <type/>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PlayStoryParameterSet>
+      <time>0</time>
+      <storyList>moving,growing</storyList>
+    </PlayStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PauseStoryAction" id="PausePlant">
+    <TargetsParameterSet>
+      <targets>butPlant</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="out">
+          <events>rollOut</events>
+          <type/>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PauseStoryParameterSet>
+      <storyList>moving,growing</storyList>
+      <time>0</time>
+    </PauseStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::TogglePlayableStoryAction" id="ToggleSite">
+    <TargetsParameterSet>
+      <targets>ImgProj10</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="over">
+          <events>rollOver</events>
+          <type/>
+        </trigger>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="out">
+          <events>rollOut</events>
+          <type/>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <ToggleStoryParameterSet>
+      <storyList>siteMov2,siteMov3</storyList>
+    </ToggleStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::TogglePlayableStoryAction" id="ToggleTurn">
+    <TargetsParameterSet>
+      <targets>Blockturn</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="over">
+          <events>rollOver</events>
+          <type/>
+        </trigger>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="out">
+          <events>rollOut</events>
+          <type/>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <ToggleStoryParameterSet>
+      <storyList>storyturn</storyList>
+    </ToggleStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PlayStoryAction" id="PlayLight">
+    <TargetsParameterSet>
+      <targets>ImgProj</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="over">
+          <events>rollOver</events>
+          <type/>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PlayStoryParameterSet>
+      <time>0</time>
+      <storyList>slight</storyList>
+    </PlayStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PauseStoryAction" id="PauseLight">
+    <TargetsParameterSet>
+      <targets>ImgProj</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="out">
+          <events>rollOut</events>
+          <type/>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PauseStoryParameterSet>
+      <storyList>slight</storyList>
+      <time>0</time>
+    </PauseStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PlayStoryAction" id="Playgalet">
+    <TargetsParameterSet>
+      <targets>trigGalet</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="over">
+          <events>rollOver</events>
+          <type/>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PlayStoryParameterSet>
+      <time>0</time>
+      <storyList>sgalet,sgalet1,sgalet2,sgalet3</storyList>
+    </PlayStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PauseStoryAction" id="PauseGalet">
+    <TargetsParameterSet>
+      <targets>trigGalet</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="out">
+          <events>rollOut</events>
+          <type/>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PauseStoryParameterSet>
+      <storyList>sgalet,sgalet1,sgalet2,sgalet3</storyList>
+      <time>0</time>
+    </PauseStoryParameterSet>
+  </action>
+  <storyboard>
+    <story uuid="growing" autoPlay="false" autoPlayOnUnload="false" target="ImgProj5" loop="true">
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>240</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>22</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="height">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>98</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>284</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="width">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>56</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>226</value>
+        </keyframe>
+      </update>
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>86</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>0</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="moving" autoPlay="false" autoPlayOnUnload="false" target="container" loop="true">
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>-13</value>
+        </keyframe>
+        <keyframe time="800">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>-13</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeIn"/>
+          <value>148</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeIn"/>
+          <value>-13</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="siteMov3" autoPlay="false" autoPlayOnUnload="false" target="ImgProj10" loop="true">
+      <update target="AlphaParameterSet" targetProperty="alpha">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>1</value>
+        </keyframe>
+        <keyframe time="550">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>1</value>
+        </keyframe>
+        <keyframe time="1000">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>0</value>
+        </keyframe>
+        <keyframe time="2600">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>0</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>1</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="siteMov2" autoPlay="false" autoPlayOnUnload="false" target="ImgProj9" loop="true">
+      <update target="AlphaParameterSet" targetProperty="alpha">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>1</value>
+        </keyframe>
+        <keyframe time="1600">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>1</value>
+        </keyframe>
+        <keyframe time="2000">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>0</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>0</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="storyturn" autoPlay="false" autoPlayOnUnload="false" target="Blockturn" loop="true">
+      <update target="RotationParameterSet" targetProperty="rotation">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>0</value>
+        </keyframe>
+        <keyframe time="1000">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>360</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="slight" autoPlay="false" autoPlayOnUnload="false" target="Light" loop="true">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>58</value>
+        </keyframe>
+        <keyframe time="1430">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>309</value>
+        </keyframe>
+      </update>
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>100</value>
+        </keyframe>
+        <keyframe time="1430">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>238</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="sgalet3" autoPlay="false" autoPlayOnUnload="false" target="galet3" loop="true">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>601</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>606</value>
+        </keyframe>
+      </update>
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>489</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>523</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="width">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>45</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>85</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="height">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>31</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>59</value>
+        </keyframe>
+      </update>
+      <update target="AlphaParameterSet" targetProperty="alpha">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>0</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>1</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="sgalet2" autoPlay="false" autoPlayOnUnload="false" target="galet2" loop="true">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>606</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>633</value>
+        </keyframe>
+      </update>
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>523</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>567</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="width">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>85</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>129</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="height">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>59</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>89</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="sgalet1" autoPlay="false" autoPlayOnUnload="false" target="galet1" loop="true">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>633</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>706</value>
+        </keyframe>
+      </update>
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>567</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>575</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="width">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>129</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>200</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="height">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>89</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>138</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="sgalet" autoPlay="false" autoPlayOnUnload="false" target="galet" loop="true">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>706</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>853</value>
+        </keyframe>
+      </update>
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>575</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>527</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="height">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>138</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>171</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="width">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>200</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>238</value>
+        </keyframe>
+      </update>
+      <update target="AlphaParameterSet" targetProperty="alpha">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>1</value>
+        </keyframe>
+        <keyframe time="500">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>0</value>
+        </keyframe>
+      </update>
+    </story>
+  </storyboard>
+</page>

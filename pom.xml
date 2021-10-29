@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+    <groupId>com.flashiteasy</groupId>
+    <artifactId>fie-bundle</artifactId>
+    <version>0.2-SNAPSHOT</version>
+        
+    <packaging>pom</packaging>
+
+    <repositories>
+       <repository>
+           <id>Maven.ServeBox.org</id>
+           <name>ServeBox.org repository</name>
+           <url>http://maven.servebox.org/repository</url>
+       </repository>
+    </repositories>
+    <pluginRepositories>
+       <pluginRepository>
+           <id>Maven.ServeBox.org</id>
+           <name>ServeBox.org repository</name>
+           <url>http://maven.servebox.org/repository</url>
+       </pluginRepository>
+        <pluginRepository>
+            <id>flexpmd.opensource.adobe</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <name>FlexPMD repository on opensource.adobe.com</name>
+            <url>http://opensource.adobe.com/svn/opensource/flexpmd/maven-repository/release/</url>	
+        </pluginRepository>
+
+    </pluginRepositories>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.servebox.flex</groupId>
+                <artifactId>flex-plugin</artifactId>
+                <version>2.3.1</version>
+				<extensions>true</extensions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <modules>
+        <module>fie-api</module>
+		<module>sample-lib</module>
+		<module>fie-app</module>
+		<module>fie-admin</module>
+  </modules>
+    
+    
+    <distributionManagement>
+        <repository>
+          <id>Archiva.WebDAV</id>
+          <url>dav:https://sbserver-randy.golgotha.servebox.com/archiva/repository/internal</url>
+        </repository>
+        <snapshotRepository>
+          <id>Archiva.Snapshots.WebDAV</id>
+          <url>dav:https://sbserver-randy.golgotha.servebox.com/archiva/repository/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

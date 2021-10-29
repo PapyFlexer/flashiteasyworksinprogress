@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.api.core.IDescriptor;
+			import flash.utils.getQualifiedClassName;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+			import com.flashiteasy.admin.event.TriggerEvent;
+			import com.flashiteasy.admin.utils.IconUtility;
+			
+            [Bindable]
+	        [Embed(source='../../../../../../resources/assets/delete.png')]
+	        private var Delete_ico : Class;
+	        
+	        private function handleDeleteEvent( event : MouseEvent ) : void
+	        {
+	        	dispatchEvent( new TriggerEvent( null, TriggerEvent.REMOVE_EVENT, true ));
+	        }
+	        private function setListLabel(data : Object ):String
+	        {
+	        	if( data is String )
+	        	{
+	        		return data.toString();
+	        	}
+	        	else if( data is IDescriptor )
+	        	{
+	        		return data.uuid;
+	        	}
+	        	else
+	        	{
+	        		var s : String =getQualifiedClassName( data );
+	        		return s.slice(s.indexOf("::")+2 , s.indexOf("Filter")) ;
+	        	}
+	        }
+		]]>
+	</mx:Script>
+	<mx:Label text="{setListLabel(data)}" width="100%"/>
+	<mx:Image source="{Delete_ico}" click="handleDeleteEvent( event )" toolTip="Supprimer"/>
+</mx:HBox>

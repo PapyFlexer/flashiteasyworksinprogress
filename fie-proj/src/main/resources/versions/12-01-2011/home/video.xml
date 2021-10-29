@@ -1,0 +1,77 @@
+<page>
+  <control type="com.flashiteasy.api.controls::VideoElementDescriptor" id="control4">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>29</y>
+    </PositionParameterSet>
+    <AlignParameterSet>
+      <v_align>middle</v_align>
+      <h_align>middle</h_align>
+    </AlignParameterSet>
+    <SizeParameterSet>
+      <is_percent_w>true</is_percent_w>
+      <is_percent_h>true</is_percent_h>
+      <width>40</width>
+      <height>50</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <FilterParameterSet>
+      <filterString>[0.39, 0.75, 0.19, 0, 0, 0.35, 0.69, 0.16, 0, 0, 0.27, 0.53, 0.13, 0, 0, 0, 0, 0, 1, 0||6,45,[0xE4EA4B, 0xB67DF3, 0xBA8DF3, 0x4A4977],[1, 0.12, 1, 1],[0, 128, 213.42391304347828, 255],4,4,1,1,inner,false||0x333333,1,9,9,2,1,false,false]</filterString>
+      <types>[ColorMatrixFilter,GradientBevelFilter,GlowFilter]</types>
+    </FilterParameterSet>
+    <VideoParameterSet>
+      <source>media/Video/espritduprix.flv</source>
+    </VideoParameterSet>
+    <ResizableParameterSet>
+      <resizable>true</resizable>
+    </ResizableParameterSet>
+    <LoopParameterSet>
+      <loop>true</loop>
+    </LoopParameterSet>
+  </control>
+  <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="control">
+    <PositionParameterSet>
+      <x>284</x>
+      <mode>bottom</mode>
+      <y>391</y>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <width>32</width>
+      <height>31</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <MaskTypeParameterSet>
+      <enable>true</enable>
+      <PolygonParameterSet>
+        <numberOfFace>3</numberOfFace>
+        <angle>60</angle>
+      </PolygonParameterSet>
+    </MaskTypeParameterSet>
+    <BackgroundColorParameterSet>
+      <backgroundColor>3342336</backgroundColor>
+    </BackgroundColorParameterSet>
+  </control>
+  <action type="com.flashiteasy.api.action::InternalBrowsingAction" id="control2">
+    <TargetsParameterSet>
+      <targets>control</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="goPage1">
+          <type/>
+          <events>click</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <InternalLinkParameterSet>
+      <page>page1</page>
+    </InternalLinkParameterSet>
+  </action>
+  <storyboard/>
+</page>

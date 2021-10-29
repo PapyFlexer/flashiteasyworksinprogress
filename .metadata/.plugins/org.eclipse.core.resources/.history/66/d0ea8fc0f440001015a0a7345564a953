@@ -1,0 +1,65 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ * 
+ *
+ */
+
+package com.flashiteasy.api.utils
+{
+	import com.flashiteasy.api.core.CompositeParameterSet;
+	
+	import flash.net.registerClassAlias;
+	import flash.utils.ByteArray;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
+	
+	/**
+	 * The <code><strong>CloneUtils</strong></code> class is
+	 * an utility class dealing with Clones,
+	 * mostly used by copy/paste actions in admin mode.
+	 */
+	public class CloneUtils
+	{
+		/**
+		 * Clones anything...
+		 * @param ob
+		 * @return 
+		 */
+		public static function clone(ob:*):*
+		{
+		
+			var qualifiedClassName : String = getQualifiedClassName( ob ).replace( "::", "." );
+			var bytes : ByteArray = new ByteArray();
+			registerClassAlias( qualifiedClassName, getDefinitionByName( qualifiedClassName ) as Class );
+			bytes.writeObject( ob );
+			bytes.position = 0;
+			trace ("cloning... " + qualifiedClassName );
+			return bytes.readObject() as (getDefinitionByName( qualifiedClassName ) as Class) ;
+	
+
+		}
+		
+		/**
+		 * Clones deeply anything...
+		 * @param ob
+		 * @return 
+		 */
+		public static function cloneInternal(ob:*):*
+		{
+		
+			var qualifiedClassName : String = getQualifiedClassName( ob ).replace( "::", "." );
+			trace ("internalClone :: "+qualifiedClassName);
+			var bytes : ByteArray = new ByteArray();
+			registerClassAlias( qualifiedClassName, getDefinitionByName( qualifiedClassName ) as Class );
+			bytes.writeObject( ob );
+			bytes.position = 0;
+			return bytes.readObject() as (getDefinitionByName( qualifiedClassName ) as Class) ;
+	
+
+		}
+
+	}
+}

@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="100%"
+		 creationComplete="init()"
+		 xmlns:components="com.flashiteasy.admin.components.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.messaging.channels.StreamingAMFChannel;
+			import com.flashiteasy.api.core.project.Page;
+			import com.flashiteasy.admin.clipboard.PageClipboard;
+			import mx.events.ListEvent;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.admin.visualEditor.VisualSelector;
+			import com.flashiteasy.admin.xml.XmlSave;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import com.flashiteasy.api.utils.NameUtils;
+			import mx.skins.halo.ButtonBarButtonSkin;
+			import mx.events.ItemClickEvent;
+			import com.flashiteasy.admin.popUp.MessagePopUp;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.admin.utils.EditorUtil;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.popUp.InputStringPopUp;
+			import com.flashiteasy.api.selection.XMLFileList;
+			import com.flashiteasy.api.core.project.XMLFile;
+			import com.flashiteasy.api.utils.StringUtils;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.assets.XMLContainerLoader;
+			import mx.controls.buttonBarClasses.ButtonBarButton;
+			import flash.events.Event;
+
+			private var fms:FileManagerService
+
+			private function init():void
+			{
+				XMLFileList.getInstance().reset();
+				fms=new FileManagerService();
+				fms.addEventListener(FileManagerService.FILE_CREATED, xmlCreated);
+				fms.addEventListener(FileManagerService.ERROR, creationError);
+				toolBar.callLater(initToolBar);
+			}
+
+			private function initToolBar():void
+			{
+				toolBar.disableAll();
+				callLater(enableAdd);
+				toolBar.hideEdit();
+				toolBar.addEventListener(ItemClickEvent.ITEM_CLICK, selectButton);
+			}
+
+			private function enableAdd():void
+			{
+				toolBar.addButton.enabled=true;
+			}
+
+			private function removeXml(filename:String):void
+			{
+				fms.addEventListener(FileManagerService.DELETE_FILE, complete);
+				var removeArray:Array=[filename + ".xml"];
+				fms.deleteFiles(Conf.APP_ROOT + "/xml_library", removeArray);
+			}
+
+			private var itemId:String;
+
+			private function selectButton(e:ItemClickEvent):void
+			{
+				var item:ButtonBarButton=toolBar.getChildAt(e.index) as ButtonBarButton;
+				itemId=toolBar.dataProvider[e.index].id;
+				switch (itemId)
+				{
+					case "delete":
+						removeXml(xmls.selectedItem.toString());
+						selectXml=e.index;
+						break;
+					case "cut":
+						PageClipboard.getInstance().isCut=true;
+						selectXml=e.index;
+						copy();
+						break;
+					case "copy":
+						PageClipboard.getInstance().isCut=false;
+						copy();
+						break;
+					case "paste":
+						//used with copy and cut
+						startPaste()
+						break;
+					case "add":
+						startCreatingXML();
+						break;
+				}
+			}
+
+			private function copy():void
+			{
+
+				var pages:Array=[BrowsingManager.getInstance().getCurrentPage()];
+				//for enabling the paste in project we need a link
+				pages[0].link=xmls.selectedItem.toString();
+				PageClipboard.getInstance().clear();
+				fillClipboard(pages);
+				xmls.dispatchEvent(new ListEvent(ListEvent.CHANGE));
+			}
+
+			private function fillClipboard(pages:Array):void
+			{
+
+				for each (var page:Page in pages)
+				{
+					PageClipboard.getInstance().addPage(page, "xml_library");
+
+				}
+			}
+			
+
+			private function complete(e:Event):void
+			{
+				var XMlToDelete:XMLFile;
+				var stringToSave:String;
+				var msg:MessagePopUp;
+				switch (itemId)
+				{
+					case "delete":
+						fms.removeEventListener(FileManagerService.DELETE_FILE, complete);
+						XMlToDelete=XMLFileList.getInstance().findXML(xmls.selectedItem.toString());
+						XMLFileList.getInstance().removeXML(XMlToDelete);
+						stringToSave=XMLFileList.getInstance().getXMLNames().join("\n");
+						fms.saveContent(Conf.APP_ROOT + "/xml_library/xml_container_list.txt", stringToSave);
+						msg=new MessagePopUp(Conf.languageManager.getLanguage("xml_deleted"));
+						msg.showOk();
+						update();
+						break;
+					case "paste":
+						selectXml=-1;
+						fms.removeEventListener(FileManagerService.COPY_FILE, complete);
+
+						msg=new MessagePopUp(Conf.languageManager.getLanguage("xml_created"));
+						msg.showOk();
+						var newXML:XMLFile=new XMLFile(namePopUp.getInput());
+						newXML.setXML(Page(PageClipboard.getInstance().getPages()[0]).xml);
+						if (PageClipboard.getInstance().isCut && PageClipboard.getInstance().type == "xml_library")
+						{
+							XMlToDelete=XMLFileList.getInstance().findXML(PageClipboard.getInstance().getPages()[0].link);
+							XMLFileList.getInstance().removeXML(XMlToDelete);
+							XMLFileList.getInstance().addXML(newXML);
+						}
+						PageClipboard.getInstance().isCut=false;
+						BrowsingManager.getInstance().showXML(newXML);
+						stringToSave=XMLFileList.getInstance().getXMLNames().join("\n");
+						fms.saveContent(Conf.APP_ROOT + "/xml_library/xml_container_list.txt", stringToSave);
+						update();
+						break;
+					case "add":
+
+						break;
+				}
+
+			}
+
+			private var namePopUp:InputStringPopUp;
+
+
+			private function startPaste():void
+			{
+				namePopUp=new InputStringPopUp();
+				namePopUp.description=Conf.languageManager.getLanguage("New_XML_Container");
+				namePopUp.label=Conf.languageManager.getLanguage("xml_name") + ": ";
+				namePopUp.setInputDefaultValue(EditorUtil.findUniqueName(PageClipboard.getInstance().getPages()[0].link, XMLFileList.getInstance().getXMLNames()));
+				namePopUp.addEventListener(InputStringPopUp.SUBMIT, pastePopUpHandler);
+				namePopUp.addEventListener(PopUp.CLOSED, creationCancel);
+			}
+
+
+			private function startCreatingXML():void
+			{
+				namePopUp=new InputStringPopUp();
+				namePopUp.description=Conf.languageManager.getLanguage("New_XML_Container");
+				namePopUp.label=Conf.languageManager.getLanguage("xml_name") + ": ";
+				namePopUp.setInputDefaultValue(EditorUtil.findUniqueName("XMLContainer", XMLFileList.getInstance().getXMLNames()));
+				namePopUp.addEventListener(InputStringPopUp.SUBMIT, namePopUpHandler);
+				namePopUp.addEventListener(PopUp.CLOSED, creationCancel);
+			}
+
+			private function creationCancel(e:Event):void
+			{
+				namePopUp.removeEventListener(PopUp.CLOSED, creationCancel);
+				namePopUp.removeEventListener(InputStringPopUp.SUBMIT, namePopUpHandler);
+			}
+
+			public function creationError(e:Event):void
+			{
+				var msg:MessagePopUp=new MessagePopUp(Conf.languageManager.getLanguage("couldn't_create_xml"));
+				msg.showOk();
+			}
+
+			private function namePopUpHandler(e:Event):void
+			{
+
+
+				var name:String=namePopUp.getInput();
+
+				if (XMLFileList.getInstance().getXMLNames().indexOf(name) != -1)
+				{
+					namePopUp.setError(Conf.languageManager.getLanguage("name_already_used"));
+				}
+				else
+				{
+					namePopUp.removeEventListener(PopUp.CLOSED, creationCancel);
+					namePopUp.removeEventListener(InputStringPopUp.SUBMIT, namePopUpHandler);
+					namePopUp.closePopUp();
+					xmls.selectedItem=name;
+					fms.createFile(Conf.APP_ROOT + "/xml_library/" + name + ".xml", "<page></page>");
+				}
+
+			}
+
+			private function pastePopUpHandler(e:Event):void
+			{
+				var name:String=namePopUp.getInput();
+				var pages:Array=PageClipboard.getInstance().getPages();
+				if (XMLFileList.getInstance().getXMLNames().indexOf(name) != -1)
+				{
+					namePopUp.setError(Conf.languageManager.getLanguage("name_already_used"));
+				}
+				else
+				{
+					namePopUp.removeEventListener(PopUp.CLOSED, creationCancel);
+					namePopUp.removeEventListener(InputStringPopUp.SUBMIT, pastePopUpHandler);
+					namePopUp.closePopUp();
+					xmls.selectedItem=name;
+					var newPage:Page=pages[0].clone();
+					var pasteUrl:String=Conf.APP_ROOT + "/xml_library/" + name;
+					 
+					/*if(PageClipboard.getInstance().type == "xml")
+					{
+						PageClipboard.getInstance().getPages()[0].getPageUrl() 
+					}*/
+					var pagesToCopy:Array=[Conf.APP_ROOT + "/" + PageClipboard.getInstance().type + "/" + PageClipboard.getInstance().getPages()[0].getPageUrl() + ".xml"]
+					var pagesToPaste:Array=[pasteUrl + ".xml"];
+
+
+					fms.addEventListener(FileManagerService.COPY_FILE, complete);
+					if (!PageClipboard.getInstance().isCut)
+					{
+						//we haven't cut so copying file
+						fms.copyFiles(pagesToCopy, pagesToPaste);
+					}
+					else
+					{
+						//we have cut so Moving the file
+						fms.renameFile(pagesToCopy, pagesToPaste);
+					}
+				}
+
+			}
+
+			private function xmlCreated(e:Event):void
+			{
+				var msg:MessagePopUp=new MessagePopUp(Conf.languageManager.getLanguage("xml_created"));
+				msg.showOk();
+				var name:String=namePopUp.getInput();
+				var newXML:XMLFile=new XMLFile(name);
+				newXML.setXML(new XML("<page></page>"));
+				fms.appendToFile(Conf.APP_ROOT + "/xml_library/xml_container_list.txt", "\n" + name);
+				BrowsingManager.getInstance().showXML(newXML);
+				selectXml=-1;
+				update();
+			}
+
+			public function update():void
+			{
+				callLater(updateDataProvider);
+			}
+			private var selectXml:int=-1;
+
+			private function updateDataProvider():void
+			{
+				xmls.dataProvider=XMLFileList.getInstance().getXMLNames();
+				if (selectXml == -1)
+				{
+					if(BrowsingManager.getInstance().getCurrentPage().getPageUrl() == null)
+						xmls.selectedIndex=XMLFileList.getInstance().getXMLNames().length - 1;
+					else
+						xmls.selectedIndex=selectXml;
+				}
+				else
+				{
+					xmls.selectedIndex=selectXml == XMLFileList.getInstance().getXMLNames().length ? selectXml - 1 : selectXml;
+					xmls.dispatchEvent(new ListEvent(ListEvent.ITEM_CLICK));
+				}
+				selectXml=-1;
+			}
+
+			private function XMLSelected(e:ListEvent):void
+			{
+				ApplicationController.getInstance().getNavigation().getTree().selectedIndex=-1;
+				ApplicationController.getInstance().getNavigation().changedFromList = true;
+				//In case the selected xml is deselect with command or shift
+				//we force a reselection
+				if (e.target.selectedItem == null)
+				{
+					e.target.selectedIndex=e.rowIndex;
+				}
+				else
+				{
+					XmlSave.temporarySave();
+					var item:String=xmls.selectedItem.toString();
+					var xml:XMLFile=XMLFileList.getInstance().findXML(item);
+					BrowsingManager.getInstance().showXML(xml);
+				}
+			}
+
+			private function listChanged(e:Event):void
+			{
+				if (xmls.selectedItems.length == 0)
+				{
+					toolBar.disableAll();
+					callLater(enableAdd);
+				}
+				else
+				{
+					toolBar.enableAll();
+
+				}
+				if (PageClipboard.getInstance().isEmpty())
+				{
+					toolBar.disablePaste();
+				}
+				else
+				{
+					toolBar.enablePaste();
+				}
+			}
+
+			public function getList():List
+			{
+				return xmls;
+			}
+		]]>
+	</mx:Script>
+	<mx:List id="xmls"
+			 width="100%" itemRenderer="com.flashiteasy.admin.components.componentsClasses.ToSaveListRenderer"
+			 change="listChanged( event )"
+			 itemClick="XMLSelected(event)"/>
+	<components:FileManipulationBar id="toolBar"/>
+</mx:VBox>

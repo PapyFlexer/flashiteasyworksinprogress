@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:flexlib="http://code.google.com/p/flexlib/"
+		 width="100%"
+		 height="20%"
+		 maxHeight="400"
+		 paddingBottom="10"
+		 creationComplete="handleInitialize(event)">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.controls.Image;
+			import com.flashiteasy.admin.utils.IconUtility;
+			import com.flashiteasy.admin.components.StageTimeLine;
+			import mx.controls.HorizontalList;
+			import com.flashiteasy.admin.ApplicationController;
+			import mx.events.ListEvent;
+			import mx.containers.Canvas;
+			import mx.binding.utils.BindingUtils;
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import mx.controls.Spacer;
+			import mx.controls.Button;
+			import mx.controls.Label;
+			import mx.containers.HBox;
+			import com.flashiteasy.admin.utils.SkinUtils;
+			import mx.events.SliderEventClickTarget;
+			import mx.events.SliderEvent;
+			import com.flashiteasy.admin.uicontrol.story.SliderThumb;
+			import com.flashiteasy.api.parameters.NameParameterSet;
+			import com.flashiteasy.admin.uicontrol.story.timelinecontainerclasses.TimelineHierarchicalDataDescriptor;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.admin.uicontrol.story.timelinecontainerclasses.StoryDescriptor;
+			import com.flashiteasy.admin.utils.FlexComponentsUtils;
+			import com.flashiteasy.api.core.project.storyboard.Update;
+			import com.flashiteasy.api.core.project.storyboard.Story;
+			import com.flashiteasy.api.core.project.storyboard.Transition;
+			import com.flashiteasy.api.utils.DisplayListUtils;
+			//import flexlib.controls.HSlider;
+			import com.flashiteasy.admin.uicontrol.story.HSlider;
+			import flexlib.controls.TreeGrid;
+			import flexlib.controls.treeGridClasses.*;
+
+			import mx.controls.sliderClasses.Slider;
+
+			import mx.events.FlexEvent;
+			import mx.collections.ArrayCollection;
+
+			private function handleInitialize(event:FlexEvent):void
+			{
+				var root:StoryDescriptor=new StoryDescriptor();
+				root.Name="Stories";
+				root.Data=null;
+				root.Children=BrowsingManager.getInstance().getCurrentPage().getStoryArray();
+
+				for (var i:int=0; i < root.Children.length; i++)
+				{
+					var currentStory:StoryDescriptor=new StoryDescriptor();
+					var story:Story=root.Children[i] as Story;
+					currentStory.Name=story.uuid;
+					currentStory.Data=story;
+					currentStory.Children=story.getUpdates();
+				}
+
+			}
+
+			private function init():void
+			{
+
+			}
+
+			public var sliders:Dictionary;
+			public var updateList:Dictionary=new Dictionary;
+
+
+			public function addTimeLine(story:Story):void
+			{
+				var storyContainer:VBox=new VBox;
+				storyContainer.percentWidth=100;
+				storyContainer.maxHeight = 400;
+				storyContainer.setStyle("verticalGap", 0);
+				addChild(storyContainer);
+				var storyBox:HBox=new HBox;
+				storyBox.percentWidth=100;
+				var storyLabel:Label=new Label;
+				//var openUpdate:Button=new Button;
+				var openUpdate:Image=new Image;
+				//openUpdate.toggle=true;
+				//openUpdate.width=12;
+				//openUpdate.height=12;
+				openUpdate.name=story.uuid;
+				openUpdate.source=IconUtility.getClass(openUpdate, "assets/close.png");
+				//openUpdate.setStyle("source", IconUtility.getClass(openUpdate,"assets/close.png"));
+				openUpdate.addEventListener(MouseEvent.CLICK, changeUpdateState, false, 0, true);
+				storyBox.addChild(openUpdate);
+				storyLabel.width=60;
+				storyLabel.text=story.uuid;
+				storyBox.addChild(storyLabel);
+				var sliderBox:Canvas=new Canvas();
+				sliderBox.percentWidth=100;
+				var storySlider:HSlider=new HSlider();
+				sliders[story.uuid]=[];
+				storySlider.id=story.uuid;
+				storySlider.addEventListener(SliderEvent.THUMB_DRAG, storySliderChange, false, 0, true);
+				storySlider.addEventListener(SliderEvent.THUMB_RELEASE, commitSliderValue, false, 0, true);
+				storySlider.addEventListener(SliderEvent.THUMB_PRESS, setStorySelection, false, 0, true);
+				storySlider.allowThumbOverlap=true;
+				BindingUtils.bindProperty(storySlider, "maximum", Ref.stageTimeLine, "timeMax");
+				BindingUtils.bindProperty(storySlider, "width", Ref.stageTimeLine, "totalTimeWidth");
+				BindingUtils.bindProperty(storySlider, "x", Ref.stageTimeLine, "startTimeWidth");
+				var keyframes:Array=[];
+				sliderBox.addChild(storySlider);
+
+				var viewUpdate:Button=new Button;
+				viewUpdate.toggle=true;
+				viewUpdate.width=20;
+				viewUpdate.height=20;
+				viewUpdate.name=story.uuid;
+
+				viewUpdate.setStyle("icon", IconUtility.getClass(viewUpdate, "assets/eye.png"));
+				viewUpdate.addEventListener(MouseEvent.CLICK, changeUpdateView, false, 0, true)
+				storyContainer.addChild(storyBox);
+				storyBox.addChild(sliderBox);
+				storyBox.addChild(viewUpdate);
+				storyBox.horizontalScrollPolicy="off";
+				storySlider.setStyle("showTrackHighlight", true);
+				storySlider.setStyle("trackHighlightSkin", SkinUtils.TrackHighlightGreen);
+				storySlider.setStyle("trackSkin", SkinUtils.Track);
+				storySlider.setStyle("thumbDisabledSkin", SkinUtils.ThumbDisabled);
+				storySlider.setStyle("thumbUpSkin", SkinUtils.ThumbUpGreen);
+				storySlider.setStyle("thumbDownSkin", SkinUtils.ThumbDownGreen);
+				storySlider.setStyle("thumbOverSkin", SkinUtils.ThumbOverGreen);
+				storySlider.setStyle("allowThumbOverlap", true);
+				storySlider.lockRegionsWhileDragging=true;
+				storySlider.allowTrackClick=false;
+				storySlider.height=14;
+				var updateContainer:VBox=new VBox;
+				updateContainer.percentWidth=100;
+				updateContainer.height=0;
+				updateContainer.name=story.uuid;
+				updateContainer.setStyle("verticalGap", 0);
+				for each (var update:Update in story.getUpdates())
+				{
+					var updateBox:HBox=new HBox;
+					updateBox.percentWidth=100;
+					var updateLabel:Label=new Label;
+					var spacer:Spacer=new Spacer;
+					spacer.width=22;
+					updateLabel.width=50;
+					updateLabel.text=update.getPropertyName();
+					updateBox.addChild(spacer);
+					updateBox.addChild(updateLabel);
+					var sliderContainer:Canvas=new Canvas;
+					sliderContainer.percentWidth=100;
+					var slider:HSlider=new HSlider();
+					var keyframesArray:Array=new Array;
+
+					for each (var trans:Transition in update.getTransitions())
+					{
+						keyframesArray.push(trans.begin);
+						keyframesArray.push(trans.end);
+						keyframes.push(trans.begin);
+						keyframes.push(trans.end);
+					}
+					//
+					keyframesArray=FlexComponentsUtils.removeDuplicates(keyframesArray);
+					slider.addEventListener(SliderEvent.THUMB_RELEASE, updateSliderChange, false, 0, true);
+					slider.addEventListener(SliderEvent.THUMB_PRESS, setStorySelection, false, 0, true);
+					BindingUtils.bindProperty(slider, "maximum", Ref.stageTimeLine, "timeMax");
+					BindingUtils.bindProperty(slider, "width", Ref.stageTimeLine, "totalTimeWidth");
+					BindingUtils.bindProperty(slider, "x", Ref.stageTimeLine, "startTimeWidth");
+					slider.snapInterval=100;
+					slider.thumbCount=keyframesArray.length;
+					slider.values=keyframesArray;
+					slider.lockRegionsWhileDragging=true;
+					slider.allowTrackClick=false;
+					slider.owner=storySlider;
+					slider.height=14;
+					sliderContainer.addChild(slider);
+					updateBox.addChild(sliderContainer);
+
+					updateContainer.addChild(updateBox);
+					slider.setStyle("showTrackHighlight", true);
+					slider.setStyle("trackHighlightSkin", SkinUtils.TrackHighlight);
+					slider.setStyle("trackSkin", SkinUtils.Track);
+					slider.setStyle("thumbDisabledSkin", SkinUtils.ThumbDisabled);
+					slider.setStyle("thumbUpSkin", SkinUtils.ThumbUp);
+					slider.setStyle("thumbDownSkin", SkinUtils.ThumbDown);
+					slider.setStyle("thumbOverSkin", SkinUtils.ThumbOver);
+					slider.allowThumbOverlap=true;
+					sliders[story.uuid].push(slider);
+					updateList[slider]=update;
+				}
+
+				storyContainer.addChild(updateContainer);
+				keyframes=FlexComponentsUtils.removeDuplicates(keyframes);
+				storySlider.minimum=Math.min(0, Number(keyframes[0]));
+				storySlider.snapInterval=100;
+				storySlider.thumbCount=keyframes.length;
+				storySlider.values=keyframes;
+			}
+
+			private function changeUpdateView(e:MouseEvent):void
+			{
+				var updateContainer:VBox=VBox(e.target.parent.parent.getChildByName(e.target.name));
+				var timelineComponent:StageTimeLine=Ref.stageTimeLine;
+				if (!e.target.selected)
+				{
+					e.target.setStyle("icon", IconUtility.getClass(Button(e.target), "assets/eye.png"));
+					
+					if (!ArrayUtils.isItemInArray(timelineComponent.updateViewList, e.target.name))
+					{
+						timelineComponent.updateViewList.push(e.target.name);
+						timelineComponent.animToStart(e.target.name, true);
+					}
+				}
+				else
+				{
+
+					e.target.setStyle("icon", IconUtility.getClass(Button(e.target), "assets/eye_close.png"));
+					timelineComponent.updateViewList.splice(ArrayUtils.getItemIndexInArray(timelineComponent.updateViewList, e.target.name), 1);
+					timelineComponent.animToStart(e.target.name);
+						//updateContainer.percentHeight=30;
+				}
+			}
+
+			private function changeUpdateState(e:MouseEvent):void
+			{
+				var loader:Loader=Loader(IconUtility.getDictionary(UIComponent(e.target)).source);
+				trace("Source" + loader.contentLoaderInfo.url);
+				var updateContainer:VBox=VBox(e.target.parent.parent.getChildByName(e.target.name));
+				Image(e.target).source=null;
+				if (loader.contentLoaderInfo.url.indexOf("close") == -1)
+				{
+					//e.target.setStyle("icon", IconUtility.getClass(Button(e.target), "assets/close.png"));
+					Image(e.target).source=IconUtility.getClass(Image(e.target), "assets/close.png");
+					updateContainer.height=0;
+				}
+				else
+				{
+					//e.target.setStyle("icon", IconUtility.getClass(Button(e.target), "assets/open.png"));
+					Image(e.target).source=IconUtility.getClass(Image(e.target), "assets/open.png");
+					updateContainer.percentHeight=30;
+				}
+			}
+
+			private function refreshStorySlider(story:Story, slider:HSlider):void
+			{
+				var keyframes:Array=[];
+
+				for each (var update:Update in story.getUpdates())
+				{
+					for each (var trans:Transition in update.getTransitions())
+					{
+						keyframes.push(trans.begin);
+						keyframes.push(trans.end);
+					}
+					keyframes=FlexComponentsUtils.removeDuplicates(keyframes);
+				}
+				HSlider(slider.owner).thumbCount=keyframes.length;
+				HSlider(slider.owner).values=keyframes;
+
+			}
+
+
+			private function commitSliderValue(e:SliderEvent):void
+			{
+
+				//var value:Number=HSlider(e.target).values[e.thumbIndex];
+
+				for each (var object:Object in slidersToChange)
+				{
+					var value:Number=HSlider(e.target).draggingRegion ? HSlider(e.target).values[0] : HSlider(e.target).values[e.thumbIndex];
+					var slider:HSlider=object.slider;
+					slider.values[object.index]=value;
+					var event:SliderEvent=new SliderEvent(SliderEvent.THUMB_RELEASE);
+					event.value=value;
+					event.thumbIndex=object.index;
+					slider.draggingRegion=HSlider(e.target).draggingRegion;
+					slider.dispatchEvent(event);
+				}
+				slidersToChange=[];
+			}
+
+			private var draggedThumbIndex:int;
+
+			//storySlider.addEventListener(SliderEvent.THUMB_PRESS, setStorySelection, false, 0, true);
+			private function setStorySelection(e:SliderEvent):void
+			{
+				var storyId:String=e.target.id == null ? e.target.owner.id : e.target.id;
+
+				var i:int=-1;
+				for each (var story:Story in BrowsingManager.getInstance().getCurrentPage().getStoryArray())
+				{
+					i++;
+					if (storyId == story.uuid)
+					{
+						break;
+					}
+				}
+				var list:HorizontalList=ApplicationController.getInstance().getStoryEditor().getUIComponent();
+				list.selectedIndex=i;
+				list.dispatchEvent(new ListEvent(ListEvent.ITEM_CLICK));
+
+			/*var slider:HSlider=HSlider(e.target);
+			   var value:Number=slider.values[e.thumbIndex];
+			   var sortedValues:Array=slider.values.sort(Array.NUMERIC);
+			 draggedThumbIndex=ArrayUtils.getIndex(sortedValues, value);*/
+			}
+
+			private function updateSliderChange(e:SliderEvent):void
+			{
+
+				ApplicationController.getInstance().addToSaveList(BrowsingManager.getInstance().getCurrentPage());
+				var index:int=e.thumbIndex;
+				var slider:HSlider=HSlider(e.target);
+				var update:Update=updateList[slider];
+				var thumbsCount:int=1;
+				if (slider.draggingRegion)
+				{
+					thumbsCount=slider.thumbCount;
+					update.changeAllKeyFrameTime(slider.values[0]);
+
+					changeStageTime(slider.value);
+
+					//Reset values in case we move the storySlider again
+					var keyframesArray:Array=new Array;
+
+					for each (var trans:Transition in update.getTransitions())
+					{
+						keyframesArray.push(trans.begin);
+						keyframesArray.push(trans.end);
+					}
+					//
+					keyframesArray=FlexComponentsUtils.removeDuplicates(keyframesArray);
+
+					slider.thumbCount=keyframesArray.length;
+					slider.values=keyframesArray;
+				}
+				else
+				{
+					for (var i:int=0; i < thumbsCount; i++)
+					{
+						index=thumbsCount > 1 ? i : index;
+						var value:Number=slider.values[index];
+						var sortedValues:Array=slider.values.sort(Array.NUMERIC);
+						index == ArrayUtils.getIndex(sortedValues, value);
+						update.changeKeyFrameTime(index, value);
+						changeStageTime(value);
+					}
+				}
+				refreshStorySlider(update.story, slider);
+			}
+
+			public function changeStageTime(value:Number):void
+			{
+				var event:SliderEvent=new SliderEvent(SliderEvent.CHANGE);
+				event.value=value;
+				var timeline:*=Ref.stageTimeLine;
+				Ref.stageTimeLine.timeline.setThumbValueAt(0, value);
+				Ref.stageTimeLine.timeline.dispatchEvent(event);
+			}
+
+			private var slidersToChange:Array=[];
+			private var startValue:Object;
+
+			private function storySliderChange(e:SliderEvent):void
+			{
+				var storySlider:HSlider=HSlider(e.target);
+				var slider:HSlider;
+				var position:Number=storySlider.getThumbAt(e.thumbIndex).xPosition;
+				var thumb:SliderThumb;
+				var thumbInfo:Object;
+				var empty:Boolean=false;
+
+				if (slidersToChange.length == 0)
+				{
+					empty=true;
+				}
+				var thumbsCount:int=1;
+				if (storySlider.draggingRegion)
+				{
+					//thumbsCount=storySlider.thumbCount;
+				}
+				for each (slider in sliders[e.target.id])
+				{
+					for (var i:int=0; i < thumbsCount; i++)
+					{
+						var thumbIndex:int=thumbsCount > 1 ? i : e.thumbIndex;
+						var value:Number=storySlider.values[thumbIndex];
+
+						thumbInfo=getRelatedThumbs(storySlider.values[thumbIndex], slider);
+						if (thumbInfo != null)
+						{
+							thumb=thumbInfo.thumb;
+							position=storySlider.getThumbAt(thumbIndex).xPosition;
+							thumb.xPosition=position;
+							if (empty)
+							{
+								slidersToChange.push({slider: slider, index: thumbInfo.index, masterIndex: thumbIndex});
+							}
+							if (startValue == null)
+							{
+								startValue={value: value, slider: slider, index: thumbInfo.index};
+							}
+						}
+					}
+				}
+			}
+
+			private function getRelatedThumbs(keyframe:int, slider:HSlider):Object
+			{
+				var slider:HSlider;
+				var value:Number;
+				var i:int=0;
+				for each (value in slider.values)
+				{
+					if (value == keyframe)
+					{
+						return {thumb: slider.getThumbAt(i), index: i};
+					}
+					i++;
+				}
+				return null;
+			}
+		]]>
+	</mx:Script>
+
+</mx:VBox>

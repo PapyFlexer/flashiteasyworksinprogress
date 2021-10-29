@@ -1,0 +1,150 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ * 
+ *
+ */
+
+package com.flashiteasy.api.utils
+{
+	import com.flashiteasy.api.core.BrowsingManager;
+	import com.flashiteasy.api.core.project.Page;
+	import com.flashiteasy.api.core.project.storyboard.Story;
+	import com.flashiteasy.api.core.project.storyboard.Transition;
+	import com.flashiteasy.api.core.project.storyboard.Update;
+	
+	/**
+	 * The <code><strong>StoryboardUtils</strong></code> class is
+	 * an utility class dealing with storyboards, stories, updates and transitions
+	 */
+	public class StoryboardUtils
+	{
+		
+		
+		/**
+		 * Return the maximum and minimum cue points in a story (in milliseconds)
+		 * @param s story instance
+		 * @return an Object formatted this way <listing>var o:Object = {begin:2000, end:10000}</listing>
+		 */
+		public static function computeStoryDuration ( s : Story ) : Object
+		{
+			var o:Object = {begin:10000, end:-10000};
+			//var s:Story = StoryboardUtils.findStoryByName(storyName);
+			if (s==null)
+			{
+				trace ("no transition !!!")
+				return o;
+			} else {
+				for each (var u:Update in s.getUpdates())
+				{
+					for each (var t:Transition in u.getTransitions())
+					{
+						o.begin = Math.min(o.begin, t.begin);
+						o.end = Math.max (o.end, t.end);
+					}
+				}
+			}
+			return o;
+		}
+		
+		/**
+		 * Returns a story instance using its name (uuid)
+		 * @param storyName
+		 * @return the srtory instance whose name is passed as argument
+		 */
+		public static function findStoryByName (storyName : String) : Story
+		{
+			var page:Page = BrowsingManager.getInstance().getCurrentPage();
+			var stories:Array = page.getStoryArray();
+			for ( var i : uint =0; i<stories.length; i++)
+			{
+				if (storyName == (stories[i] as Story).uuid)
+				{
+					return stories[i] as Story;
+					break;
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * Return the story (or a clone) reversed 
+		 * @param s story instance
+		 * @param cloneIt a Boolean that states if the returned story is cloned (duplicated) or not
+		 * @return the story instance, or a clone
+		 */
+		public static function reverseStory ( s : Story, cloneIt : Boolean ) : Story
+		{
+			// init vars
+			var story : Story = new Story;
+			var valuesArray : Array = new Array;
+			var timesArray : Array = new Array
+			var easingsTypesArray : Array = new Array
+			
+			// cycle through the story to fill the Arrays
+			for each (var u : Update in s)
+			{
+				for each (var t : Transition in u)
+				{
+					valuesArray.push(t.beginValue);
+					valuesArray.push(t.endValue);
+					timesArray.push(t.begin);
+					timesArray.push(t.end);
+					easingsTypesArray.push(t.easingType);
+				}
+			}
+			// now we perform the reversing
+			for each (var u : Update in s)
+			{
+				for each (var t : Transition in u)
+				{
+					valuesArray.push(t.beginValue);
+					valuesArray.push(t.endValue);
+					timesArray.push(t.begin);
+					timesArray.push(t.end);
+					easingsTypesArray.push(t.easingType);
+				}
+			}
+
+			
+			// clone it or not ?
+			story.uuid = cloneIt ? NameUtils.findUniqueName( s.uuid, StoryboardUtils.getUUIDs( s.getPage().getStoryArray() )) : s.uuid;
+			
+			return story;
+		}
+		
+		private static function getUUIDs( storyArray : Array ) : Array
+		{
+			var a : Array = new Array;
+			for each (var s : Story in storyArray)
+			{
+				a.push(s.uuid);
+			}
+			return a;
+		}
+		
+		private static function reverseEasingType(easingType : String) : String
+		{
+			var type : String : "";
+			switch (easingType)
+			{
+				case "easeIn" :
+					type = "easeOut";
+					break;
+				
+				case "easeOut" :
+					type = "easeIn";
+					break;
+					
+				default :
+					type = easingType;
+					break;
+				
+			}
+			return type;
+		}
+		
+	}
+}

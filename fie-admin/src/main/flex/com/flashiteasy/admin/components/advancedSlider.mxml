@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" clipContent="false" paddingLeft="-6" paddingRight="0" width="100%"
+		 creationComplete="addListeners(event)">
+	<mx:Script>
+		<![CDATA[
+			import mx.containers.FormItem;
+			import mx.events.FlexEvent;
+			//import mx.managers.FocusManager;
+			[Bindable]
+			public var minimum:Number;
+
+			[Bindable]
+			public var interval:Number;
+
+			[Bindable]
+			public var maximum:Number;
+
+			[Bindable]
+			public var value:Number;
+
+			private function addListeners(e:Event):void
+			{
+				this.sliderItem.addEventListener(Event.CHANGE, updateSlider);
+				this.textBox.addEventListener(Event.CHANGE, updateSlider);
+				this.addEventListener(Event.REMOVED_FROM_STAGE, removeListeners);
+			}
+
+			private function removeListeners(e:Event):void
+			{
+				this.sliderItem.removeEventListener(Event.CHANGE, updateSlider);
+				this.textBox.removeEventListener(Event.CHANGE, updateSlider);
+			}
+
+			private function updateSlider(e:Event):void
+			{
+				if (focusManager.getFocus() != null)
+				{
+					if (focusManager.getFocus() == e.target || DisplayObject(focusManager.getFocus()).parent.parent.parent == e.target)
+					{
+						this.dispatchEvent(new Event(Event.CHANGE));
+					}
+				}
+			}
+		]]>
+	</mx:Script>
+
+	<mx:HSlider name="slider"
+				width="80"
+				minimum="{minimum}"
+				maximum="{maximum}"
+				value="{value}"
+				snapInterval="{interval}"
+				liveDragging="true"
+				id="sliderItem"
+				height="14"
+				change="{value = event.target.value;}"/>
+	<mx:TextInput width="30"
+				  id="textBox"
+				  text="{value}"
+				  restrict="0-9."
+				  change="{value = event.target.text;}"
+				  height="22"/>
+
+</mx:HBox>

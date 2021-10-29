@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox maxWidth="274"
+		 width="100%"
+		 xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.api.core.AbstractParameterSet;
+			import flash.utils.getQualifiedClassName;
+			import com.flashiteasy.api.core.IUIElementDescriptor;
+			import com.flashiteasy.api.core.CompositeParameterSet;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.selection.ElementList;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.event.FieAdminEvent;
+			import com.flashiteasy.admin.popUp.RemoteEditorPopUp;
+			import com.flashiteasy.api.fieservice.transfer.vo.RemoteParameterSet;
+
+
+			private var p:RemoteParameterSet;
+
+			public function initEditor(p:RemoteParameterSet):void
+			{
+				this.p=p;
+				if (check == null)
+				{
+					callLater(initEditor, [p]);
+				}
+				else
+				{
+					check.selected=p.enabled;
+					checkContent();
+				}
+
+			}
+
+			private function checkContent():void
+			{
+
+				if (check.selected)
+				{
+					content.visible=true;
+					remoteSource.text=p.source;
+					content.includeInLayout=true;
+				}
+				else
+				{
+					content.visible=false;
+					content.includeInLayout=false;
+				}
+			}
+
+			private function setEnabled(e:Event):void
+			{
+				var changed:Boolean=p.enabled != e.target.selected;
+				p.enabled=e.target.selected;
+				if (changed)
+				{
+					checkContent();
+					if (!p.enabled)
+						removeRemote();
+					dispatchEvent(new Event(Event.CHANGE));
+				}
+			}
+
+			private function removeRemote():void
+			{
+
+				p.uiElementDescriptorIdentifier=null;
+				p.name=null;
+				p.request=null;
+				p.enabled=false;
+				p.source=null;
+				p.response=null;
+				//p.setApplied(false);
+			}
+
+
+			private var _editor:RemoteEditorPopUp
+
+			private function openEditor():void
+			{
+				_editor=new RemoteEditorPopUp(this.p);
+				_editor.addEventListener(FieAdminEvent.COMPLETE, changeParameterHandler);
+
+			}
+
+			private function changeParameterHandler(e:Event):void
+			{
+				p=_editor.pSet;
+				remoteSource.text=p.source;
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+
+			public function getRemoteParameterSet():Boolean
+			{
+				return check.selected;
+			}
+			
+			
+
+			public function getLang(s:String):String
+			{
+
+				return Conf.languageManager.getLanguage(s);
+			}
+			
+			public function get changedList() : Array
+			{
+				return ["enabled","request","source"];
+			}
+			
+			public function getParameter():RemoteParameterSet
+			{
+					
+				return p;
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%">
+		<mx:Label width="50"
+				  text="{getLang('Remote')}"/>
+		<mx:CheckBox id="check"
+					 change="setEnabled(event)">
+
+		</mx:CheckBox>
+	</mx:HBox>
+	<mx:VBox id="content"
+			 width="100%"
+			 visible="false"
+			 includeInLayout="false">
+		<mx:TextInput width="100%"
+					  id="remoteSource"
+					  enabled="false"
+					  height="24"/>
+		<mx:Button label="{getLang('settings')}"
+				   click="openEditor()"/>
+	</mx:VBox>
+
+</mx:VBox>

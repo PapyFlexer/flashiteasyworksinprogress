@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.manager.AdminManager;
+			import com.flashiteasy.admin.manager.LanguageManager;
+			import com.flashiteasy.api.ioc.LibraryManager;
+			import com.flashiteasy.admin.popUp.AboutPopUp;
+			//import com.flashiteasy.admin.popUp.
+			import mx.managers.PopUpManager;
+			import mx.core.IFlexDisplayObject;
+			import mx.core.Application;
+			import com.flashiteasy.admin.browser.Browser;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.admin.popUp.PopUp;
+			
+			import mx.events.MenuEvent;
+
+			private function menuChange(event:MenuEvent):void
+			{
+				switch (event.item.data)
+				{
+					case "undo":
+						Ref.adminManager.undo();
+						break;
+					case "redo":
+						Ref.adminManager.redo();
+						break;
+					case "style":
+						Ref.adminManager.openStyleEditor();
+						break;
+					case "loadApp":
+						//Ref.adminManager.loadTest();
+						Ref.adminManager.openAvailableProjects();
+						break;
+					case "save":
+						Ref.adminManager.saveXML();
+						break;
+					case "browse":
+						Ref.browser = new Browser(Conf.APP_ROOT + "/media");
+						var pop:PopUp=new PopUp((mx.core.Application.application as DisplayObject), true);
+						pop.addChild( Ref.browser );
+						pop.display();
+						break;
+					case "font":
+						Ref.adminManager.startBrowser();
+						break;
+					case "indexation":
+						Ref.adminManager.openIndexationEditor();
+						break;
+					case "library":
+						Ref.adminManager.openLibraryManager();
+						break;
+					case "about":
+						
+						var aboutPopUp:AboutPopUp=new AboutPopUp ();
+						aboutPopUp.description=Conf.languageManager.getLanguage("About_Flash'Iteasy");
+						break;
+					case "convertHTML":
+						Ref.adminManager.transformToHTML();
+						break;
+					case "versions":
+						Ref.adminManager.openVersionManager();
+						break;
+					case "export":
+						Ref.adminManager.openBitmapExporter();
+						break;
+					default:
+						break;
+				}
+			}			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:MenuBar width="100%"
+				itemClick="{menuChange(event)}"
+				dataProvider="{Conf.applicationMenu}"/>
+	
+</mx:Canvas>

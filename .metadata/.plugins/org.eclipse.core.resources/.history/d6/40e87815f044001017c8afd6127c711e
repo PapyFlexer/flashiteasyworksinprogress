@@ -1,0 +1,13 @@
+package com.flashiteasy.admin.xml
+{
+	import com.greenthreads.GreenThread;
+
+	public class XmlSerializeGT extends GreenThread
+	{
+		public function XmlSerializeGT(debug:Boolean=true)
+		{
+			super(debug);
+		}
+		
+	}
+}

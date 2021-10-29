@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="100%" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
+		 creationComplete="addListeners(event)">
+	<mx:Script>
+		<![CDATA[
+			import mx.utils.ObjectProxy;
+			import com.flashiteasy.admin.parameter.Parameter;
+			import mx.core.UIComponent;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.selection.ElementList;
+			import com.flashiteasy.api.parameters.PolygonParameterSet;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.parameters.MaskTargetParameterSet;
+			import com.flashiteasy.api.parameters.BurstParameterSet;
+			import com.flashiteasy.api.parameters.StarParameterSet;
+			import com.flashiteasy.api.parameters.RoundedCornerParameterSet;
+			import mx.graphics.RoundedRectangle;
+			import com.flashiteasy.api.parameters.MaskTypeParameterSet;
+			import com.flashiteasy.api.parameters.MaskParameterSet;
+
+			import com.flashiteasy.api.core.IParameterSet;
+			import mx.containers.FormItem;
+			import mx.events.FlexEvent;
+			[Bindable]
+			private var values:Array=["none", "normal", "circle", "ellipse", "roundRectangle", "star", "polygon", "burst", "external"];
+
+			[Bindable]
+			private var targets:Array=ElementList.getInstance().getElementsAsString(BrowsingManager.getInstance().getCurrentPage());
+			
+			private var _enable : Boolean;
+			private var pSet : IParameterSet;
+			private var typeIndex : int ;
+			
+			[Bindable]
+			private var roundRectangleObj : ObjectProxy = new ObjectProxy({tl:10, tr:10, bl:10, br:10});
+			[Bindable]
+			private var starObj : ObjectProxy = new ObjectProxy({amount:5, size:50, angle:0});
+			[Bindable]
+			private var polygonObj : ObjectProxy = new ObjectProxy({amount:6, angle:0});
+			[Bindable]
+			private var burstObj : ObjectProxy = new ObjectProxy({amount:6, size:50, angle:0});
+			[Bindable]
+			private var targetObj : ObjectProxy = new ObjectProxy({targetIndex:null});
+			
+			public function init(enable:Boolean, p:IParameterSet) : void
+			{
+				_enable = enable;
+				pSet = MaskTypeParameterSet(p).getParametersSet()[0];
+				if(pSet is MaskParameterSet)
+				{
+					var typeString : String = MaskParameterSet(pSet).type;
+					if(typeString == "normal")
+						typeIndex = 1;
+					if(typeString == "circle")
+						typeIndex = 2;
+					if(typeString == "ellipse")
+						typeIndex = 3;
+				}
+				else if(pSet is RoundedCornerParameterSet)
+				{
+					typeIndex = 4;
+					roundRectangleObj.tl = RoundedCornerParameterSet(pSet).topLeft;
+					roundRectangleObj.tr = RoundedCornerParameterSet(pSet).topRight;
+					roundRectangleObj.bl = RoundedCornerParameterSet(pSet).bottomLeft;
+					roundRectangleObj.br = RoundedCornerParameterSet(pSet).bottomRight;
+				}
+				else if(pSet is StarParameterSet)
+				{
+					typeIndex = 5;
+					starObj.amount = StarParameterSet(pSet).numberOfBranch;
+					starObj.size = StarParameterSet(pSet).innerDiameter;
+					starObj.angle = StarParameterSet(pSet).angle;
+				}
+				else if(pSet is PolygonParameterSet)
+				{
+					typeIndex = 6;
+					polygonObj.amount = PolygonParameterSet(pSet).numberOfFace;
+					polygonObj.angle = PolygonParameterSet(pSet).angle;					
+				}
+				else if(pSet is BurstParameterSet)
+				{
+					typeIndex = 7;
+					burstObj.amount = BurstParameterSet(pSet).numberOfBranch;
+					burstObj.size = BurstParameterSet(pSet).innerDiameter;
+					burstObj.angle = BurstParameterSet(pSet).angle;
+				}
+				else if(pSet is MaskTargetParameterSet)
+				{
+					typeIndex = 8;
+					targetObj.target = MaskTargetParameterSet(pSet).target;
+				}
+			}
+			
+			[Bindable]
+			private var targetIndex:int = -1;
+			private function addListeners(e:Event):void
+			{
+				this.type.addEventListener(Event.CHANGE, changeMaskType);
+				this.addEventListener(Event.REMOVED_FROM_STAGE, removeListeners);
+				type.selectedIndex= typeIndex;
+				vs.selectedIndex = typeIndex;
+				targetIndex = targets.indexOf(targetObj.target);
+			}
+
+			private function removeListeners(e:Event):void
+			{
+				this.type.removeEventListener(Event.CHANGE, changeMaskType);
+			}
+			
+			private function changeMaskType(e:Event):void
+			{
+				vs.selectedIndex=e.target.selectedIndex;
+				setSize(e.target.selectedIndex);
+				if( targetIndex != -1 || e.target.selectedIndex < 9 )
+					dispatchEvent(new Event(Event.CHANGE));
+			}
+
+			private function setSize(i:int):void
+			{
+				switch (i)
+				{
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+						this.height=28;
+						vs.height=0;
+						break;
+					case 4:
+					case 5:
+						
+						this.height=90;
+						vs.height=60;
+						break;
+					case 6:
+					case 7:	
+						this.height=70;
+						vs.height=40;
+						break;
+					case 8:
+						this.height=148;
+						vs.height=116;
+						break;
+				}
+			}
+
+			private function valueChange(e:Event):void
+			{
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+
+			public function getLang(s:String):String
+			{
+
+				return Conf.languageManager.getLanguage(s);
+			}
+
+			public function getParameter():Array
+			{
+				switch (vs.selectedIndex)
+				{
+					case 0:
+						var noMask:MaskTypeParameterSet = new MaskTypeParameterSet;
+						noMask.enable=false;
+						return [noMask];
+					case 1:
+					case 2:
+					case 3:
+						var maskParameter:MaskParameterSet=new MaskParameterSet;
+						maskParameter.enable=true;
+						maskParameter.type=String(type.selectedItem);
+						return [maskParameter];
+					case 4:
+						var roundedCorner:RoundedCornerParameterSet=new RoundedCornerParameterSet;
+						roundedCorner.bottomLeft=bl.value;
+						roundedCorner.bottomRight=br.value;
+						roundedCorner.topLeft=tl.value;
+						roundedCorner.topRight=tr.value;
+						return [roundedCorner];
+					case 5:
+						var star:StarParameterSet=new StarParameterSet;
+						star.innerDiameter=innersize.value;
+						star.numberOfBranch=branchAmount.value;
+						star.angle=starAngle.value;
+						return [star];
+					case 6:
+						var polygon:PolygonParameterSet=new PolygonParameterSet;
+						polygon.angle=polygonAngle.value;
+						polygon.numberOfFace=faceAmount.value;
+						return [polygon];
+					case 7:
+						var burst:BurstParameterSet=new BurstParameterSet;
+						burst.innerDiameter=burstinnersize.value;
+						burst.numberOfBranch=burstbranchAmount.value;
+						burst.angle=burstAngle.value;
+						return [burst];
+					case 8:
+						var target:MaskTargetParameterSet=new MaskTargetParameterSet;
+						target.target=String(targetList.selectedItem);
+						return [target];
+				}
+				return null;
+			}
+			
+			public function getEnable() : Boolean
+			{
+				return type.selectedIndex != 0;
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%">
+		
+				<mx:Label text="{getLang('Mask')}"
+						  width="50"/>
+		<mx:ComboBox dataProvider="{values}"
+					 id="type"/>
+	</mx:HBox>
+	<mx:ViewStack id="vs"
+				  width="100%"
+				  creationPolicy="all">
+				  
+		<!--  ViewStack index 0 : no mask  -->		  
+		<mx:VBox id="none">
+		</mx:VBox>
+				  
+		<!--  ViewStack index 1 : normal mask  -->		  
+		<mx:VBox id="normal">
+		</mx:VBox>
+		<!--  ViewStack index 2 : circle mask  -->		  
+		<mx:VBox id="circle">
+		</mx:VBox>
+		<!--  ViewStack index 3 : ellipse mask  -->		  
+		<mx:VBox id="ellipse">
+		</mx:VBox>
+
+		<!--  ViewStack index 4 : rounded corners mask  -->		  
+		<mx:VBox id="roundCorner">
+			<mx:HBox width="100%">
+				<mx:Label text="{getLang('TopLeft')}"
+						  width="50"/>
+				<mx:NumericStepper id="tl"
+								   value="{roundRectangleObj.tl}"
+								   change="valueChange(event)"
+								   maximum="200"
+								   minimum="0"/>
+				<mx:Label text="{getLang('TopRight')}"
+						  width="50"/>
+				<mx:NumericStepper id="tr"
+								   value="{roundRectangleObj.tr}"
+								   change="valueChange(event)"
+								   maximum="200"
+								   minimum="0"/>
+
+			</mx:HBox>
+			<mx:HBox width="100%">
+				<mx:Label text="{getLang('BottomLeft')}"
+						  width="50"/>
+				<mx:NumericStepper id="bl"
+								   value="{roundRectangleObj.bl}"
+								   change="valueChange(event)"
+								   maximum="200"
+								   minimum="0"/>
+				<mx:Label text="{getLang('BottomRight')}"
+						  width="50"/>
+				<mx:NumericStepper id="br"
+								   value="{roundRectangleObj.br}"
+								   change="valueChange(event)"
+								   maximum="200"
+								   minimum="0"/>
+
+			</mx:HBox>
+		</mx:VBox>
+
+		<!--  ViewStack index 5 : star mask  -->		  
+		<mx:VBox id="star">
+			<mx:HBox width="100%">
+				<mx:Label text="{getLang('Number_of_Branch')}"
+						  width="50"/>
+				<mx:NumericStepper id="branchAmount"
+								   value="{starObj.amount}"
+								   change="valueChange(event)"
+								   maximum="500"
+								   minimum="3"/>
+
+				<mx:Label text="{getLang('Inner_Diameter')}"
+						  width="50"/>
+				<mx:NumericStepper id="innersize"
+								   value="{starObj.size}"
+								   change="valueChange(event)"
+								   maximum="500"
+								   minimum="0"/>
+			</mx:HBox>
+			<mx:HBox width="100%">
+				<mx:Label text="{getLang('Angle')}"
+						  width="50"/>
+				<mx:NumericStepper id="starAngle"
+								   value="{starObj.angle}"
+								   change="valueChange(event)"
+								   maximum="360"
+								   minimum="0"/>
+			</mx:HBox>
+
+		</mx:VBox>
+
+		<!--  ViewStack index 6 : polygon mask  -->		  
+		<mx:VBox id="polygon"
+				 width="100%">
+			<mx:HBox width="100%">
+				<mx:Label text="{getLang('Number_of_Face')}"
+						  width="50"/>
+				<mx:NumericStepper id="faceAmount"
+								   value="{polygonObj.amount}"
+								   change="valueChange(event)"
+								   maximum="500"
+								   minimum="3"/>
+
+				<mx:Label text="{getLang('Angle')}"/>
+				<mx:NumericStepper id="polygonAngle"
+								   value="{polygonObj.angle}"
+								   change="valueChange(event)"
+								   maximum="360"
+								   minimum="0"/>
+
+			</mx:HBox>
+		</mx:VBox>
+
+		<!--  ViewStack index 7 : burst mask  -->		  
+		<mx:VBox id="burst" minHeight="50">
+			<mx:HBox width="100%">
+				<mx:Label text="{getLang('Number_of_Branch')}"
+						  width="50"/>
+				<mx:NumericStepper id="burstbranchAmount"
+								   value="{burstObj.amount}"
+								   change="valueChange(event)"
+								   maximum="500"
+								   minimum="3"/>
+
+				<mx:Label text="{getLang('Inner_Diameter')}"
+						  width="50"/>
+				<mx:NumericStepper id="burstinnersize"
+								   value="{burstObj.size}"
+								   change="valueChange(event)"
+								   maximum="500"
+								   minimum="0"/>
+			</mx:HBox>
+			<mx:HBox width="100%">
+				<mx:Label text="{getLang('Angle')}"
+						  width="50"/>
+				<mx:NumericStepper id="burstAngle"
+								   value="{burstObj.angle}"
+								   change="valueChange(event)"
+								   maximum="360"
+								   minimum="0"/>
+			</mx:HBox>
+		</mx:VBox>
+
+		<!--  ViewStack index 8 : external mask  -->		  
+		<mx:VBox id="target"
+				 width="100%">
+			<mx:HBox width="100%">
+				<mx:Label text="{getLang('target')}"
+						  width="50"/>
+				<mx:List id="targetList" height="116" selectedIndex = "{targetIndex}"
+						 dataProvider="{targets}"
+						 change="valueChange(event)"
+						 width="100%"/>
+
+			</mx:HBox>
+		</mx:VBox>
+
+	</mx:ViewStack>
+
+</mx:VBox>

@@ -1,0 +1,486 @@
+package com.flashiteasy.admin.manager
+{
+	import com.flashiteasy.admin.ApplicationController;
+	import com.flashiteasy.admin.commands.ICommand;
+	import com.flashiteasy.admin.commands.IRedoableCommand;
+	import com.flashiteasy.admin.commands.IUndoableCommand;
+	import com.flashiteasy.admin.commands.menus.AlignCommand;
+	import com.flashiteasy.admin.commands.menus.DegroupCommand;
+	import com.flashiteasy.admin.commands.menus.DistributeCommand;
+	import com.flashiteasy.admin.commands.menus.GroupCommand;
+	import com.flashiteasy.admin.commands.menus.SpaceCommand;
+	import com.flashiteasy.admin.commands.menus.SwapDepthCommand;
+	import com.flashiteasy.admin.components.style.StyleEditor;
+	import com.flashiteasy.admin.conf.Conf;
+	import com.flashiteasy.admin.conf.Ref;
+	import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+	import com.flashiteasy.admin.event.FieAdminEvent;
+	import com.flashiteasy.admin.event.ProjectEvent;
+	import com.flashiteasy.admin.font.FontCompiler;
+	import com.flashiteasy.admin.popUp.FileBrowser;
+	import com.flashiteasy.admin.popUp.IndexationEditor;
+	import com.flashiteasy.admin.popUp.MessagePopUp;
+	import com.flashiteasy.admin.popUp.PopUp;
+	import com.flashiteasy.admin.popUp.ProjectChooser;
+	import com.flashiteasy.admin.uicontrol.ControlGroupPanel;
+	import com.flashiteasy.admin.visualEditor.VisualSelector;
+	import com.flashiteasy.admin.workbench.impl.StoryElementEditorImpl;
+	import com.flashiteasy.admin.xml.XmlSave;
+	import com.flashiteasy.admin.xml.XmlSerializer;
+	import com.flashiteasy.api.core.BrowsingManager;
+	import com.flashiteasy.api.core.IUIElementContainer;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.indexation.IndexationManager;
+	import com.flashiteasy.api.utils.ElementDescriptorUtils;
+	import com.flashiteasy.api.utils.FontLoader;
+	
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	
+	import mx.core.Application;
+	import mx.core.IFlexDisplayObject;
+	import mx.events.ItemClickEvent;
+	import mx.managers.PopUpManager;
+
+	public class AdminManager
+	{
+		public function AdminManager()
+		{
+		}
+
+		private var alert:MessagePopUp;
+		private var _isOpen:Boolean=true;
+		private var _closedGroupList:Array=[];
+
+		public function openStyleEditor():void
+		{
+			
+			var styleBox:StyleEditor = new StyleEditor;	
+			var p:PopUp =  new PopUp(Application.application as DisplayObject );
+			p.addChild( styleBox );
+			p.display();
+		}
+		public function openIndexationEditor():void
+		{
+			IndexationManager.getInstance().loadInformation();
+			IndexationManager.getInstance().addEventListener(IndexationManager.INFORMATION_LOADED, doOpenIndexationEditor);
+		}
+		private function doOpenIndexationEditor(e:Event):void
+		{
+			var indexationBox:IndexationEditor = new IndexationEditor;	
+			var p:PopUp =  new PopUp(Application.application as DisplayObject );
+			p.addChild( indexationBox );
+			p.display();
+		}
+		public function getClosedGroupList():Object
+		{
+			return _closedGroupList;
+		}
+
+		public function getGroupIsOpen(group:String):Boolean
+		{
+			return (_closedGroupList.indexOf(group) == -1);
+		}
+
+		public function setClosedGroupList(group:String, opened:Boolean):void
+		{
+			if (!opened)
+			{
+				if (_closedGroupList.indexOf(group) == -1)
+				{
+					_closedGroupList[_closedGroupList.length]=group;
+				}
+			}
+			else if (_closedGroupList.indexOf(group) != -1)
+			{
+				_closedGroupList.splice(_closedGroupList.indexOf(group), 1);
+			}
+		}
+
+		public var changedParameterList:Array;
+		public var previousValueList:Object;
+		public var changedDescriptor:ParameterSetEditionDescriptor;
+		public var focusOutEnabled:Boolean=true;
+
+		public function checkForCommitParameterChange():void
+		{
+			//We check if a parameter of the descriptor have change and is different than the actual one
+			//If so we validate the previous change
+			if (changedDescriptor != null && changedParameterList != null)
+			{
+				if(ApplicationController.getInstance().getElementEditor() is StoryElementEditorImpl)
+				{
+					
+					trace("checkParameterChange Setting new command in story "+changedParameterList);
+					ApplicationController.getInstance().getElementEditor().resetParameterChangeBatchCommand();
+					
+				} 
+				else 
+				{
+					trace("checkParameterChange Setting new command ");
+					ApplicationController.getInstance().getCommand().addCommand(ApplicationController.getInstance().getElementEditor().parameterChangeBatchCommand);
+					ApplicationController.getInstance().getElementEditor().resetParameterChangeBatchCommand();
+				}
+				changedParameterList=null;
+				changedDescriptor=null;
+				previousValueList=null;
+				focusOutEnabled=false;
+			}
+			else
+			{
+				focusOutEnabled=true;
+			}
+			_lastAlignItemClicked=null;
+		}
+
+
+		private var _lastAlignItemClicked:Object=null;
+
+		public function alignHandler(event:ItemClickEvent):void
+		{
+			var controls:Array=VisualSelector.getInstance().getSelectedElements();
+			if (controls.length > 1 && _lastAlignItemClicked != event.item)
+			{
+				_lastAlignItemClicked=event.item;
+				if (event.target.id == "alignh")
+				{
+					switch (event.FieAdmin)
+					{
+						case 0:
+							ApplicationController.getInstance().getCommand().addCommand(new AlignCommand(controls, "left"));
+							break;
+						case 1:
+							ApplicationController.getInstance().getCommand().addCommand(new AlignCommand(controls, "centerh"));
+							break;
+						case 2:
+							ApplicationController.getInstance().getCommand().addCommand(new AlignCommand(controls, "right"));
+							break;
+					}
+				}
+				else
+				{
+					switch (event.FieAdmin)
+					{
+						case 0:
+							ApplicationController.getInstance().getCommand().addCommand(new AlignCommand(controls, "top"));
+							break;
+						case 1:
+							ApplicationController.getInstance().getCommand().addCommand(new AlignCommand(controls, "centerv"));
+							break;
+						case 2:
+							ApplicationController.getInstance().getCommand().addCommand(new AlignCommand(controls, "bottom"));
+							break;
+					}
+				}
+			}
+		}
+
+		public function distributeHandler(event:ItemClickEvent):void
+		{
+			var controls:Array=VisualSelector.getInstance().getSelectedElements();
+			if (controls.length > 1 && _lastAlignItemClicked != event.item)
+			{
+				_lastAlignItemClicked=event.item;
+				if (event.target.id == "distributeh")
+				{
+
+					switch (event.FieAdmin)
+					{
+						case 0:
+							ApplicationController.getInstance().getCommand().addCommand(new DistributeCommand(controls, "left"));
+							break;
+						case 1:
+							ApplicationController.getInstance().getCommand().addCommand(new DistributeCommand(controls, "centerh"));
+							break;
+						case 2:
+							ApplicationController.getInstance().getCommand().addCommand(new DistributeCommand(controls, "right"));
+							break;
+					}
+				}
+				else
+				{
+					switch (event.FieAdmin)
+					{
+						case 0:
+							ApplicationController.getInstance().getCommand().addCommand(new DistributeCommand(controls, "top"));
+							break;
+						case 1:
+							ApplicationController.getInstance().getCommand().addCommand(new DistributeCommand(controls, "centerv"));
+							break;
+						case 2:
+							ApplicationController.getInstance().getCommand().addCommand(new DistributeCommand(controls, "bottom"));
+							break;
+					}
+				}
+			}
+		}
+
+		public function spaceHandler(event:ItemClickEvent):void
+		{
+			var controls:Array=VisualSelector.getInstance().getSelectedElements();
+			if (controls.length > 1 && _lastAlignItemClicked != event.item)
+			{
+				_lastAlignItemClicked=event.item;
+				switch (event.FieAdmin)
+				{
+					case 0:
+						if (controls.length > 1)
+						{
+							ApplicationController.getInstance().getCommand().addCommand(new SpaceCommand(controls, "h"));
+						}
+						break;
+					case 1:
+						if (controls.length > 1)
+						{
+							ApplicationController.getInstance().getCommand().addCommand(new SpaceCommand(controls, "v"));
+						}
+						break;
+				}
+			}
+		}
+
+		public function groupHandler(event:ItemClickEvent):void
+		{
+			var controls:Array=VisualSelector.getInstance().getSelectedElements();
+			switch (event.FieAdmin)
+			{
+				case 0:
+					if (controls.length > 1)
+					{
+						ApplicationController.getInstance().getCommand().addCommand(new GroupCommand(controls));
+					}
+					break;
+				case 1:
+					ApplicationController.getInstance().getCommand().addCommand(new DegroupCommand(controls[0] as IUIElementContainer));
+					break;
+			}
+		}
+
+		public function swapDepthHandler(event:ItemClickEvent):void
+		{
+			
+			var descriptor : IUIElementDescriptor = VisualSelector.getInstance().getSelectedElement();
+			if(descriptor != null )
+			{
+			switch (event.FieAdmin)
+			{
+				case 0:
+					toRear( descriptor );
+					break;
+				case 1:
+					sendBackward( descriptor );
+					break;
+				case 2:
+					bringForward( descriptor );
+					break;
+				default:
+					toFront( descriptor );
+					break;
+			}
+			}
+		}
+
+		public function undo():void
+		{
+			Ref.adminManager.checkForCommitParameterChange();
+			if (ApplicationController.getInstance().getCommand().hasPreviousCommand())
+			{
+				var command:ICommand=ApplicationController.getInstance().getCommand().getPreviousCommand();
+				IUndoableCommand(command).undo();
+			}
+		}
+
+		public function redo():void
+		{
+			Ref.adminManager.checkForCommitParameterChange();
+			if (ApplicationController.getInstance().getCommand().hasNextCommand())
+			{
+				(ApplicationController.getInstance().getCommand().getNextCommand() as IRedoableCommand).redo();
+			}
+		}
+
+		public function saveXML():void
+		{
+			XmlSave.saveCurrentPage();
+		}
+		
+		public function openAvailableProjects() : void
+		{
+			var pjm : ProjectManager = ProjectManager.getInstance();
+			pjm.loadInformation();
+			pjm.addEventListener(ProjectEvent.PROJECTS_INFO_LOADED, onProjectsListed);
+		}
+		
+		private function onProjectsListed(e:ProjectEvent):void
+		{
+			trace ("opening projects choice PopUp");
+			var pc : ProjectChooser = new ProjectChooser;
+			var p:PopUp =  new PopUp(Application.application as DisplayObject );
+			p.addChild( pc );
+			p.display();
+		}
+		
+		 public function loadTest():void
+		{
+			ApplicationController.getInstance().getWorkbench().reset(Ref.workspaceContainer);
+			ApplicationController.getInstance().getElementEditor().reset(Ref.editorContainer);
+			ApplicationController.getInstance().getControlList().init(Ref.controlList);
+			ApplicationController.getInstance().getActionList().init(Ref.actionList);
+			ApplicationController.getInstance().getWorkbench().loadApplication(Conf.APP_ROOT, "FieApp");
+			var blockPanel:ControlGroupPanel = new ControlGroupPanel;
+			blockPanel.groupname=Conf.languageManager.getLanguage("Page_Blocks");
+			blockPanel.addChild(ApplicationController.getInstance().getBlockList().getUIComponent());
+			
+			Ref.controlContainer.addChild(blockPanel);
+			var pagePanel:ControlGroupPanel=new ControlGroupPanel;
+			pagePanel.groupname=Conf.languageManager.getLanguage("Project_Pages");
+			pagePanel.addChild(ApplicationController.getInstance().getNavigation().getUIComponent());
+			pagePanel.addChild(ApplicationController.getInstance().getXMLContainerList());
+			Ref.controlContainer.addChild(pagePanel);
+			Ref.actionContainer.addChild(ApplicationController.getInstance().getActionEditor().getUIComponent());
+			//Ref.animationContainer.addChild(ApplicationController.getInstance().getAnimationEditor().getUIComponent());
+			Ref.storyContainer.addChild(ApplicationController.getInstance().getStoryEditor().getUIComponent());
+			
+		} 
+
+		public function loadProjectFromChooser( appRoot : String , appName : String):void
+		{
+			ApplicationController.getInstance().getWorkbench().reset(Ref.workspaceContainer);
+			ApplicationController.getInstance().getElementEditor().reset(Ref.editorContainer);
+			ApplicationController.getInstance().getControlList().init(Ref.controlList);
+			ApplicationController.getInstance().getActionList().init(Ref.actionList);
+			ApplicationController.getInstance().getWorkbench().loadApplication(appRoot, appName);
+			var blockPanel:ControlGroupPanel = new ControlGroupPanel;
+			blockPanel.groupname=Conf.languageManager.getLanguage("Page_Blocks");
+			blockPanel.addChild(ApplicationController.getInstance().getBlockList().getUIComponent());
+			Ref.controlContainer.addChild(blockPanel);
+			var pagePanel:ControlGroupPanel=new ControlGroupPanel;
+			pagePanel.groupname=Conf.languageManager.getLanguage("Project_Pages");
+			pagePanel.addChild(ApplicationController.getInstance().getNavigation().getUIComponent());
+			pagePanel.addChild(ApplicationController.getInstance().getXMLContainerList());
+			Ref.controlContainer.addChild(pagePanel);
+			Ref.actionContainer.addChild(ApplicationController.getInstance().getActionEditor().getUIComponent());
+			//Ref.animationContainer.addChild(ApplicationController.getInstance().getAnimationEditor().getUIComponent());
+			Ref.storyContainer.addChild(ApplicationController.getInstance().getStoryEditor().getUIComponent());
+			
+		}
+
+		public function startBrowser():void
+		{
+			var file:FileBrowser=new FileBrowser(Conf.SERVICE_URL + "/font", Application.application as DisplayObject, false, true, true);
+			file.addEventListener(FieAdminEvent.COMPLETE, loadFontFile);
+		}
+
+		private function loadFontFile(e:Event):void
+		{
+			e.target.removeEventListener(FieAdminEvent.COMPLETE, loadFontFile);
+			var font:String=e.target.getSelectedFileName();
+			font=font.split(".")[0];
+			var loader:FontLoader=new FontLoader(Conf.APP_ROOT + "/font"); //baseURL+"/font"
+			if (FontLoader.hasFont(font))
+			{
+				alert=new MessagePopUp(Conf.languageManager.getLanguage("The_font_") + font + Conf.languageManager.getLanguage("_is_already_loaded_f"), Application.application as DisplayObject, true);
+				alert.showOk();
+			}
+			else
+			{
+				var fontCompiler:FontCompiler=new FontCompiler(Conf.SERVICE_URL + "/font");
+				fontCompiler.compileFont(font);
+				fontCompiler.addEventListener(FontCompiler.COMPLETE, fontLoadSuccess);
+				fontCompiler.addEventListener(FontCompiler.ERROR, fontLoadFail);
+				alert=new MessagePopUp(Conf.languageManager.getLanguage("Loading_Font"), Application.application as DisplayObject, true);
+			}
+		}
+
+		private function fontLoadSuccess(e:Event):void
+		{
+			alert.changeMessage(Conf.languageManager.getLanguage("Success_loading_font"));
+			alert.showOk();
+		}
+
+		private function fontLoadFail(e:Event):void
+		{
+			alert.changeMessage(Conf.languageManager.getLanguage("Font_not_loaded"));
+			alert.showOk();
+		}
+
+		public function keyDown(event:KeyboardEvent):void
+		{
+			//Here we check controlKey that is the same for Mac-Command and PC-control
+			//Could use charCode return 0 in the 2 cases
+			//CouldUse short cut keyCode CTRL+Z= 26 and CTRL+Y=25 but that would oblige Mac users to use CTRL instead of COMMAND
+			var controlPressed:Boolean=event.ctrlKey;
+			if (controlPressed)
+			{
+				//Could use keyCode Z = 90 but in combination with CTRL it return 26
+				var curKeyCode:int=event.keyCode;
+				if (curKeyCode == 90 || curKeyCode == 26)
+				{
+					Ref.adminManager.undo();
+				}
+				else if (curKeyCode == 89 || curKeyCode == 25)
+				{
+					Ref.adminManager.redo();
+				}
+				else if (curKeyCode == 83 || curKeyCode == 19)
+				{
+					Ref.adminManager.saveXML();
+				}
+			}
+		}
+
+		public function serializePage():void
+		{
+			trace("current page " + XmlSerializer.serializePage(BrowsingManager.getInstance().getCurrentPage()));
+		}
+		
+		public function toFront( descriptor : IUIElementDescriptor ):void
+		{
+			var elementDepth:int=ElementDescriptorUtils.getDescriptorDepth(descriptor);
+			if (elementDepth < descriptor.getFace().parent.numChildren - 1)
+			{
+				var command:ICommand=new SwapDepthCommand( descriptor , "front");
+				ApplicationController.getInstance().getCommand().addCommand(command);
+			}
+		}
+
+		public function toRear( descriptor : IUIElementDescriptor ):void
+		{
+			var elementDepth:int=ElementDescriptorUtils.getDescriptorDepth(descriptor);
+			if (elementDepth > 0)
+			{
+				var command:ICommand=new SwapDepthCommand( descriptor , "rear");
+				ApplicationController.getInstance().getCommand().addCommand(command);
+			}
+		}
+
+		public function bringForward( descriptor : IUIElementDescriptor ):void
+		{
+
+				var o:Object=descriptor.getFace().parent;
+				var elementDepth:int=ElementDescriptorUtils.getDescriptorDepth(descriptor);
+				if (elementDepth < descriptor.getFace().parent.numChildren - 1)
+				{
+					var command:ICommand=new SwapDepthCommand(descriptor, "forward");
+					ApplicationController.getInstance().getCommand().addCommand(command);
+				}
+		}
+
+		public function sendBackward( descriptor : IUIElementDescriptor ):void
+		{
+			var elementDepth:int=ElementDescriptorUtils.getDescriptorDepth(descriptor);
+			if (elementDepth > 0)
+			{
+				var command:ICommand=new SwapDepthCommand(descriptor, "backward");
+				ApplicationController.getInstance().getCommand().addCommand(command);
+			}
+		}
+		
+		private function openProjectChoiceWindow():void
+		{
+			
+		}
+
+	}
+}

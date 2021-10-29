@@ -1,0 +1,38 @@
+<page>
+  <container type="com.flashiteasy.api.container::DynamicListElementDescriptor" id="DynamicList">
+    <PositionParameterSet>
+      <y>40</y>
+      <mode>bottom</mode>
+      <x>76</x>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <width>610</width>
+      <height>404</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <RemoteParameterSet>
+      <uiElementDescriptorIdentifier>DynamicList</uiElementDescriptorIdentifier>
+      <name>com.flashiteasy.api.parameters::DynamicListParameterSet#dataProvider</name>
+      <request>fie://XMLList::channel/item#2/5</request>
+      <enabled>true</enabled>
+      <source>http://www.france24.com/fr/monde/rss&amp;language=fr</source>
+    </RemoteParameterSet>
+    <FullScreenParameterSet/>
+    <XmlParameterSet>
+      <xml>newsRenderer</xml>
+    </XmlParameterSet>
+    <ListTypeParameterSet>
+      <carrouselSpeed>0.01</carrouselSpeed>
+      <type>carrousel</type>
+    </ListTypeParameterSet>
+    <BlockListParameterSet/>
+    <MarginParameterSet>
+      <margin>20</margin>
+    </MarginParameterSet>
+    <DynamicListParameterSet/>
+  </container>
+  <storyboard/>
+</page>

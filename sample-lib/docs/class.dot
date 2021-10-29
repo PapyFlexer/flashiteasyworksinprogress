@@ -1,0 +1,14 @@
+//GraphVis .dot file show class inheritance
+strict digraph classes {
+graph [URL=""];
+com_flashiteasy_sample_parameters_CircleBackgroundColorParameterSet [label="CircleBackgroundColorParameterSet"] [URL="com/flashiteasy/sample/parameters/CircleBackgroundColorParameterSet.html"];
+com_flashiteasy_sample_parameters_CircleBackgroundColorParameterSet->com_flashiteasy_api_core_AbstractParameterSet;
+com_flashiteasy_sample_lib_CircleElementDescriptor [label="CircleElementDescriptor"] [URL="com/flashiteasy/sample/lib/CircleElementDescriptor.html"];
+com_flashiteasy_sample_lib_CircleElementDescriptor->com_flashiteasy_api_controls_SimpleUIElementDescriptor;
+com_flashiteasy_sample_lib_CircleElementDescriptor->com_flashiteasy_api_core_elements_IBackgroundColorableElementDescriptor [style=dotted];
+com_flashiteasy_sample_ExternalLibrary [label="ExternalLibrary"] [URL="com/flashiteasy/sample/ExternalLibrary.html"];
+com_flashiteasy_sample_ExternalLibrary->com_flashiteasy_api_library_AbstractLibrary;
+com_flashiteasy_sample_editor_impl_SimpleBackgroundColorEditorImpl [label="SimpleBackgroundColorEditorImpl"] [URL="com/flashiteasy/sample/editor/impl/SimpleBackgroundColorEditorImpl.html"];
+com_flashiteasy_sample_editor_impl_SimpleBackgroundColorEditorImpl->com_flashiteasy_api_editor_impl_AbstractParameterSetEditor;
+com_flashiteasy_sample_editor_impl_SimpleBackgroundColorEditorImpl->com_flashiteasy_api_editor_IParameterSetEditor [style=dotted];
+}

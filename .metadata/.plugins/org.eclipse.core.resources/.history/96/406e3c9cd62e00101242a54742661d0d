@@ -1,0 +1,42 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ *
+ */
+package com.flashiteasy.api.controls.Validator {
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.elements.IFormElementDescriptor;
+	import com.flashiteasy.api.selection.ElementList;
+	
+	/**
+	 * Flash'Iteasy
+	 * Fie team is
+	 * dany, didier, gilles
+	 * & many thanks to alexis, ghazi, jean-françois
+	 */
+
+	public class IsEqualValidator extends AbstractValidator implements IValidator {
+		
+		private var _target:IFormElementDescriptor;
+		
+		/**
+		 * 
+		 * @param targ
+		 */
+		public function IsEqualValidator(targ : IFormElementDescriptor):void
+		{
+		//	_target = ElementList.getInstance().getElement(IUIElementDescriptor(targ),page); ;
+		}
+		
+		override public function check(value : String) : Boolean {
+			return value == _target.getValue();
+		}
+		override public function getErrorString():String
+		{
+			return "Les champs ne sont pas identiques !";
+		}
+		
+	}
+}

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" minWidth="955" minHeight="600" xmlns:components="components.*" xmlns:uicontrol="com.flashiteasy.admin.uicontrol.*"
+				 creationComplete="init()">
+
+		<mx:Script>
+			<![CDATA[
+				import edition.ElementList;
+				import edition.SelectionManager;
+				
+				import factory.ElementFactory;
+				
+				import mask.MaskManager;
+				
+				import mx.controls.Image;
+				import mx.core.UIComponent;
+				import mx.events.DragEvent;
+				import mx.events.MoveEvent;
+				import mx.managers.DragManager;
+				import mx.utils.NameUtil;
+				
+				import utils.NameUtils;
+				
+				private var selection : SelectionManager = new SelectionManager;
+				private var phoneMask:Image = new Image;
+				
+				private function init():void
+				{
+					controlList.dataProvider = ['image','texte','carre'];
+					MaskManager.initMaskCombo(maskList);
+					MaskManager.init(wrapper);
+					workspace.addEventListener(DragEvent.DRAG_ENTER, dragAccept, false, 0, true);
+					selection.init(wrapper);
+					var el : ElementList = ElementList.getInstance();
+				}
+				
+				private function dragAccept(event:DragEvent):void
+				{
+					if (event.dragInitiator == controlList )
+					{
+						var dropTarget:UIComponent=event.currentTarget as UIComponent;
+						DragManager.acceptDragDrop(dropTarget);
+						DragManager.showFeedback(DragManager.COPY);
+
+						//dropTarget.addEventListener(MouseEvent.MOUSE_OVER, dragOverHandler, false, 0, true);
+
+						dropTarget.addEventListener(DragEvent.DRAG_DROP, dragDropHandler, false, 0, true);
+						dropTarget.addEventListener(DragEvent.DRAG_EXIT, dragExitHandler, false, 0, true);
+					}
+				}
+				
+				private function dragExitHandler(e:DragEvent):void
+				{
+					(e.currentTarget as DisplayObject).removeEventListener(DragEvent.DRAG_DROP, dragDropHandler);
+					(e.currentTarget as DisplayObject).removeEventListener(DragEvent.DRAG_EXIT, dragExitHandler);
+				}
+				
+				private var dropPoint : Point;
+				
+				private function dragDropHandler(e:DragEvent):void
+				{
+					(e.currentTarget as DisplayObject).removeEventListener(DragEvent.DRAG_DROP, dragDropHandler);
+					(e.currentTarget as DisplayObject).removeEventListener(DragEvent.DRAG_EXIT, dragExitHandler);
+					var type:String = e.dragSource.dataForFormat("items")[0];
+					dropPoint=workspace.globalToLocal(new Point(e.stageX, e.stageY));
+					trace(dropPoint);
+					var newElement : DisplayObject = ElementFactory.createElement(type,dropPoint);
+					wrapper.addChild(newElement);
+					
+					trace(ElementList.getInstance().getElementList());
+					ElementList.getInstance().addElement(newElement,NameUtils.findUniqueName(ElementFactory.getNewName(type),ElementList.getInstance().getElementList()));
+				}
+				
+				
+			]]>
+		</mx:Script>
+		
+		<mx:VBox width="100%"
+				 height="100%"
+				 id="mainVBox"
+				 top="0"
+				 paddingLeft="0"
+				 paddingTop="0"
+				 verticalGap="0">
+			<mx:HDividedBox width="100%"
+							top="0"
+							paddingLeft="0"
+							paddingTop="0"
+							height="100%">
+				<!-- LEFT PANEL -->
+				<mx:VBox top="0"
+						 bottom="0"
+						 left="0"
+						 width="204"
+						 height="100%"
+						 styleName="secondaryContainer"
+						 verticalGap="0"
+						 id="controlContainer">
+
+						<mx:TabNavigator id="tabBar"
+										 width="200"
+										 creationPolicy="all">
+							<mx:Canvas id="controls"
+									   width="100%"
+									   top="0"
+									   paddingTop="0">
+								<components:CustomDragList id="controlList"
+														   dragEnabled="true"
+														   
+														   paddingTop="0"
+														   top="0"
+														   width="100%"/>
+							</mx:Canvas>
+							<mx:Canvas id="actions"
+									   width="100%"
+									   top="0"
+									   paddingTop="0">
+								<components:CustomDragList id="actionList"
+														   paddingTop="0"
+														   top="0"
+														   width="100%"/>
+							</mx:Canvas>
+						</mx:TabNavigator>
+				</mx:VBox>
+				<!-- WORKBENCH -->
+				
+				<mx:VDividedBox id="siteDividedBox"
+								
+								width="100%"
+								height="100%"
+								horizontalScrollPolicy="off">
+					<mx:VBox id="siteEditorVBox"
+							 width="100%"
+							 height="100%"
+							 horizontalScrollPolicy="off">
+						<components:AdvancedPanel id="siteEdit"
+												 headerHeight="30"
+												 width="100%"
+												 height="100%"
+												 title="{'layout'}"
+												 horizontalScrollPolicy="on"
+												 verticalScrollPolicy="on"
+												 clipContent="true"
+											
+												 layout="absolute">
+							<components:titleBarChildren>
+								<mx:ComboBox id="maskList"
+											 selectedIndex="3"
+											 >
+									</mx:ComboBox>
+								<mx:Label text="{'Scale'}"/>
+								
+								</components:titleBarChildren>
+							<mx:Box styleName="workbench" width="100%" height="100%"
+									   id="workspace" backgroundColor="0xdddddd">
+								<mx:UIComponent width="100%" height="100%"
+										id="wrapper">
+								</mx:UIComponent>
+							</mx:Box>
+							
+						</components:AdvancedPanel>
+					</mx:VBox>
+				</mx:VDividedBox>
+				<!-- RIGHT PANEL -->
+				<mx:VBox top="0"
+						 bottom="0"
+						 right="0"
+						 left="0"
+						 horizontalScrollPolicy="off"
+						 paddingLeft="0"
+						 paddingTop="0"
+						 width="304"
+						 height="100%"
+						 verticalGap="0"
+						 styleName="secondaryContainer"
+						 id="editorContainer">
+				</mx:VBox>
+			</mx:HDividedBox>
+		</mx:VBox>
+</mx:Application>

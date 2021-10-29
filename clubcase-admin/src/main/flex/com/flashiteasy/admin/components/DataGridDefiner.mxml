@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" creationComplete="init(event)" >
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ListEvent;
+			import com.flashiteasy.api.parameters.DataProviderParameterSet;
+			import com.flashiteasy.api.selection.ElementList;
+			import com.flashiteasy.api.core.AbstractParameterSet;
+			import com.flashiteasy.api.controls.ComboBoxElementDescriptor;
+			import com.flashiteasy.api.core.IDescriptor;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.api.parameters.ArrayParameterSet;
+			import mx.events.DataGridEvent;
+			import mx.events.ListEvent;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Button;
+			import mx.core.Application;
+			import com.flashiteasy.admin.event.FieAdminEvent;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+
+			[Bindable]
+			[Embed(source='../../../../../resources/assets/link.png')]
+			private var Link_ico:Class;
+			
+			[Bindable]
+			private var sourceDP:ArrayCollection;
+			
+			private var _labels : Array;
+			private var _datas:Array
+ 			
+ 			private var pSet : IParameterSet;
+			 			
+ 			private function init( e : Event ):void
+ 			{
+ 				addLineBtn.label = Conf.languageManager.getLanguage("AddLine");
+				delLineBtn.label = Conf.languageManager.getLanguage("DelLine");
+				editLineBtn.label = Conf.languageManager.getLanguage("EditLine");
+				
+				validateChangesBtn.label = Conf.languageManager.getLanguage("Validate");
+
+				editLineBtn.addEventListener(MouseEvent.CLICK, editLineHandler);
+				addLineBtn.addEventListener(MouseEvent.CLICK, addLineHandler);	
+				delLineBtn.addEventListener(MouseEvent.CLICK, delLineHandler);	
+				
+				validateChangesBtn.addEventListener(MouseEvent.CLICK, validateChangesHandler);
+				
+				fieDG.addEventListener(ListEvent.ITEM_CLICK, dgClickHandler );
+ 				
+ 				
+ 			} 
+
+			public function buildEditor(p:IParameterSet):void
+			{
+				pSet = DataProviderParameterSet( p );
+				sourceDP = new ArrayCollection;
+				if (p is DataProviderParameterSet)
+				{
+					//for each (var s : String in DataProviderParameterSet(p).labels)
+					for (var i : int=0; i<DataProviderParameterSet(p).getParamLength(); i++)
+					{
+						trace ("iteration #"+i+" a pour label "+DataProviderParameterSet(p).labels[i]+".");
+						trace ("\t et pour data "+DataProviderParameterSet(p).datas[i]+".");
+						var o : Object = new Object;
+						o.label = DataProviderParameterSet(p).labels[i];
+						o.data = DataProviderParameterSet(p).datas[i];
+						sourceDP.addItem(o);
+					}
+					
+				}
+			}
+
+
+			private function validateChangesHandler( e : MouseEvent ):void
+			{
+				trace ("validating changes...");
+				fieDG.editable = false;
+				var labelArray : Array = new Array;
+				var dataArray : Array = new Array;
+				var l : int = sourceDP.length;
+				var i : int = -1;
+				while (++i<l) {
+					labelArray.push( sourceDP.getItemAt( i ).label );
+					dataArray.push( sourceDP.getItemAt( i ).data );
+				}
+				DataProviderParameterSet( pSet ).labels = labelArray;
+				DataProviderParameterSet( pSet ).datas = dataArray;
+				trace ( "new labels => " + DataProviderParameterSet( pSet ).labels );
+				trace ( "new datas => " + DataProviderParameterSet( pSet ).datas );
+				valueChange(new MouseEvent(MouseEvent.CLICK)); 
+			}
+			
+			private function valueChange(e:Event):void
+			{
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+
+			public function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+			
+			private function addLineHandler( e : MouseEvent ) : void
+			{
+				trace ("addLine to DG");
+				sourceDP.addItem({label:"label", data:"data"});
+				fieDG.editable = true;
+			}
+			
+			private function delLineHandler( e : MouseEvent ) : void
+			{
+				var index:int = fieDG.selectedIndex;
+				sourceDP.removeItemAt(index);
+				fieDG.dataProvider = sourceDP;
+				trace ("deleting Line #"+index+" from DG");
+				
+			}
+			
+			private function editLineHandler( e : MouseEvent ) : void
+			{
+				trace ("editing line in DG");
+				var index:int = fieDG.selectedIndex;
+				fieDG.editable = true;
+				fieDG.setFocus();
+				
+			}
+						
+			private function dgClickHandler( e : ListEvent ) : void
+			{
+				trace ("line #"+fieDG.selectedIndex+" selected");
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox>
+	<mx:DataGrid name="fieDG" id="fieDG" dataProvider="{sourceDP}"/>
+		
+	</mx:VBox> 
+	<mx:HBox>
+		<mx:Button id="addLineBtn" />
+		<mx:Button id="delLineBtn" />
+		<mx:Button id="editLineBtn" />
+	</mx:HBox>
+		<mx:Button id="validateChangesBtn" />
+</mx:VBox>

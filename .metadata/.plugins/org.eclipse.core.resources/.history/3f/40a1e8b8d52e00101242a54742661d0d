@@ -1,0 +1,97 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ *
+ */
+package com.flashiteasy.api.controls.Validator
+{
+	import com.flashiteasy.api.controls.TextInputElementDescriptor;
+	
+	/**
+	 * Abstract class shared by all Validators. The valiudators are used to validate form elements (TextInput controls) so they are of the given structure.
+	 * Validators include for example :
+	 * <p><li>
+	 * <ul>IsEmailValidator</ul>
+	 * <ul>IsEqualValidator</ul>
+ * 	 * <ul>etc.</ul>
+ * 	 * </li></p>
+	 * 
+	 */
+	public class AbstractValidator implements IValidator
+	{
+		//--------------------------------------------------------------------------
+	    //
+	    //  Class constants
+	    //
+	    //--------------------------------------------------------------------------
+	
+	    /**
+	     *  A string containing the upper- and lower-case letters
+	     *  of the Roman alphabet  ("A" through "Z" and "a" through "z").
+	     */
+	    protected static const ROMAN_CHARS:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	
+	
+	    /**
+	     *  A String containing the decimal digits 0 through 9.    
+	     */ 
+    	protected static const DECIMAL_CHARS:String = "0123456789";
+    	
+ 		//--------------------------------------------------------------------------
+	    //
+	    //  ref au TextInput
+	    //
+	    //--------------------------------------------------------------------------
+		
+		private var _owner : TextInputElementDescriptor;
+		
+		/**
+		 * 
+		 * @return 
+		 */
+		public function get owner( ) : TextInputElementDescriptor
+		{
+			return _owner;
+		}
+   		
+   		/**
+   		 * 
+   		 * @param own
+   		 */
+   		public function set owner( own : TextInputElementDescriptor ) : void
+   		{
+   			_owner = own;
+   		}
+    	
+		/**
+		 * Constructor
+		 */
+		public function AbstractValidator() 
+		{
+		}
+		
+		/**
+		 * 
+		 * @param value
+		 * @return 
+		 */
+		public function check(value:String):Boolean
+		{
+			//MUST BE OVERRIDDEN
+			return false;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 */
+		public function getErrorString():String
+		{
+			//MUST BE OVERRIDDEN
+			return null;
+		}
+		
+	}
+}

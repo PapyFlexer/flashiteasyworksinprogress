@@ -1,0 +1,61 @@
+package com.flashiteasy.api.controls
+{
+	import com.flashiteasy.api.container.FormElementDescriptor;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.elements.ILabelElementDescriptor;
+	
+	import fl.controls.Label;
+	
+	/**
+	 * Flash'Iteasy
+	 * Fie team is
+	 * dany, didier, gilles
+	 * & many thanks to alexis, ghazi, jean-françois
+	 */
+
+	public class LabelElementDescriptor extends FormElementDescriptor implements IUIElementDescriptor,ILabelElementDescriptor
+	{
+		
+		private var lbl:Label;
+		private var txt:String="toto";
+		
+		
+		/**
+		 * 
+		 */
+		public function LabelElementDescriptor()
+		{
+			super();
+		}
+		protected override function initControl():void
+		{
+			lbl=new Label();
+			face.addChild(lbl);
+		}
+		
+		/**
+		 * 
+		 * @param value
+		 */
+		public function set label(value:String):void
+		{
+			lbl.text = value;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 */
+		public function get label():String
+		{
+			return lbl.text;
+		}
+
+		protected override function onSizeChanged():void
+		{
+			lbl.height = face.height;
+			lbl.width = face.width;
+		}
+		
+	}
+}

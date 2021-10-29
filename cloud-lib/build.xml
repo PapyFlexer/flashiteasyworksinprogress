@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     12 fevrier 2011                                                        
+
+     Cloudslib    
+                   
+     G.R.                                                               
+     ====================================================================== -->
+<project name="cloud-lib" default="cloud-lib">
+
+    <!-- ================================= 
+          target: clouds-lib             
+         ================================= -->
+    <target name="cloud-lib" >
+        <unzip dest="../fie-app/src/main/resources/external" src="bin/cloud-lib.swc" overwrite="true">
+        	<patternset> 
+        	        <include name="*.swf"/>
+			</patternset>
+    	</unzip>
+    	<delete file="com_flashiteasy_clouds-cloud-lib_0.2-SNAPSHOT.swf" failonerror="false"/>
+    	<move file="../fie-app/src/main/resources/external/library.swf" tofile="../fie-app/src/main/resources/external/com_flashiteasy_clouds_cloud-lib_0.2-SNAPSHOT.swf"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clouds_cloud-lib_0.2-SNAPSHOT.swf" todir="../fie-admin/src/main/resources/libraries"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clouds_cloud-lib_0.2-SNAPSHOT.swf" todir="../fie-admin/bin-release/libraries"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clouds_cloud-lib_0.2-SNAPSHOT.swf" todir="../fie-app/bin-release/external"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clouds_cloud-lib_0.2-SNAPSHOT.swf" todir="../fie-sample-app/external"/>
+		<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clouds_cloud-lib_0.2-SNAPSHOT.swf" todir="../../../../../../Applications/MAMP/htdocs/target/fie-admin/libraries"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clouds_cloud-lib_0.2-SNAPSHOT.swf" todir="../../../../../../Applications/MAMP/htdocs/target/fie-projects/fie-app/external"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clouds_cloud-lib_0.2-SNAPSHOT.swf" todir="../../../../../../Applications/MAMP/htdocs/target/fie-projects/fie-sample-app/external"/>
+    </target>
+</project>

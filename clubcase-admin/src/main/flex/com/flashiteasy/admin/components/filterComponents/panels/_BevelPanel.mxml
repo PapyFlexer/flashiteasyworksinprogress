@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="380"
+		 height="100%"
+		 xmlns:components="com.flashiteasy.admin.components.*">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.conf.Ref;
+
+			public function getLang(s:String):String
+			{
+
+				return Conf.languageManager.getLanguage(s);
+			}
+		]]>
+	</mx:Script>
+	<mx:Grid width="100%">
+
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Blur')+' X'}"
+						  width="100%"
+						  height="100%"/>
+				<mx:NumericStepper id="blurXValue"
+								   minimum="0"
+								   maximum="255"/>
+			</mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Blur')+' Y'}"
+						  width="100%"
+						  height="100%"/>
+				<mx:NumericStepper id="blurYValue"
+								   minimum="0"
+								   maximum="255"/>
+
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Distance')}"
+						  width="100%"
+						  height="100%"/>
+				<mx:NumericStepper id="distanceValue" width="64"/>
+			</mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Strength')}"
+						  width="100%"
+						  height="100%"/>
+				<mx:NumericStepper id="strengthValue"
+								   minimum="0"
+								   maximum="255"/>
+			</mx:GridItem>
+
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Quality')}"
+						  width="100%"
+						  height="100%"/>
+				<mx:ComboBox id="qualityValue"/>
+
+			</mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Type')}"
+						  width="100%"
+						  height="100%"/>
+				<mx:ComboBox id="typeValue"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('KnockOut')}"
+						  width="100%"
+						  height="100%"/>
+				<mx:CheckBox id="knockoutValue"/>
+			</mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Angle')}"
+						  width="100%"
+						  height="100%"/>
+				<components:advancedSlider id="angleValue"
+										   minimum="0"
+										   maximum="360"
+										   interval="1"/>
+			</mx:GridItem>
+
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('HighlightColor')}"
+						  width="100%"
+						  height="100%"/>
+				<components:FieColorPicker id="highlightColorValue"
+										   hasNoColor="false"/>
+			</mx:GridItem>
+
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Alpha')}"
+						  width="100%"
+						  height="100%"/>
+				<components:advancedSlider id="highlightAlphaValue"
+										   maximum="1"
+										   minimum="0"
+										   interval="0.01"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('ShadowColor')}"
+						  width="100%"
+						  height="100%"/>
+				<components:FieColorPicker id="shadowColorValue"
+										   hasNoColor="false"/>
+			</mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Alpha')}"
+						  width="100%"
+						  height="100%"/>
+				<components:advancedSlider id="shadowAlphaValue"
+										   maximum="1"
+										   minimum="0"
+										   interval="0.01"/>
+			</mx:GridItem>
+		</mx:GridRow>
+
+	</mx:Grid>
+</mx:VBox>

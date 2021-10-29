@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="100%">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+			import com.flashiteasy.admin.conf.Conf;
+			import mx.events.DragEvent;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.admin.event.TriggerEvent;
+			import com.flashiteasy.admin.components.componentsClasses.EventItemRenderer;
+			import com.flashiteasy.api.parameters.FilterParameterSet;
+			import com.flashiteasy.api.core.IParameterSet;
+
+			[Bindable]
+			[Embed(source='../../../../../../resources/assets/add.png')]
+			private var Add_ico:Class;
+			[Bindable]
+			[Embed(source='../../../../../../resources/assets/edit.png')]
+			private var Edit_ico:Class;
+
+			private var workbench:FilterPopUp ;
+			private var param:FilterParameterSet;
+
+
+			public function setFilters(param:FilterParameterSet):void
+			{
+				this.param=param;
+				callLater(initList, [param.filters]);
+			}
+			
+			public function get changedList() : Array
+			{
+				var descriptor:ParameterSetEditionDescriptor=ParameterIntrospectionUtil.getParameterSetEditionDescriptor(param);
+				return ApplicationController.getInstance().getElementEditor().getParameterList(descriptor.getParameterSet());
+			}
+			
+			private function initList(data:Array):void
+			{
+				filterList.itemRenderer=new ClassFactory(EventItemRenderer);
+				filterList.dataProvider=data;
+				filterList.addEventListener(TriggerEvent.REMOVE_EVENT, removeSelectedFilter);
+			}
+
+			private function removeSelectedFilter(e:Event):void
+			{
+				//Dispatching the change for getting the previous parameterValues
+				dispatchEvent(new Event(Event.CHANGE));
+				param.removeFilter(filterList.selectedIndex);
+				//Dispatching the change for getting the new parameterValues
+				dispatchEvent(new Event(Event.CHANGE));
+				callLater(initList, [param.filters]);
+			}
+
+			private function openWorkbench(e:Event):void
+			{
+				//Dispatching the change for getting the previous parameterValues
+				dispatchEvent(new Event(Event.CHANGE));
+				if (e.target.id == "filterAdd")
+				{
+					var lengthOfList : Array = ArrayCollection(filterList.dataProvider).source;
+					var lastIndex : int = lengthOfList.length;
+					var index : int = filterList.selectedIndex == -1 ? lastIndex : (filterList.selectedIndex + 1);
+					workbench=new FilterPopUp(param, null, index);
+					//workbench.setFilterIndex(filterList.selectedIndex == -1 ? 0 : filterList.selectedIndex);
+					//workbench.setFilterIndex();
+				}
+				else if (filterList.selectedIndex != -1)
+				{
+					workbench=new FilterPopUp(param, filterList.selectedItem, filterList.selectedIndex);
+					//workbench.setFilterIndex(filterList.selectedIndex);
+				}
+				workbench.addEventListener(Event.CHANGE, change, false, 0, true);
+				workbench.addEventListener(PopUp.CLOSED, workbenchClose, false, 0, true);
+				filterList.enabled=false;
+			}
+
+			private function workbenchClose(e:Event):void
+			{
+				//Dispatching the change for getting the previous parameterValues
+				//dispatchEvent(new Event(Event.CHANGE));
+				filterList.enabled=true;
+			}
+
+			private function change(e:Event):void
+			{
+				dispatchEvent(new Event(Event.CHANGE));
+				callLater(initList, [param.filters]);
+			}
+
+			private var draggedIndex:int=-1;
+
+			private function startMoveSelectedFilter(e:DragEvent):void
+			{
+				draggedIndex=e.target.selectedIndex;
+			}
+
+			private function moveSelectedFilter(e:DragEvent):void
+			{
+				param.moveFilter(e.target.calculateDropIndex(), draggedIndex);
+				dispatchEvent(new Event(Event.CHANGE));
+				callLater(initList, [param.filters]);
+			}
+			
+			public function getLang(s:String):String
+			{
+				
+				return Conf.languageManager.getLanguage(s);
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%">
+		<mx:List id="filterList"
+				 dragStart="startMoveSelectedFilter(event);"
+				 dragComplete="moveSelectedFilter(event);"
+				 dragEnabled="true"
+				 dropEnabled="true"
+				 dragMoveEnabled="true"
+				 width="100%">
+
+		</mx:List>
+		<mx:VBox>
+			<mx:Button id="filterAdd" toolTip="{getLang('Add')}"
+					   icon="{Add_ico}"
+					   click="openWorkbench(event)"/>
+			<mx:Button id="filterEdit" toolTip="{getLang('Edit')}"
+					   icon="{Edit_ico}"
+					   enabled="{filterList.selectedIndex!=-1}"
+					   click="openWorkbench(event)"/>
+		</mx:VBox>
+	</mx:HBox>
+
+
+</mx:Canvas>

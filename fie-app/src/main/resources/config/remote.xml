@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<remote>
+	<title contentType="text">Hello i'm the title</title>
+	<desc>
+		<text size="12">
+			<sub>Nullam quis risus eget urna mollis ornare vel eu leo. Donec sed odio dui. Vestibulum id ligula porta felis euismod semper.</sub>
+		</text>
+	</desc>
+</remote>

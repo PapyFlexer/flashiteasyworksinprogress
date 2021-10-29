@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.utils.LabelUtils;
+			import com.flashiteasy.admin.utils.TextInputErrorUtils;
+			import com.flashiteasy.api.easing.InterpolationTypes;
+			import com.flashiteasy.api.core.project.storyboard.Update;
+			import com.flashiteasy.api.core.project.storyboard.Transition;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.conf.Ref;
+			
+			private var _transition : Transition;
+			
+			public var update : Update;
+			public var allowedMinTime : int ;
+			
+			public static var TRANSITION_CREATED:String = "transitioncreated";
+			
+			public function set transition ( value : Transition ) : void 
+			{
+				_transition = value ;	
+			}
+			
+			public function get transition () : Transition 
+			{
+				return _transition ;
+			}
+			
+			private var newTransition : Transition;
+			
+			public function getCreatedTransition(): Transition
+			{
+				return newTransition;
+			}
+			
+			private function createTransition( e : Event ):void
+			{
+				if(checkValues())
+				{
+					newTransition = new Transition();
+					newTransition.begin = Number(minTime.text);
+					newTransition.end = Number(endTime.text);
+					newTransition.beginValue = Number(beginValue.text);
+					newTransition.endValue = Number(endValue.text);
+					newTransition.easingClass = Class( easingClass.selectedItem );
+					newTransition.easingType = easingType.selectedItem.toString();
+					//newTransition.init(story.getElementDescriptor()
+					update.addTransition(newTransition);
+					_transition = newTransition;
+					dispatchEvent(new Event(TRANSITION_CREATED));
+				}
+				else
+				{
+					trace("error");
+				}
+			}
+			
+			private function checkValues():Boolean
+			{
+				if( !isNaN(Number(beginValue.text)) && !isNaN(Number(endValue.text)) && !isNaN(Number(minTime.text)) && !isNaN(Number(endTime.text)))
+				{
+					if(Number(minTime.text)>Number(endTime.text ))
+					{
+						TextInputErrorUtils.showError(endTime , Conf.languageManager.getLanguage("invalid_end_time"));
+						return false ;
+					}
+					if(allowedMinTime>Number(minTime.text))
+					{
+						TextInputErrorUtils.showError(minTime , Conf.languageManager.getLanguage("min_time_is_too_low : minimum time ")+  + allowedMinTime);
+						return false ; 
+					}
+					TextInputErrorUtils.resetErrors();
+					return true;
+				}
+				return false;
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:HBox width="100%">
+			<mx:Label text="{LabelUtils.getLang('begin_value')}" width="60" />
+			<mx:TextInput id="beginValue" text="0" width="120" restrict="0-9 ."/>
+			<mx:Label text="{LabelUtils.getLang('end_value')}" width="60"  />
+			<mx:TextInput id="endValue" text="0" width="120" restrict="0-9 ."/>
+	</mx:HBox>
+	<mx:HBox width="100%">
+			<mx:Label text="{LabelUtils.getLang('start_time')}" width="60"  />
+			<mx:TextInput id="minTime" text="0" width="120" restrict="0-9"/>
+			<mx:Label text="{LabelUtils.getLang('end_time')}" width="60"  />
+			<mx:TextInput id="endTime" text="0" width="120" restrict="0-9"/>
+	</mx:HBox>
+	<mx:HBox width="100%">
+		<mx:Label text="{LabelUtils.getLang('interpolation')}" width="60"  />
+		<mx:ComboBox id="easingClass" dataProvider="{InterpolationTypes.INTERPOLATIONS}" labelFunction="{LabelUtils.setClassLabel}" width="120" />
+		<mx:Label text="{LabelUtils.getLang('easing')}" width="60"  />
+		<mx:ComboBox id="easingType" dataProvider="{InterpolationTypes.EASINGS}" labelFunction="{LabelUtils.setLabel}" width="120" maxWidth="140" />
+	</mx:HBox>
+	<mx:Button label="{LabelUtils.getLang('create_transition')}" click="createTransition(event)" />
+	
+</mx:VBox>

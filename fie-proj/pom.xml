@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <parent>
+    <artifactId>fie-bundle</artifactId>
+    <groupId>com.flashiteasy</groupId>
+    <version>0.2-SNAPSHOT</version>
+  </parent>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.flashiteasy.sample</groupId>
+  <artifactId>fie-app</artifactId>
+  <packaging>swf</packaging>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.servebox.flex</groupId>
+        <artifactId>flex-plugin</artifactId>
+        <version>2.3.1</version>
+        <extensions>true</extensions>
+        <configuration>
+          <locales><locale>en_US</locale></locales>
+          <mxmlFile>src/main/flex/FieApp.as</mxmlFile>
+          <!--servicesConfiguration>services-config.xml</servicesConfiguration-->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+      <id>Maven.ServeBox.org</id>
+      <name>ServeBox.org repository</name>
+      <url>http://maven.servebox.org/repository</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>Maven.ServeBox.org</id>
+      <name>ServeBox.org repository</name>
+      <url>http://maven.servebox.org/repository</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <dependencies>
+    <dependency>
+      <groupId>com.adobe.flash.core</groupId>
+      <artifactId>playerglobal</artifactId>
+      <version>1.0</version>
+      <type>swc</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${groupId}</groupId>
+      <artifactId>sample-lib</artifactId>
+      <version>${version}</version>
+      <type>swc</type>
+    </dependency>
+  </dependencies>
+</project>

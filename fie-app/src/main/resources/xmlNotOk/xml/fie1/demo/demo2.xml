@@ -1,0 +1,303 @@
+<page>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="Block">
+    <BlockListParameterSet>
+      <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="Rect1">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <is_percent_w>true</is_percent_w>
+          <is_percent_h>true</is_percent_h>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <MaskTypeParameterSet>
+          <enable>true</enable>
+          <RoundedCornerParameterSet>
+            <bottomRight>10</bottomRight>
+            <topRight>10</topRight>
+            <bottomLeft>10</bottomLeft>
+            <topLeft>10</topLeft>
+          </RoundedCornerParameterSet>
+        </MaskTypeParameterSet>
+        <BackgroundColorParameterSet>
+          <backgroundColor>16777215</backgroundColor>
+        </BackgroundColorParameterSet>
+      </control>
+      <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="bandeau">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <height>20</height>
+          <is_percent_w>true</is_percent_w>
+          <is_percent_h>true</is_percent_h>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <MaskTypeParameterSet>
+          <enable>true</enable>
+          <RoundedCornerParameterSet>
+            <bottomRight>0</bottomRight>
+            <topRight>10</topRight>
+            <bottomLeft>0</bottomLeft>
+            <topLeft>10</topLeft>
+          </RoundedCornerParameterSet>
+        </MaskTypeParameterSet>
+        <FilterParameterSet>
+          <filterString>[-1.24, 0, 0, 0, 236.48, 0, -1.24, 0, 0, 236.48, 0, 0, -1.24, 0, 236.48, 0, 0, 0, 1, 0]</filterString>
+          <types>[ColorMatrixFilter]</types>
+        </FilterParameterSet>
+        <ImgParameterSet>
+          <source>media/image/bandeau/img_1.png</source>
+        </ImgParameterSet>
+        <ResizableParameterSet>
+          <resizable>true</resizable>
+        </ResizableParameterSet>
+      </control>
+      <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="Img">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <x>-0.03</x>
+          <y>-0.01</y>
+        </PositionParameterSet>
+        <AlignParameterSet>
+          <h_align>right</h_align>
+          <v_align>bottom</v_align>
+        </AlignParameterSet>
+        <SizeParameterSet>
+          <height>35.29</height>
+          <is_percent_w>true</is_percent_w>
+          <is_percent_h>true</is_percent_h>
+          <width>23.31</width>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <ImgParameterSet>
+          <source>media/image/fie/fie_galet.png</source>
+        </ImgParameterSet>
+        <ResizableParameterSet>
+          <mode>scale</mode>
+          <resizable>true</resizable>
+        </ResizableParameterSet>
+        <SmoothParameterSet>
+          <smooth>true</smooth>
+        </SmoothParameterSet>
+      </control>
+      <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Text">
+        <PositionParameterSet>
+          <is_percent_x>true</is_percent_x>
+          <mode>bottom</mode>
+          <x>9.97</x>
+        </PositionParameterSet>
+        <AlignParameterSet>
+          <v_align>middle</v_align>
+        </AlignParameterSet>
+        <SizeParameterSet>
+          <is_percent_w>true</is_percent_w>
+          <width>30</width>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <TextOptionParameterSet>
+          <borderColor>0</borderColor>
+          <autoSize>center</autoSize>
+          <wordWrap>true</wordWrap>
+          <multiLines>true</multiLines>
+        </TextOptionParameterSet>
+        <TextParameterSet>
+          <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;I&amp;apos;m a left align text at 10 % and having a with of 50%&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+          <police>Arial</police>
+        </TextParameterSet>
+      </control>
+      <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Text1">
+        <PositionParameterSet>
+          <is_percent_x>true</is_percent_x>
+          <mode>bottom</mode>
+          <x>50</x>
+        </PositionParameterSet>
+        <AlignParameterSet>
+          <v_align>middle</v_align>
+        </AlignParameterSet>
+        <SizeParameterSet>
+          <is_percent_w>true</is_percent_w>
+          <width>30</width>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <TextOptionParameterSet>
+          <borderColor>0</borderColor>
+          <autoSize>center</autoSize>
+          <wordWrap>true</wordWrap>
+          <multiLines>true</multiLines>
+        </TextOptionParameterSet>
+        <TextParameterSet>
+          <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="14" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;I&amp;apos;m a left align text at 10 % and having a with of 50%&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+          <police>Arial</police>
+        </TextParameterSet>
+      </control>
+      <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="Rect">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <x>166</x>
+          <y>211</y>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <height>25</height>
+          <width>22</width>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <MaskTypeParameterSet>
+          <enable>true</enable>
+          <BurstParameterSet>
+            <innerDiameter>6</innerDiameter>
+            <angle>0</angle>
+            <numberOfBranch>6</numberOfBranch>
+          </BurstParameterSet>
+        </MaskTypeParameterSet>
+        <BackgroundColorParameterSet>
+          <backgroundColor>16711680</backgroundColor>
+        </BackgroundColorParameterSet>
+      </control>
+      <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Title">
+        <PositionParameterSet>
+          <is_percent_y>true</is_percent_y>
+          <mode>bottom</mode>
+          <y>4</y>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <height>22</height>
+          <is_percent_w>true</is_percent_w>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <MaskTypeParameterSet>
+          <enable>true</enable>
+          <MaskParameterSet>
+            <enable>true</enable>
+          </MaskParameterSet>
+        </MaskTypeParameterSet>
+        <FilterParameterSet>
+          <filterString>[4,45,0x000000,1,8,9,2,1,false,false,false]</filterString>
+          <types>[DropShadowFilter]</types>
+        </FilterParameterSet>
+        <TextOptionParameterSet>
+          <borderColor>0</borderColor>
+          <autoSize>center</autoSize>
+          <wordWrap>true</wordWrap>
+          <multiLines>true</multiLines>
+        </TextOptionParameterSet>
+        <TextParameterSet>
+          <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="CENTER"&gt;&lt;FONT FACE="_DINBlack" SIZE="18" COLOR="#FFFFFF" LETTERSPACING="0" KERNING="0"&gt;I&amp;apos;m a resizable container horizontally centered&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+          <police>Arial</police>
+        </TextParameterSet>
+      </control>
+    </BlockListParameterSet>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>88</y>
+    </PositionParameterSet>
+    <AlignParameterSet>
+      <h_align>middle</h_align>
+    </AlignParameterSet>
+    <SizeParameterSet>
+      <height>257</height>
+      <width>400</width>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <MaskTypeParameterSet>
+      <enable>true</enable>
+      <MaskTypeParameterSet/>
+    </MaskTypeParameterSet>
+    <FilterParameterSet>
+      <filterString>[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]</filterString>
+      <types>[ColorMatrixFilter]</types>
+    </FilterParameterSet>
+    <ResizeFromChildrenParameterSet>
+      <enable>true</enable>
+    </ResizeFromChildrenParameterSet>
+  </container>
+  <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="baseline">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <x>30</x>
+      <y>407</y>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <height>118</height>
+      <width>892</width>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <TextOptionParameterSet>
+      <borderColor>0</borderColor>
+      <autoSize>center</autoSize>
+      <wordWrap>true</wordWrap>
+      <multiLines>true</multiLines>
+    </TextOptionParameterSet>
+    <TextParameterSet>
+      <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="CENTER"&gt;&lt;FONT FACE="_Arial" SIZE="28" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;Manage content resizing by using liquid layouts&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#FFFFFF" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#FFFFFF" LETTERSPACING="0" KERNING="0"&gt;Flash&amp;apos;Iteasy lets you create contents that will adapt to end-users screen configuration. Each content block on stage can be parameterized with absolute or relative coordinates and sizes. Group blocks can even be automatically resized by their children behaviours, so your contents will allways be optimized for better display and so will generate richer user-experience !&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+      <police>Arial</police>
+    </TextParameterSet>
+  </control>
+  <storyboard>
+    <story uuid="story" autoPlay="true" autoPlayOnUnload="false" target="Rect" loop="true">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="1300">
+          <easing type="Bounce" easingType="easeOut"/>
+          <value>166</value>
+        </keyframe>
+        <keyframe time="2300">
+          <easing type="Bounce" easingType="easeOut"/>
+          <value>660</value>
+        </keyframe>
+        <keyframe time="4200">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>660</value>
+        </keyframe>
+        <keyframe time="5200">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>166</value>
+        </keyframe>
+      </update>
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="1300">
+          <easing type="Bounce" easingType="easeOut"/>
+          <value>211</value>
+        </keyframe>
+        <keyframe time="2300">
+          <easing type="Bounce" easingType="easeOut"/>
+          <value>281</value>
+        </keyframe>
+        <keyframe time="4200">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>281</value>
+        </keyframe>
+        <keyframe time="5200">
+          <easing type="Linear" easingType="easeOut"/>
+          <value>211</value>
+        </keyframe>
+      </update>
+    </story>
+  </storyboard>
+</page>

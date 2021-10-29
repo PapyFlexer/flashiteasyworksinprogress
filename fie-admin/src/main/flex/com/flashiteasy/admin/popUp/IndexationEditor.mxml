@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:comps="com.flashiteasy.admin.uicontrol.*"
+		   width="480"
+		   initialize="init()"
+		   creationComplete="selectFirstPage()"
+		   xmlns:popUp="com.flashiteasy.admin.popUp.*">
+
+
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.xml.ProjectSerializer;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import mx.core.Container;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+			import mx.managers.BrowserManager;
+			import mx.events.ListEvent;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.core.project.Page;
+			import com.flashiteasy.admin.manager.AdminManager;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.uicontrol.PageTree;
+
+			import com.flashiteasy.api.indexation.IndexationManager;
+			import com.flashiteasy.api.indexation.PageInformation;
+
+
+			//public var pi : PageInformation;
+
+			public var fms : FileManagerService;
+			[Bindable]
+			public var tit:String;
+			[Bindable]
+			public var desc:String;
+			[Bindable]
+			public var keywds:String;
+			[Bindable]
+			public var gacode:String;
+
+			/**
+			 *
+			 *  INITIALISATION
+			 *
+			 *
+			 *
+			 * */
+
+
+			private function init():void
+			{
+				buildProjectTree();
+				gacode=IndexationManager.getInstance().googlecode;
+			}
+
+			private function selectFirstPage():void
+			{
+				pageTree.selectedIndex=0;
+				pageTree.dispatchEvent(new ListEvent(ListEvent.CHANGE));
+			}
+
+			private function buildProjectTree():void
+			{
+				pageTree.addEventListener(ListEvent.CHANGE, onPageSelection);
+				var provider:XMLList=ApplicationController.getInstance().getNavigation().buildDataProvider();
+				pageTree.dataProvider=provider;
+
+			}
+
+			private function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+
+			private function validateSinglePageInfos():void
+			{
+				var pageLink:String=pageTree.getSelectedLink();
+				var page:Page=BrowsingManager.getInstance().getPageByUrl(BrowsingManager.getInstance().getProject(), pageLink);
+				//var pageInfo : PageInformation = new PageInformation(page);
+				var pageInfo:PageInformation=IndexationManager.getInstance().getPageInformation(page);
+				trace("i validate '" + pageTree.selectedItem.@label + "' whose link is : " + pageLink);
+				pageInfo.title=this.pageTitle.text;
+				pageInfo.description=this.pageDescription.text;
+				pageInfo.keywords=this.pageKeyWords.text;
+				IndexationManager.getInstance().addPageInformation(pageInfo);
+				pageInfo.ishomepage = isHomePage_cb.selected;
+				trace("page info locally saved");
+				trace(IndexationManager.getInstance().getPageInformation(page).toFieString());
+				//ids.saveIndexationObject(page);
+				if (this.googlecode.text != "")
+					IndexationManager.getInstance().googlecode=this.googlecode.text;
+			}
+
+			public function saveProjectPagesXML():void
+			{
+				var _newXML:XML=AbstractBootstrap.getInstance().getXML();
+				fms=new FileManagerService;
+				_newXML.replace("pages", getPagesXml());
+				fms.addEventListener(FileManagerService.FILE_SAVED, saveSuccess, false, 0, true);
+				fms.saveContent(Conf.APP_ROOT + "/xml/project.xml", _newXML);
+			}
+
+			//Rebuild the pages portion of the project.xml
+			private function getPagesXml():XMLList
+			{
+				var pageList:Array=AbstractBootstrap.getInstance().getProject().getPages();
+				var page:Page;
+				var pageNode:String="<root>";
+
+				pageNode+="<pages>";
+				for each (page in pageList)
+				{
+
+					pageNode+=ProjectSerializer.serializePageForProject(page);
+				}
+				pageNode+="</pages></root>";
+				var pagesXML:XMLList=new XMLList(new XML(pageNode).children());
+				return pagesXML;
+
+			}
+
+			private function saveError(e:IOErrorEvent):void
+			{
+				trace("couldn t find php");
+			}
+
+			private function saveSuccess(e:Event):void
+			{
+				trace("project XML saved");
+			}
+
+			private function onPageSelection(e:ListEvent):void
+			{
+				var pageLink:String=PageTree(e.currentTarget).getSelectedLink();
+				trace("en selectionnant la page '" + PageTree(e.currentTarget).selectedItem.@label + "' dans le tree, je récupère le link : " + pageLink);
+				var page:Page=BrowsingManager.getInstance().getPageByUrl(BrowsingManager.getInstance().getProject(), pageLink);
+				var pi:PageInformation=IndexationManager.getInstance().getPageInformation(page);
+				if (pi != null)
+				{
+					tit=pi.title;
+					desc=pi.description;
+					keywds=pi.keywords;
+					isHomePage_cb.selected = pi.ishomepage;
+				}
+				else
+				{
+					pageTitle.text="not_set_yet";
+					pageDescription.text="not_set_yet";
+					pageKeyWords.text="not_set_yet";
+				}
+				
+			}
+
+			public function saveIndexationInfos():String
+			{
+				var xmlStr:String=new String;
+				xmlStr+="<?xml version='1.0' encoding='UTF-8' ?>\n";
+				xmlStr+="<indexation>\n";
+				xmlStr+="\t<googlecode>" + IndexationManager.getInstance().googlecode + "</googlecode>\n";
+
+				var pages:Array=AbstractBootstrap.getInstance().getProject().getPages();
+				for each (var page:Page in pages)
+				{
+					if (PageInformation(page) != null)
+					{
+						xmlStr+=this.serializePageInfo(page);
+						if (page.hasChild)
+						{
+							for each (var souspage:Page in page.getPages())
+							{
+								if (PageInformation(souspage) != null)
+								{
+									xmlStr+=this.serializePageInfo(souspage);
+								}
+							}
+						}
+					}
+				}
+				xmlStr+="</indexation>";
+				trace("the info object is ready to be saved \n" + xmlStr);
+				return xmlStr;
+			}
+
+			public function createIndexationSummaryPage():void
+			{
+
+			}
+
+			private function serializePageInfo(page:Page):String
+			{
+				var str:String="";
+				try
+				{
+					var pi:PageInformation=IndexationManager.getInstance().getPageInformation(page);
+					str+="\t<page url='" + pi.page.getPageUrl() + "' >\n";
+					str+="\t\t<title>" + pi.title + "</title>\n";
+					str+="\t\t<description>" + pi.description + "</description>\n";
+					str+="\t\t<keywords>" + pi.keywords + "</keywords>\n";
+					str+="\t</page>\n";
+
+				}
+				catch (e:Error)
+				{
+
+				}
+				return str;
+			}
+			
+			private function setIsHomePage( e : Event ) : void
+			{
+				var homePage : Page = IndexationManager.getInstance().homePage;
+				if (homePage != null)
+				{
+					PageInformation(IndexationManager.getInstance().pageInformationList[homePage]).ishomepage = false;
+					IndexationManager.getInstance().homePage = null;
+				}
+				if (e.target.selected)
+				{
+					var pageLink:String=pageTree.getSelectedLink();
+					var page:Page=BrowsingManager.getInstance().getPageByUrl(BrowsingManager.getInstance().getProject(), pageLink);
+					var pi:PageInformation=IndexationManager.getInstance().getPageInformation(page);
+					pi.ishomepage = true;
+					IndexationManager.getInstance().homePage = page;
+				} 
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox paddingBottom="10"
+			 paddingLeft="10"
+			 paddingRight="10"
+			 paddingTop="10">
+		<mx:HBox>
+			<mx:Label text="{getLang('Google_Analytics_Code')}"
+					  width="200"/>
+			<mx:TextInput id="googlecode"
+						  width="250"
+						  text="{gacode}"/>
+		</mx:HBox>
+		<mx:Spacer width="100%"
+				   height="10"/>
+		<mx:HBox height="100%">
+			<mx:VBox height="100%">
+				<mx:Label text="{getLang('Page_List')}"
+						  width="150"/>
+				<comps:PageTree id="pageTree"
+								height="100%"/>
+			</mx:VBox>
+			<mx:VBox height="100%">
+				<mx:Label text="{getLang('Title')}"
+						  width="150"/>
+				<mx:TextInput id="pageTitle"
+							  width="250"
+							  text="{tit}"/>
+				<mx:Spacer/>
+
+				<mx:Label text="{getLang('Keywords')}"/>
+				<mx:TextArea id="pageKeyWords"
+							 width="250"
+							 height="100%"
+							 text="{keywds}"/>
+				<mx:Spacer/>
+
+				<mx:Label text="{getLang('Description')}"/>
+				<mx:TextArea id="pageDescription"
+							 text="{desc}"
+							 width="250"
+							 height="100%"/>
+				<mx:Spacer/>
+				<mx:CheckBox id="isHomePage_cb" label="{getLang('Home_Page')}" change="setIsHomePage(event)" />
+
+			</mx:VBox>
+		</mx:HBox>
+		<mx:HBox width="100%">
+
+			<mx:Button label="{this.getLang('Validate_Site')}"
+					   click="saveProjectPagesXML()"/>
+			<mx:Spacer width="100%"/>
+			<mx:Button label="{this.getLang('Validate_Page')}"
+					   click="validateSinglePageInfos()"/>
+		</mx:HBox>
+	</mx:VBox>
+</mx:Canvas>

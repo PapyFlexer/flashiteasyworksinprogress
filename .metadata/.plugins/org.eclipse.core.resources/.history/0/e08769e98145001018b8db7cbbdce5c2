@@ -1,0 +1,330 @@
+package com.flashiteasy.admin.xml
+{
+	import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+	import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+	import com.flashiteasy.admin.utils.Metadata;
+	import com.flashiteasy.admin.utils.MetadataUtil;
+	import com.flashiteasy.api.core.CompositeParameterSet;
+	import com.flashiteasy.api.core.IAction;
+	import com.flashiteasy.api.core.IParameterSet;
+	import com.flashiteasy.api.core.ITrigger;
+	import com.flashiteasy.api.core.IUIElementContainer;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.project.Page;
+	import com.flashiteasy.api.core.project.storyboard.Story;
+	import com.flashiteasy.api.parameters.TriggerParameterSet;
+	import com.flashiteasy.api.selection.ActionList;
+	import com.flashiteasy.api.selection.ElementList;
+	import com.flashiteasy.api.selection.StoryList;
+	import com.flashiteasy.api.utils.StringUtils;
+	
+	import flash.utils.describeType;
+	import flash.utils.getQualifiedClassName;
+	
+	
+
+	public class XmlSerializer
+	{
+		
+		
+		public static function serializePage(page:Page):XML
+		{
+			var elements:Array=ElementList.getInstance().getTopLevelElements(page);
+			var pageXML:XML=new XML("<page></page>");
+			for each (var element:IUIElementDescriptor in elements)
+			{
+				pageXML.*+=serializeControl(element);
+			}
+
+			var actions:Array=ActionList.getInstance().getActions(page);
+			for each (var action:IAction in actions)
+			{
+				pageXML.*+=serializeAction(action);
+			}
+
+			var storyboardNode:XML=new XML("<storyboard></storyboard>");
+			var stories:Array=StoryList.getInstance().getStories(page);
+			for each (var s:Story in stories)
+			{
+				storyboardNode.*+=serializeStory(s);
+			}
+			pageXML.*+=storyboardNode;
+			return pageXML;
+
+		}
+
+		/**
+		 * Serializes a control
+		 */
+		public static function serializeControl(control:IUIElementDescriptor):XML
+		{
+			var nodeXml:XML=XMLUtils.createControlXML(control);
+			var clazz:String;
+			var accessors:XMLList;
+			var parameters:Array=CompositeParameterSet(control.getParameterSet()).getParametersSet();
+
+			// Transform each parameter into an XML
+
+			for each (var param:IParameterSet in parameters)
+			{
+
+				// Get parameterSet class name
+				clazz=getQualifiedClassName(param).split("::")[1];
+
+				// If the parameter is a blockListParameterset , it means the control is a container 
+				// serialize it s children 
+
+				if (clazz == "BlockListParameterSet")
+				{
+					var children:Array=IUIElementContainer(control).getChildren();
+					for each (var child:IUIElementDescriptor in children)
+					{
+						var x:XML=serializeControl(child);
+						nodeXml.BlockListParameterSet.*+=serializeControl(child);
+					}
+				}
+				else
+				{
+
+					var descriptor:ParameterSetEditionDescriptor=ParameterIntrospectionUtil.getParameterSetEditionDescriptor(param);
+					//We just serialise parameterSet that have Metadata
+					if (descriptor.getDescription() != null)
+					{
+
+						// Serialize regular parameterSet into the format <param> value </param>
+						nodeXml.*+=new XML("<" + clazz + "></" + clazz + ">");
+
+						// list of parameterSet's accessor
+
+						accessors=describeType(param)..accessor;
+
+						for each (var accessor:XML in accessors)
+						{
+							try
+							{
+								var accessorMetadata:Metadata=MetadataUtil.getMetadata(accessor, "Parameter");
+								
+								//Getting defaultValue if some properties don't have matadata we still serialise them
+								var defaultValue:*=accessorMetadata != null ? ParameterIntrospectionUtil.getMetadataValueOrDefault("defaultValue", accessorMetadata) : null;
+
+								// Don t serialize fields with empty values 
+								if ((param[accessor.@name] == null || param[accessor.@name] == ""))
+								{
+									// to avoid a nasty bug because "" == false ...
+									if (param[accessor.@name] is Boolean)
+									{
+										//if parameter value is default it's not neccessary to write it
+										//compare as String because defaultValue is always a String
+										if (String(param[accessor.@name]) != defaultValue)
+											nodeXml.child(clazz)[accessor.@name]=param[accessor.@name];
+									}
+									// to avoid a nasty bug because 0 == null ... 
+									if (param[accessor.@name] is Number && param[accessor.@name] == 0)
+									{
+										//if parameter value is default it's not neccessary to write it
+										//compare as String because defaultValue is always a String
+										if (String(param[accessor.@name]) != defaultValue)
+											nodeXml.child(clazz)[accessor.@name]=param[accessor.@name];
+									}
+								}
+
+								// Serialize everything else
+								else
+								{
+									//if parameter value is default it's not neccessary to write it
+									//compare as String because defaultValue is always a String
+									if (String(param[accessor.@name]) != defaultValue)
+										nodeXml.child(clazz)[accessor.@name]=param[accessor.@name];
+								}
+
+							}
+							// Swallowing access error for writeonly accessors
+							catch (e:Error)
+							{
+							}
+
+						}
+						//if node is empty it's not neccessary to write it
+						if (nodeXml.child(clazz).children().length() == 0)
+							delete nodeXml.children()[nodeXml.child(clazz).childIndex()];
+							
+						if( param is CompositeParameterSet ) 
+						{
+							var compositeParameters : Array = CompositeParameterSet(param).getParametersSet();
+							for each ( var compositeParam : IParameterSet in compositeParameters ) 
+							{
+								nodeXml.child(clazz).* += serializeParameter( compositeParam );
+							}
+						}
+					}
+				}
+			}
+			return nodeXml;
+		}
+		
+		private static function serializeParameter ( param : IParameterSet ) : XML 
+		{
+			var clazz:String;
+			var nodeXml : XML ;
+			
+			// Get parameterSet class name
+			clazz=getQualifiedClassName(param).split("::")[1];
+			nodeXml=new XML("<" + clazz + "></" + clazz + ">");
+			// list of parameterSet's accessor
+
+			var accessors : XMLList=describeType(param)..accessor;
+
+			for each (var accessor:XML in accessors)
+			{
+				try
+				{
+					var accessorMetadata:Metadata=MetadataUtil.getMetadata(accessor, "Parameter");
+												
+					//Getting defaultValue if some properties don't have matadata we still serialise them
+					var defaultValue:*=accessorMetadata != null ? ParameterIntrospectionUtil.getMetadataValueOrDefault("defaultValue", accessorMetadata) : null;
+
+					// Don t serialize fields with empty values 
+					if ((param[accessor.@name] == null || param[accessor.@name] == ""))
+					{
+						// to avoid a nasty bug because "" == false ...
+						if (param[accessor.@name] is Boolean)
+						{
+							//if parameter value is default it's not neccessary to write it
+							//compare as String because defaultValue is always a String
+							if (String(param[accessor.@name]) != defaultValue)
+								nodeXml[accessor.@name]=param[accessor.@name];
+						}
+						// to avoid a nasty bug because 0 == null ... 
+						if (param[accessor.@name] is Number && param[accessor.@name] == 0)
+						{
+							//if parameter value is default it's not neccessary to write it
+							//compare as String because defaultValue is always a String
+							if (String(param[accessor.@name]) != defaultValue)
+								nodeXml[accessor.@name]=param[accessor.@name];
+						}
+					}
+
+					// Serialize everything else
+					else
+					{
+						//if parameter value is default it's not neccessary to write it
+						//compare as String because defaultValue is always a String
+						if (String(param[accessor.@name]) != defaultValue)
+							nodeXml[accessor.@name]=param[accessor.@name];
+					}
+				}
+							// Swallowing access error for writeonly accessors
+				catch (e:Error)
+				{
+				}
+					
+					//if node is empty it's not neccessary to write it
+				if (nodeXml.children().length() == 0)
+					//delete nodeXml.children()[nodeXml.child(accessor.@name).childIndex()];
+					nodeXml = new XML("<" + clazz + "></" + clazz + ">");
+				}
+						
+					
+				return nodeXml;
+		}
+
+		/**
+		 * Serializes an action
+		 */
+		public static function serializeAction(action:IAction):XML
+		{
+			var nodeXml:XML=XMLUtils.createActionXML(action);
+			var clazz:String;
+			var accessors:XMLList;
+			var parameters:Array=CompositeParameterSet(action.getParameterSet()).getParametersSet();
+			var paramValue:*;
+
+			for each (var param:IParameterSet in parameters)
+			{
+				clazz=getQualifiedClassName(param).split("::")[1];
+				nodeXml.*+=new XML("<" + clazz + "></" + clazz + ">");
+
+				accessors=describeType(param)..accessor;
+
+				for each (var accessor:XML in accessors)
+				{
+					try
+					{
+						paramValue=param[accessor.@name];
+						if (paramValue == null)
+						{
+							nodeXml.child(clazz)[accessor.@name]="";
+						}
+						else
+						{
+							if (accessor.@type == "com.flashiteasy.api.core.project::Page")
+							{
+								nodeXml.child(clazz)[accessor.@name]=Page(paramValue).link;
+							}
+							else if (accessor.@type == "Array" && param is TriggerParameterSet)
+							{
+								writeXMLArray(paramValue, nodeXml, clazz, accessor.@name);
+							}
+							else
+							{
+								nodeXml.child(clazz)[accessor.@name]=paramValue;
+							}
+						}
+					}
+					// Swallowing access error for writeonly accessors
+					catch (e:Error)
+					{
+					}
+				}
+			}
+
+			return nodeXml;
+		}
+
+		/**
+		 * Serializes an aimation
+		 */
+		public static function serializeStory(s:Story):XML
+		{
+			var nodeXml:XML=XMLUtils.createStoryXML(s);
+			return nodeXml;
+		}
+
+		/**
+		 * Writes XML tags for an array of typed objects
+		 */
+		public static function writeXMLArray(array:Array, xml:XML, parameterName:String, propertyName:String):void
+		{
+			var clazz:String;
+			var propXML:XML;
+			var tagName:String;
+
+			for each (var trigger:*in array)
+			{
+				clazz=getQualifiedClassName(trigger).split("::")[1]; // Nom du parametre
+				tagName=StringUtils.getTagNameFromParameterSet(parameterName);
+
+				if (xml.child(parameterName).child(clazz).length() == 0)
+				{
+					propXML=new XML("<" + tagName + " type='" + getQualifiedClassName(trigger) + "' id='" + ITrigger(trigger).uuid + "' ></" + tagName + ">");
+				}
+
+				var accessors:XMLList=describeType(trigger)..accessor; // Liste des getter et setter du parametre
+
+				for each (var accessor:XML in accessors)
+				{
+					if (trigger[accessor.@name] == null || trigger[accessor.@name] == undefined)
+					{
+						propXML[accessor.@name]="";
+					}
+					else if (accessor.@name != "uuid")
+					{
+						propXML[accessor.@name]=trigger[accessor.@name];
+					}
+				}
+				xml[parameterName][propertyName].*+=propXML;
+			}
+
+		}
+	}
+}

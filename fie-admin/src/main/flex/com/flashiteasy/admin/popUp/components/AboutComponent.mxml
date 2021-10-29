@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="400"
+		 paddingBottom="10"
+		 paddingLeft="10"
+		 paddingRight="10"
+		 paddingTop="10">
+
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.manager.ProjectManager;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import com.flashiteasy.admin.popUp.MessagePopUp;
+			import com.flashiteasy.admin.manager.LanguageManager;
+			import mx.managers.PopUpManager;
+			import mx.core.Application;
+			import flash.net.URLLoader;
+			import com.flashiteasy.admin.conf.Conf;
+
+			import flash.events.Event;
+			import flash.events.IOErrorEvent;
+			[Bindable]
+			[Embed(source="../resources/assets/newLogoIco.png")]
+			public var logoFIE:Class;
+
+			[Bindable]
+			public var description:String;
+			
+		private static var alert:MessagePopUp;
+
+			public function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+
+			//[Bindable]
+			public var versionText:String=makeAboutText();
+
+			private var noUpdateText:String="<P style ='color:#FF0000;'><B>" + getLang("No_new_update") + "!</B></P><BR>";
+			//private var updateText:String = "<P style ='color:#FF0000;'><B>"+getLang("A_new_version")+ "!</B></P><BR>";
+
+			Security.allowDomain("update.flashiteasy.com");
+			Security.allowInsecureDomain("update.flashiteasy.com");
+
+			private function makeAboutText():String
+			{
+				var text:String="<B>" + Conf.Company + "<BR>";
+				text+=getLang("A_product_of") + "</B> " + Conf.Company + ", SAS.<BR><B>";
+				text+="version</B> " + Conf.Version + " (" + Conf.Revision + ")<B> " + getLang("of") + " </B>" + Conf.LastChangedDate.substr(0, Conf.LastChangedDate.indexOf("T"));
+				text+="<BR><B>Copyright </B>©2008-2010 " + Conf.Company;
+				//text+="<BR><B>"+getLang("Team")+"</B> "+Conf.Team;
+				text+="<BR> ";
+				return text;
+			}
+
+			private function checkForUpdate(e:Event):void
+			{
+				var url:String="http://update.flashiteasy.com/fie-version.xml";
+
+				var loader:URLLoader=new URLLoader();
+				loader.addEventListener(Event.COMPLETE, versionLoaded);
+
+				loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
+				loader.load(new URLRequest(url));
+				//LoaderUtil.getLoader(this, versionLoaded).load(new URLRequest(url));
+			}
+
+			/**
+			 *
+			 * @param e
+			 */
+
+			private var versionList:XML;
+
+			protected function versionLoaded(e:Event):void
+			{
+				trace("COMPLETE");
+
+				e.target.removeEventListener(Event.COMPLETE, versionLoaded);
+				e.target.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+				versionList=new XML(e.target.data);
+				var version:String=versionList.version[0].@number;
+				var revision:String=versionList.admin[0].@revision;
+				trace("version :: " + version + " revision : " + revision);
+				trace("revisionactuel :: " + Conf.Revision + " revisionserver : " + revision);
+				//Not used :: Number(version) > Number(Conf.Version)  Because version is in form 1.0.0
+				if (Number(revision) > Number(Conf.Revision) || versionList.api[0].@revision > Number(Conf.ApiRevision))
+				{
+					update.enabled=true;
+					var updateText:String="<P style ='color:#FF0000;'><B>" + getLang("A_new_version") + ": " + version + "(" + revision + ") " + getLang("is_available") + "!</B></P><BR>";
+					updateText+=getLang("Click_update_to_download")+"<BR>";
+					text.htmlText=updateText + makeAboutText();
+
+				}
+				else
+				{
+					update.enabled=false;
+					text.htmlText=this.noUpdateText + makeAboutText();
+
+						//var noUpdate : MessagePopUp = new MessagePopUp("No_Update");
+				}
+			}
+
+			protected function onError(e:Event):void
+			{
+				trace("ERROR");
+				
+				e.target.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+			}
+
+			private var fms:FileManagerService=new FileManagerService();
+
+			private function doUpdate(e:Event):void
+			{
+				var filesToUpdate:Array=[];
+				var projectsToUpdate:Array=ProjectManager.getInstance().projects;
+				var newFiles:Array=[];
+
+				if (versionList.admin[0].@revision > Number(Conf.Revision))
+				{
+					filesToUpdate.push("http://update.flashiteasy.com/admin/index.swf");
+					newFiles.push("index.swf");
+					for each (var library : String in Conf.libraries)
+					{
+						var tempString : String = library.substr(0, library.lastIndexOf("."));
+						var toAddString : String = "."+library.substr(library.lastIndexOf(".")+1)+".swf";
+						newFiles.push("libraries/"+tempString.split(":").join("_").split(".").join("_")+toAddString);
+						filesToUpdate.push("http://update.flashiteasy.com/admin/libraries/"+tempString.split(":").join("_").split(".").join("_")+toAddString);
+					}
+				}
+				if (versionList.api[0].@revision > Number(Conf.ApiRevision))
+				{
+
+					for each (var projInfo:Object in projectsToUpdate)
+					{
+						filesToUpdate.push("http://update.flashiteasy.com/client/FieApp.swf");
+						newFiles.push(projInfo.data + "/FieApp.swf");
+						for each (var libraryToProject : String in Conf.libraries)
+						{
+							var tempProjString : String = libraryToProject.substr(0, libraryToProject.lastIndexOf("."));
+							var toAddProjString : String = "."+libraryToProject.substr(libraryToProject.lastIndexOf(".")+1)+".swf";
+							filesToUpdate.push("http://update.flashiteasy.com/admin/libraries/"+tempProjString.split(":").join("_").split(".").join("_")+toAddProjString);
+							newFiles.push(projInfo.data + "/external/"+tempProjString.split(":").join("_").split(".").join("_")+toAddProjString);
+						}
+					}
+
+				}
+
+				if (versionList.service[0].@revision > Number(Conf.ServiceRevision))
+				{
+					//problem with php files!!! it's acting with another extension
+					//filesToUpdate.push("http://update.flashiteasy.com/services/fie-service/com");
+					//filesToUpdate.push("http://update.flashiteasy.com/services/Fie.txt");
+					//newFiles.push("../fie-service/com");
+					//newFiles.push("../fie-service/FieBrowserService.php");
+					//
+				}
+				// envoi de la requete
+				alert = new MessagePopUp(Conf.languageManager.getLanguage("Updating")+" Flash'Iteasy...", mx.core.Application.application as DisplayObject, true);
+
+				fms.addEventListener(FileManagerService.UPDATES_COPY, finUpdateFiles);
+				fms.addEventListener(FileManagerService.ERROR, saveError);
+				fms.getClientUpdate(filesToUpdate, newFiles);
+				
+				trace("UPDATE :: " + filesToUpdate + " in projects :: " + newFiles);
+			}
+
+			private function finUpdateFiles(e:Event):void
+			{
+				
+				fms.removeEventListener(FileManagerService.ERROR, saveError);
+				fms.removeEventListener(FileManagerService.UPDATES_COPY, finUpdateFiles);
+				update.enabled=false;
+				var updateText:String="<P style ='color:#FF0000;'><B>" + getLang("Update_was_successFull") + "!</B></P><BR>";
+				updateText+=getLang("Save_your_work_and_reload_application")+"<BR>";
+				text.htmlText=updateText + makeAboutText();
+				alert.changeMessage(Conf.languageManager.getLanguage("Update_was_successFull"));
+				alert.closePopUp();
+			}
+			private function saveError(e:Event):void
+			{
+				
+				fms.removeEventListener(FileManagerService.ERROR, saveError);
+				fms.removeEventListener(FileManagerService.UPDATES_COPY, finUpdateFiles);
+				//update.enabled=false;
+				var updateText:String="<P style ='color:#FF0000;'><B>" + getLang("Fail_to_update") + "!</B></P><BR>";
+				updateText+=getLang("Try_again_later")+"<BR>";
+				text.htmlText=updateText + makeAboutText();
+				alert.changeMessage(Conf.languageManager.getLanguage("Fail_to_update"));
+				alert.showOk();
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%"
+			 verticalAlign="bottom">
+		<mx:Image horizontalAlign="center"
+				  source="{logoFIE}"/>
+		<mx:Text id="text"
+				 width="100%"
+				 htmlText="{makeAboutText()}"/>
+	</mx:HBox>
+	<mx:HBox width="100%"
+			 verticalAlign="bottom">
+		<mx:Button id="checkUpdate"
+				   label="{getLang('Check_Update')}"
+				   click="checkForUpdate(event)"/>
+		<mx:Spacer width="100%"/>
+		<mx:Button id="update"
+				   label="{getLang('Update')}"
+				   click="doUpdate(event)"
+				   enabled="false"/>
+	</mx:HBox>
+
+
+
+</mx:VBox>

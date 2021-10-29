@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" updateComplete="onUpdate(event)" horizontalScrollPolicy="off" verticalScrollPolicy="off" horizontalAlign="center">
+    <mx:Script>
+        <![CDATA[
+        	import com.flashiteasy.admin.ApplicationController;
+        	import com.flashiteasy.admin.event.ActionEvent;
+            import com.flashiteasy.admin.utils.IconUtility;
+            [Bindable]
+            [Bindable]
+            [Embed(source='../../../../../../resources/assets/delete.png')]
+            private var Delete_ico : Class;
+            
+            private function handleDeleteAction( event : MouseEvent ) : void
+            {
+                dispatchEvent( new ActionEvent( null, ActionEvent.REMOVE_ACTION, true ));
+            }
+            
+            
+			private function onUpdate(e:Event):void
+			{
+				if(lbl != null)
+            	{
+            		ApplicationController.getInstance().getActionEditor().setMaxWidth(lbl.width);
+            	
+            	}
+			}
+        ]]>
+    </mx:Script>
+    <mx:Label id="lbl" text="{XML(data).@label}" width="100%"/>
+    <mx:Image id="img" source="{Delete_ico}" click="handleDeleteAction( event )" toolTip="Supprimer"/>
+</mx:VBox>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox  xmlns:mx="http://www.adobe.com/2006/mxml" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+
+
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.utils.TextInputErrorUtils;
+			
+			[Bindable]
+			public var description:String;
+			[Bindable]
+			public var inputLabel:String;
+			[Bindable]
+			public var inputError:String;
+			[Bindable]
+			public var inputValue:String;
+			
+			public function setError( error : String ) : void
+			{
+				TextInputErrorUtils.showError( input_error , error );	
+			}
+			
+		]]>
+	</mx:Script>
+		<mx:HBox>
+			<mx:Label id="input_label" text="{inputLabel}" />
+			<mx:TextInput id="input_error" text="{inputValue}"
+						  width="100"/>
+		</mx:HBox>
+	
+</mx:VBox>
+

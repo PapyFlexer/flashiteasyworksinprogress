@@ -1,0 +1,24 @@
+<page>
+  <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="Rect">
+    <PositionParameterSet>
+      <x>284</x>
+      <mode>bottom</mode>
+      <y>-60</y>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <height>29</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <BlendModeParameterSet>
+      <blend_mode>overlay</blend_mode>
+    </BlendModeParameterSet>
+    <BackgroundColorParameterSet>
+      <backgroundColor>16777215</backgroundColor>
+      <backgroundAlpha>0.63</backgroundAlpha>
+    </BackgroundColorParameterSet>
+  </control>
+  <storyboard/>
+</page>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox creationComplete="init()" xmlns:mx="http://www.adobe.com/2006/mxml" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" width="400" height="300" xmlns:popUp="com.flashiteasy.admin.popUp.*">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.core.project.PageList;
+			import com.flashiteasy.api.core.project.Project;
+			import com.flashiteasy.api.selection.ElementList;
+			
+			import mx.events.ItemClickEvent;
+			
+			[Bindable]
+			public var description:String;
+			[Bindable]
+			public var inputLabel:String;
+			[Bindable]
+			public var inputError:String;
+			[Bindable]
+			public var inputValue:String;
+			[Bindable]
+			public var isSubPage:Boolean = false;
+			
+			public var parentPage:PageList;
+			
+			private function init():void
+			{
+				
+				if(BrowsingManager.getInstance().getCurrentPage().parentIsPage){
+					parentPage = BrowsingManager.getInstance().getCurrentPage().getParent();
+					container_list.dataProvider= ElementList.getInstance().getContainerList(BrowsingManager.getInstance().getCurrentPage().getParent()) ;
+				}
+				else
+				{
+					parentPage = BrowsingManager.getInstance().getCurrentPage().getParent();
+					container_list.dataProvider=[];
+				} 
+			}
+			private function updateContainerList(e:Event):void
+			{
+				if(RadioButton(e.target).id == "position1")
+				{
+					parentPage=BrowsingManager.getInstance().getCurrentPage().getParent();
+					
+					if(!BrowsingManager.getInstance().getCurrentPage().parentIsPage){
+						mode2.enabled=false;
+						mode1.selected=true;
+						container_list.visible=false;
+						container_list.dataProvider=[];
+					}
+					else
+						container_list.dataProvider=ElementList.getInstance().getContainerList(BrowsingManager.getInstance().getCurrentPage().getParent());
+				}
+				else
+				{
+					parentPage = BrowsingManager.getInstance().getCurrentPage();
+					mode2.enabled=true;
+					container_list.visible=mode2.selected;
+					container_list.dataProvider=ElementList.getInstance().getContainerList(BrowsingManager.getInstance().getCurrentPage());
+				}
+			}
+			
+			public function selectContainer(container:String) : void
+			{
+				
+				container_list.selectedIndex=0;
+				for (var i:int = 0; i<container_list.dataProvider.length; i++)
+				{
+					if(container_list.dataProvider[i] == container)
+					{
+						container_list.selectedIndex = i;
+						break;
+					}
+				}
+			}
+			
+			public function getLang(s:String):String
+			{
+				
+				return Conf.languageManager.getLanguage(s);
+			}
+			
+		]]>
+	</mx:Script>
+		<mx:HBox>
+			<mx:Label id="input_label" text="{inputLabel}" />
+			<mx:TextInput id="input" text="{inputValue}"
+						  width="100"/>
+		</mx:HBox>
+		<mx:HBox>
+		
+	<mx:Label text="{getLang('Current_page_')+BrowsingManager.getInstance().getCurrentPage().getPageUrl()}" /> 
+	</mx:HBox>
+	<mx:HBox>
+	<mx:Label text="{getLang('Page_Level')}" />
+	<mx:RadioButtonGroup id="position" />
+		<mx:RadioButton change="updateContainerList(event)" groupName="position" id="position1" label="{getLang('same_level')}" selected="{!isSubPage}" />
+   		<mx:RadioButton change="updateContainerList(event)" groupName="position" id="position2" label="{getLang('as_subpage')}" selected="{isSubPage}"/>
+
+	</mx:HBox>
+	<mx:Label text="{getLang('Page_Mode')}" />
+	<mx:HBox>
+	<mx:RadioButtonGroup change="{container_list.visible=mode2.selected}" id="mode" />
+		<mx:RadioButton groupName="mode" id="mode1" label="{getLang('on_Stage')}" selected="true"/>
+   		<mx:RadioButton groupName="mode" id="mode2" label="{getLang('in_Container')}" enabled="{!((BrowsingManager.getInstance().getCurrentPage().getParent() is Project) &amp;&amp; position1.selected ) }"/>
+    </mx:HBox>
+    <mx:HBox>
+    	<mx:ComboBox id="container_list" visible="{mode2.selected}" dataProvider="{}" />
+    </mx:HBox>
+</mx:VBox>

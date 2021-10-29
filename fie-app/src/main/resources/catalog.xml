@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flex version="3.2.0" build="3958" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="com/flashiteasy/sample/lib/CircleElementDescriptor" mod="1262862101789" signatureChecksum="989831838" >
+        <def id="com.flashiteasy.sample.lib:CircleElementDescriptor" /> 
+        <dep id="trace" type="e" /> 
+        <dep id="flash.display:Sprite" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="com.flashiteasy.api.controls:SimpleUIElementDescriptor" type="i" /> 
+      </script>
+      <script name="ExternalLibrary" mod="1262021187526" signatureChecksum="1468086862" >
+        <def id="ExternalLibrary" /> 
+        <dep id="com.flashiteasy.api.ioc:IocContainer" type="e" /> 
+        <dep id="fl.core:UIComponent" type="e" /> 
+        <dep id="com.flashiteasy.sample.lib:CircleElementDescriptor" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="com.flashiteasy.api.library:AbstractLibrary" type="i" /> 
+      </script>
+      <digests>
+        <digest type="SHA-256" signed="false" value="db332ce120c0c61b0005947b0d322b2b5161d9a15888943b11fc762bdebd4709"   />
+      </digests>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>

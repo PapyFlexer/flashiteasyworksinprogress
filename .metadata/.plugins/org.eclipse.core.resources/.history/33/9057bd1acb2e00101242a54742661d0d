@@ -1,0 +1,25 @@
+package com.flashiteasy.api.controls.Validator {
+
+	import com.flashiteasy.api.controls.Validator.IValidator;
+	
+	/**
+	 * Flash'Iteasy
+	 * Fie team is
+	 * dany, didier, gilles
+	 * & many thanks to alexis, ghazi, jean-françois
+	 */
+
+	public class IsNullValidator extends AbstractValidator implements IValidator {
+		override public function check(value : String) : Boolean {
+			if (value == null || value =="")
+				return false;
+			else
+				return true;
+		}
+		override public function getErrorString():String
+		{
+			return "la valeur n'est pas nulle !";
+		}
+		
+	}
+}

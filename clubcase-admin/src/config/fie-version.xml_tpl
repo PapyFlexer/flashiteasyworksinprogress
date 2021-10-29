@@ -1,0 +1,6 @@
+<update>
+<version number='1.0.0'/>
+<admin revision='@Revision@'/>
+<api revision='@ApiRevision@'/>
+<service revision='@ServiceRevision@'/>
+</update>

@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<indexation>
+	<googlecode>UA-2973098-28</googlecode>
+	<page url='home' >
+		<title>HOME PAGE</title>
+		<description>Ceci est la page d'accueil</description>
+		<keywords>kwa,kwb,kwc,kwd</keywords>
+	</page>
+	<page url='home/page' >
+		<title>UNDER HOME</title>
+		<description>descr under home</description>
+		<keywords>under1, under2</keywords>
+	</page>
+	<page url='page1' >
+		<title>PAGE ONE</title>
+		<description>Ceci est la page qui vient en première position. C'est donc la première</description>
+		<keywords>kw1,kw2,kw3,kw4</keywords>
+	</page>
+	<page url='page1/page' >
+		<title>UNDER PAGE ONE</title>
+		<description>descr underpage one</description>
+		<keywords>123,456</keywords>
+	</page>
+	<page url='page2' >
+		<title>PAGE TWO</title>
+		<description>Ceci est la page numéro 2</description>
+		<keywords>kw4,kw5,kw6,kw7</keywords>
+	</page>
+	<page url='page3' >
+		<title>PAGE THREE</title>
+		<description>En page trois, fais c que tu dois</description>
+		<keywords>kw8,kw9,kw10,kw11</keywords>
+	</page>
+	<page url='page' >
+		<title>LVL1 PAGE</title>
+		<description>LVL1 page called page</description>
+		<keywords>toto,tata,titi</keywords>
+	</page>
+	<page url='demo' >
+		<title>PAGE DEMO</title>
+		<description>description de la démonstration</description>
+		<keywords>démo, démo1, démo2</keywords>
+	</page>
+	<page url='pageScientipole' >
+		<title>PAGE SCIENTI</title>
+		<description>descr</description>
+		<keywords>741,852,963</keywords>
+	</page>
+	<page url='pageScientipole/souspage' >
+		<title>SOUS_PAGE SCIENTI</title>
+		<description>souspagescienti description</description>
+		<keywords>sps1,sps2,sps3</keywords>
+	</page>
+	<page url='home1' >
+		<title>HOMEBIS ONE</title>
+		<description>descr hb1</description>
+		<keywords>hb1a,hb1b</keywords>
+	</page>
+	<page url='home1/page' >
+		<title>YO UNDER HOME BIS</title>
+		<description>hkjhkd dkjhds </description>
+		<keywords>poi,mljk,jhfg</keywords>
+	</page>
+</indexation>

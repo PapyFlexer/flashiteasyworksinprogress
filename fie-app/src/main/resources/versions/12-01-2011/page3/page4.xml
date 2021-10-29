@@ -1,0 +1,211 @@
+<page>
+  <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="control">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>42</y>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <BackgroundImageParameterSet>
+      <source>media/fondimm1.jpg</source>
+    </BackgroundImageParameterSet>
+    <ResizableParameterSet>
+      <resizable>true</resizable>
+    </ResizableParameterSet>
+  </control>
+  <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="control1">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>42</y>
+      <x>118</x>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <BackgroundImageParameterSet>
+      <source>media/fondimm1.jpg</source>
+    </BackgroundImageParameterSet>
+    <ResizableParameterSet>
+      <resizable>true</resizable>
+    </ResizableParameterSet>
+  </control>
+  <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="control2">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>42</y>
+      <x>232</x>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <BackgroundImageParameterSet>
+      <source>media/fondimm1.jpg</source>
+    </BackgroundImageParameterSet>
+    <ResizableParameterSet>
+      <resizable>true</resizable>
+    </ResizableParameterSet>
+  </control>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="control3">
+    <BlockListParameterSet>
+      <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="control4">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <y>-50</y>
+          <x>-50</x>
+          <is_percent_y>true</is_percent_y>
+          <is_percent_x>true</is_percent_x>
+        </PositionParameterSet>
+        <AlignParameterSet>
+          <v_align>middle</v_align>
+          <h_align>middle</h_align>
+        </AlignParameterSet>
+        <SizeParameterSet>
+          <width>200</width>
+          <height>200</height>
+          <is_percent_w>true</is_percent_w>
+          <is_percent_h>true</is_percent_h>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <ImgParameterSet>
+          <source>media/fondimm2.jpg</source>
+        </ImgParameterSet>
+        <ResizableParameterSet>
+          <resizable>true</resizable>
+        </ResizableParameterSet>
+        <SmoothParameterSet>
+          <smooth>true</smooth>
+        </SmoothParameterSet>
+      </control>
+    </BlockListParameterSet>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>220</y>
+      <x>510</x>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <width>105</width>
+      <height>101</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+      <rotation>-21</rotation>
+    </RotationParameterSet>
+    <FilterParameterSet>
+      <filterString>[4,45,0x000000,1,4,4,1,1,false,false,false]</filterString>
+      <types>[DropShadowFilter]</types>
+    </FilterParameterSet>
+    <BackgroundColorParameterSet>
+      <backgroundColor>16777215</backgroundColor>
+    </BackgroundColorParameterSet>
+  </container>
+  <action type="com.flashiteasy.api.action::PlayStoryAction" id="turn">
+    <TargetsParameterSet>
+      <targets>control2,control1</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="playMov">
+          <type/>
+          <events>click</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PlayStoryParameterSet>
+      <storiesToPlay>imgTurn</storiesToPlay>
+    </PlayStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PlayStoryAction" id="move">
+    <TargetsParameterSet>
+      <targets>control</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="over">
+          <type/>
+          <events>rollOver</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PlayStoryParameterSet>
+      <storiesToPlay>imgTurn</storiesToPlay>
+    </PlayStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PlayStoryAction" id="Back">
+    <TargetsParameterSet>
+      <targets>control2,control</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="out">
+          <type/>
+          <events>rollOut</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PlayStoryParameterSet>
+      <storiesToPlay>imgMovBack</storiesToPlay>
+    </PlayStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PlayStoryAction" id="tumo">
+    <TargetsParameterSet>
+      <targets>control2</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="moveClick">
+          <type/>
+          <events>click</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PlayStoryParameterSet>
+      <storiesToPlay>imgMov,imgTurn</storiesToPlay>
+    </PlayStoryParameterSet>
+  </action>
+  <storyboard>
+    <story uuid="imgTurn" autoPlay="false" autoPlayOnUnload="false" target="control3" loop="false">
+      <update target="RotationParameterSet" targetProperty="rotation">
+        <keyframe time="0">
+          <easing type="Back" easingType="easeInOut"/>
+          <value>0</value>
+        </keyframe>
+        <keyframe time="6000">
+          <easing type="Back" easingType="easeInOut"/>
+          <value>360</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="imgMov" autoPlay="false" autoPlayOnUnload="false" target="control3" loop="false">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Exponential" easingType="easeInOut"/>
+          <value>510</value>
+        </keyframe>
+        <keyframe time="1900">
+          <easing type="Exponential" easingType="easeInOut"/>
+          <value>1000</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="imgMovBack" autoPlay="false" autoPlayOnUnload="false" target="control3" loop="false">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Exponential" easingType="easeInOut"/>
+          <value>1000</value>
+        </keyframe>
+        <keyframe time="1700">
+          <easing type="Exponential" easingType="easeInOut"/>
+          <value>510</value>
+        </keyframe>
+      </update>
+    </story>
+  </storyboard>
+</page>

@@ -1,0 +1,55 @@
+<project>
+  <dependencies>
+    <dependency>com.flashiteasy.sample:sample-lib:0.2-SNAPSHOT</dependency>
+    <dependency>com.flashiteasy.snow:snow-lib:0.2-SNAPSHOT</dependency>
+    <dependency>com.flashiteasy.clouds:cloud-lib:0.2-SNAPSHOT</dependency>
+  </dependencies>
+  <params>
+    <param key="AMF_ENDPOINT" value="http://localhost:8888/target/fie-service/amfphp/gateway.php"/>
+  </params>
+  <pages>
+    <page link="home">
+      <page link="page" container="control1"/>
+    </page>
+    <page link="page1">
+      <page link="page" container="control"/>
+    </page>
+    <page link="page2"/>
+    <page link="page3"/>
+    <page link="page"/>
+    <page link="demo"/>
+    <page link="pageScientipole">
+      <page link="souspage" container="containerpage"/>
+    </page>
+    <page link="fie">
+      <page link="home" container="PageContainer"/>
+      <page link="demo" container="PageContainer"/>
+      <page link="download" container="PageContainer"/>
+      <page link="support" container="PageContainer"/>
+      <page link="contact" container="PageContainer"/>
+      <page link="realize" container="PageContainer"/>
+      <page link="publish" container="PageContainer"/>
+      <page link="privacy" container="PageContainer"/>
+      <page link="terms" container="PageContainer"/>
+      <page link="about" container="PageContainer"/>
+    </page>
+    <page link="fie1">
+      <page link="home" container="PageContainer"/>
+      <page link="demo" container="PageContainer">
+        <page link="animation" container="BlockPage"/>
+        <page link="demo1" container="BlockPage"/>
+        <page link="demo2" container="BlockPage"/>
+        <page link="demo3" container="BlockPage"/>
+      </page>
+      <page link="download" container="PageContainer"/>
+      <page link="support" container="PageContainer"/>
+      <page link="contact" container="PageContainer"/>
+      <page link="realize" container="PageContainer"/>
+      <page link="publish" container="PageContainer"/>
+      <page link="privacy" container="PageContainer"/>
+      <page link="terms" container="PageContainer"/>
+      <page link="about" container="PageContainer"/>
+    </page>
+    <page link="dem"/>
+  </pages>
+</project>

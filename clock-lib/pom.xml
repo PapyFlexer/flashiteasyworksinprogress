@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <parent>
+    <artifactId>fie-bundle</artifactId>
+    <groupId>com.flashiteasy</groupId>
+    <version>0.2-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>com.flashiteasy.snow</groupId>
+  <artifactId>snow-lib</artifactId>
+  <packaging>swc</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.servebox.flex</groupId>
+        <artifactId>flex-plugin</artifactId>
+        <version>2.3.1</version>
+        <extensions>true</extensions>
+        <configuration>
+          <locale>en_US</locale>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+      <id>Maven.ServeBox.org</id>
+      <name>ServeBox.org repository</name>
+      <url>http://maven.servebox.org/repository</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>Maven.ServeBox.org</id>
+      <name>ServeBox.org repository</name>
+      <url>http://maven.servebox.org/repository</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <dependencies>
+    <dependency>
+      <groupId>com.adobe.flash.core</groupId>
+      <artifactId>playerglobal</artifactId>
+      <version>1.0</version>
+      <type>swc</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.flashiteasy</groupId>
+      <artifactId>fie-api</artifactId>
+      <version>${version}</version>
+      <type>swc</type>
+    </dependency>
+  </dependencies>
+</project>

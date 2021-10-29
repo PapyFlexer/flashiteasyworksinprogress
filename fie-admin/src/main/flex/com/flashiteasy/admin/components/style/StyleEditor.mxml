@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="100%" backgroundAlpha="0" paddingTop="10" paddingLeft="10" paddingRight="10"
+		 height="100%"
+		 xmlns:textComponents="com.flashiteasy.admin.components.textComponents.*"
+		 creationComplete="setFont()">
+
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.components.validators.StyleNameValidator;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import mx.managers.SystemManager;
+			import com.flashiteasy.admin.utils.FlexComponentsUtils;
+			import com.flashiteasy.api.utils.FontLoader;
+			import mx.controls.RichTextEditor;
+			import com.flashiteasy.api.assets.StyleList;
+			import mx.controls.textClasses.TextRange;
+			import com.flashiteasy.api.text.Style;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.manager.LanguageManager;
+			
+			
+			private var validator : StyleNameValidator;
+			
+			private function setFont():void
+			{
+				editor.fontFamilyCombo.dataProvider = FontLoader.getFontFamilies();//.getFonts();
+				editor.addEventListener(Event.CHANGE , textChanged );	
+				editor.addEventListener(Event.REMOVED_FROM_STAGE , clearToolTip , false , 0 , true );
+				clearEditor();
+				refreshStyles();
+
+			}
+			
+			private function clearToolTip(e : Event ) : void 
+			{
+				styleName.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT));
+			}
+
+			
+			private function textChanged(e:Event):void
+			{
+				callLater(this.setFocus);
+			}
+
+			private function createNewStyle():void
+			{
+				confirm.enabled=true;
+				editMode=false;
+				callLater(clearEditor, []);
+			}
+
+			private function editStyle():void
+			{
+				
+				confirm.enabled=true;
+				editMode = true ;
+				var style:Style=StyleList.getInstance().getStyle(styles.selectedLabel);
+				callLater(initEditor, [style]);
+			}
+			
+			private var editedStyle : Style ;
+			
+			private function initEditor(s:Style):void
+			{
+				editedStyle = s;
+				styleName.text = s.name;
+				editor.textField().setTextFormat( s.getTextFormat());
+				dispatchClick(editor.textArea);
+			}
+			
+			private function reset():void
+			{
+				styleName.text = "";
+				editor.textField().setTextFormat(new TextFormat("_Arial" , 10 ,0 , false , false , false , null , null , TextFormatAlign.LEFT , 0 , 0 , 0 , 0 ));
+				dispatchClick(editor.textArea );
+			}
+
+			private function clearEditor():void
+			{
+				editor.text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
+				editor.textArea.setSelection(0, 1000);
+				editor.enableText(false);
+				editor.textArea.editable=false;
+				editor.textArea.enabled=false;
+				editor.textField().selectable=false;
+				editor.textField().alwaysShowSelection=false;
+				styleForm.visible=true;
+				editor.invalidateDisplayList();
+				editor.invalidateProperties();
+				editor.validateDisplayList();
+				
+				reset();
+			}
+			
+			private function dispatchClick( dispatcher : IEventDispatcher ) : void 
+			{
+				dispatcher.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_UP));
+			}
+
+			private function validate():void
+			{
+				var style:Style;
+				var tf:TextFormat = editor.textField().getTextFormat();
+				if(editMode)
+				{
+					resetError();
+					style=editedStyle;
+					style.align=tf.align;//getAlign();
+					style.bold=tf.bold;//editor.boldButton.selected;
+					style.bullet=tf.bullet;//editor.bulletButton.selected;
+					style.color=tf.color as uint;//editor.colorPicker.value as uint;
+					style.font=tf.font;//editor.fontFamilyCombo.selectedItem as String;
+					style.italic=tf.italic;//editor.italicButton.selected;
+					style.underline=tf.underline;//editor.underlineButton.selected;
+					style.size=tf.size as Number;//Number(editor.fontSizeCombo.selectedItem);
+					saveXML(true);
+					reset();
+				}
+				else
+				{
+					if (styleName.text.length == 0)
+					{
+						setError("enter_a_style_name");
+
+					}
+					else
+					{
+						if( StyleList.getInstance().checkName(styleName.text))
+						{
+							resetError();
+							style=new Style;	
+							style.name=styleName.text;
+							style.align=tf.align;//getAlign();
+							style.bold=tf.bold;//editor.boldButton.selected;
+							style.bullet=tf.bullet;//editor.bulletButton.selected;
+							style.color=tf.color as uint;//editor.colorPicker.value as uint;
+							style.font=tf.font;//editor.fontFamilyCombo.selectedItem as String;
+							style.italic=tf.italic;//editor.italicButton.selected;
+							style.underline=tf.underline;//editor.underlineButton.selected;
+							style.size=tf.size as Number;//Number(editor.fontSizeCombo.selectedItem);
+							addStyle(style);
+							reset();
+						}
+						else
+						{
+							setError("style_name_already_used");
+						}
+					}
+				}
+			}
+			
+			private function resetError():void
+			{
+				styleName.errorString = null;
+				styleName.setStyle("styleName", null);
+			}
+			
+			
+			private function removeError(e:Event):void
+			{
+				resetError();
+				styleName.removeEventListener(Event.CHANGE,removeError);
+			}
+			
+			private function setError( error : String ) : void 
+			{
+				styleName.setStyle("styleName", "TextError");
+				styleName.errorString = Conf.languageManager.getLanguage(error);
+				styleName.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT));
+            	styleName.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER));
+            	if(!styleName.hasEventListener(Event.CHANGE))
+            	{
+					styleName.addEventListener(Event.CHANGE , removeError );
+            	}
+			}
+			
+			private var fms : FileManagerService;
+			
+			private function addStyle(style : Style):void
+			{
+				StyleList.getInstance().addStyle(style);
+				refreshStyles();
+				saveXML();
+			}
+			
+			private function saveXML( reloadXML : Boolean = false ):void
+			{
+				if(reloadXML)
+				{
+					StyleList.getInstance().generateXML();
+				}
+				fms = new FileManagerService();
+				fms.addEventListener( FileManagerService.FILE_SAVED, styleAdded , false , 0 , true );
+				fms.saveContent(Conf.APP_ROOT+"/styles/styles.xml",StyleList.getInstance().getXML());
+			}
+			
+			private function styleAdded( e :Event ) : void 
+			{
+				
+			}
+			
+			private function getAlign():String
+			{
+				switch (editor.alignButtons.selectedIndex)
+				{
+					case 0:
+						return TextFormatAlign.LEFT;
+						break;
+					case 1:
+						return TextFormatAlign.CENTER;
+						break;
+					case 2:
+						return TextFormatAlign.RIGHT;
+						break;
+					case 3:
+						return TextFormatAlign.JUSTIFY;
+						break;
+				}
+				return "";
+			}
+
+			private function styleLabel(data:Object):String
+			{
+				return data.name;
+			}
+			
+			private var _editMode : Boolean = false ;
+			
+			private function set editMode( value : Boolean ) : void 
+			{
+				if( value == false )
+				{
+					//confirm.label = Conf.languageManager.getLanguage('confirm');
+					styleName.enabled = true ; 
+					deleteButton.enabled= false;
+				}
+				else
+				{
+					//confirm.label = Conf.languageManager.getLanguage('edit_style');
+					styleName.enabled = false ;
+					deleteButton.enabled= false;
+				}
+				_editMode = value ;
+				 
+			}
+			
+			private function get editMode () : Boolean 
+			{
+				return _editMode;
+			}
+			
+			public function getLang(s:String):String
+			{
+
+				return Conf.languageManager.getLanguage(s);
+			}
+			
+			private function deleteStyle() : void
+			{
+				StyleList.getInstance().removeStyle(StyleList.getInstance().getStyle(styles.selectedLabel));
+				saveXML();
+				refreshStyles();
+			}
+			
+			private function refreshStyles():void
+			{
+				styles.dataProvider=new Array({name:"none"}).concat(StyleList.getInstance().getStyles());
+				styles.invalidateProperties();
+				styles.invalidateDisplayList();
+				if(styles.selectedLabel == "none" || styles.selectedLabel == null )
+				{
+					edit.enabled = false ;
+					deleteButton.enabled = false ;
+				}
+				else
+				{
+					edit.enabled = true ;
+					deleteButton.enabled = true ;
+				}
+			}
+			
+			private function styleComboChanged( e : Event ) : void 
+			{
+				trace(styles.selectedLabel);
+				if(styles.selectedLabel != "none")
+				{
+					deleteButton.enabled=true;
+					edit.enabled= true;
+				}
+				else
+				{
+					deleteButton.enabled=false;
+					edit.enabled= false;
+				}
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox>
+		<mx:ComboBox id="styles"
+					 labelFunction="styleLabel"
+					 change="styleComboChanged(event)"
+					 />
+		<mx:VBox>
+			<mx:HBox>
+				
+			
+			<mx:Button id="edit"
+					   label="{getLang('edit')}"
+					   width="100"
+					   click="editStyle()" />
+			<mx:Button id="deleteButton"
+						label="{getLang('delete')}"
+						width="100"
+						click="deleteStyle()" />
+			</mx:HBox>
+			<mx:Button id="newStyle"
+					   label="{getLang('new_style')}"
+					   click="createNewStyle()"
+					   width="100"/>
+		</mx:VBox>
+	</mx:HBox>
+	<mx:VBox id="styleForm">
+		<mx:HBox>
+
+			<mx:Label text="{getLang('style_name')}"/>
+			<mx:TextInput id="styleName"/>
+		</mx:HBox>
+		<textComponents:FieRichTextEditor id="editor"/>
+		<mx:Button id="confirm" enabled="false"
+				   label="{getLang('Save')}"
+				   click="validate()"/>
+	</mx:VBox>
+</mx:VBox>

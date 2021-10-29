@@ -1,0 +1,21 @@
+package com.flashiteasy.snow
+{
+	import com.flashiteasy.api.core.FieUIComponent;
+	import com.flashiteasy.api.ioc.IocContainer;
+	import com.flashiteasy.api.library.AbstractLibrary;
+	import com.flashiteasy.api.library.BuiltInLibrary;
+	import com.flashiteasy.api.xml.impl.StandardParameterSetXMLParser;
+	import com.flashiteasy.snow.lib.SnowElementDescriptor;
+	import com.flashiteasy.snow.parameters.SnowEmitterParameterSet;
+	
+	public class ExternalLibrary extends AbstractLibrary
+	{
+		override protected function registerTypes() : void
+		{
+			trace ("registerType snow-lib from inner loaded class");
+			IocContainer.registerType( SnowElementDescriptor, IocContainer.GROUP_FACES, FieUIComponent);
+			IocContainer.registerTypeList( SnowElementDescriptor, IocContainer.GROUP_PARAMETERS,BuiltInLibrary.dimensionArray.concat(BuiltInLibrary.decorationArray.concat(SnowEmitterParameterSet)));
+			IocContainer.registerType( SnowEmitterParameterSet, IocContainer.GROUP_SERIALIZATION, StandardParameterSetXMLParser);
+		}
+	}
+}

@@ -1,0 +1,156 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ * 
+ *
+ */
+ 
+package com.flashiteasy.api.controls {
+	import com.flashiteasy.api.controls.Validator.*;
+	import com.flashiteasy.api.core.IUIElementContainer;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.elements.IFormElementDescriptor;
+
+	/**
+	 * Abstract Descriptor for all form-related controls.
+	 */
+
+	public class FormItemElementDescriptor extends SimpleUIElementDescriptor implements IUIElementDescriptor,IFormElementDescriptor 
+	{
+		
+		private var _validator:IValidator=new NoValidator();
+		private var _error:String;
+		private var _required:Boolean;
+		
+		/**
+		 * 
+		 * @private
+		 */
+		private var _name:String;
+		
+		/**
+		 * 
+		 * records the 'name' property of the form item descriptor class 
+		 * @default FormItem
+		 * 
+		 */
+		public function get name():String
+		{
+			return _name;
+		}
+		/**
+		 * 
+		 * @private
+		 */
+		public function set name( value : String	) : void 
+		{
+			this._name=value;
+		}
+		
+		/**
+		 * 
+		 * @return String to record the value of the formItem. 
+		 * As this class is an Abstract, it must be overriden.
+		 */
+		public function getValue() : String 
+		{
+			// MUST BE OVERRIDDEN
+			return null;
+		}
+		protected override function onComplete():void
+		{
+
+			super.onComplete();
+			end();
+		}
+		/**
+		 * 
+		 * @param value IValidator, sets a Validator to the form item, usually a TextInput control.
+		 */
+		public function set validator(value:IValidator):void
+		{
+			this._validator=value;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 */
+		public function get validator( ):IValidator
+		{
+			return _validator;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 */
+		public function check():Boolean{
+			return _validator.check(this.getValue());
+		}
+		
+		/**
+		 * 
+		 * @param value
+		 */
+		public function set error(value : String) : void 
+		{
+			_error=value;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 */
+		public function get error() : String 
+		{	
+			return _error;
+		}
+		
+		/**
+		 * 
+		 * @param value
+		 */
+		public function set required(value : Boolean) : void {
+			_required=value;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 */
+		public function get required() : Boolean {
+			
+			return _required;
+		}
+		
+		/**
+		 * 
+		 * @return 
+		 */
+		public function getParentForm() : IUIElementContainer
+		{
+			return this.parentBlock;
+		}
+		
+		/**
+		 * 
+		 * @throws Error
+		 */
+		public function resetValues():void
+		{
+			throw new Error("MUST BE OVERRIDDEN");
+		}
+		/**
+		 * 
+		 * @param s
+		 * @throws Error
+		 */
+		public function displayError(s:String):void
+		{
+			throw new Error("MUST BE OVERRIDDEN");
+		}
+	}
+}

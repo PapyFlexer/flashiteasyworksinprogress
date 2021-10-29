@@ -1,0 +1,131 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+
+<!-- {start} :: import required js modules -->
+<script type="text/javascript" language="javascript" src="js/swfobject.js"></script>
+<script type="text/javascript" language="javascript" src="js/swfaddress.js"></script>
+<script type="text/javascript" language="javascript">
+
+
+function resizeSWFH(nHeight) {
+	if(nHeight!="100%")
+		nHeight += "px";
+	document.getElementById("FieAppDiv").style.height = nHeight;
+}
+
+function resizeSWFW(nWidth) {
+	if(nWidth!="100%")
+		nWidth += "px";
+	document.getElementById("FieAppDiv").style.width = nWidth;
+}
+function getScrollY() {
+  var scrOfY = 0;
+  if( typeof( window.pageYOffset ) == 'number' ) {
+    scrOfY = window.pageYOffset;
+  } else if( document.body && document.body.scrollTop  ) {
+    scrOfY = document.body.scrollTop;
+  } else if( document.documentElement && document.documentElement.scrollTop  ) {
+    scrOfY = document.documentElement.scrollTop;
+  }
+  return scrOfY;
+}
+function setScrollY(val)
+{
+	scroll(0,val)
+}
+function getScrollX() {
+  var scrOfX = 0;
+  if( typeof( window.pageXOffset ) == 'number' ) {
+    scrOfX = window.pageXOffset;
+  } else if( document.body && document.body.scrollLeft  ) {
+    scrOfX = document.body.scrollLeft;
+  } else if( document.documentElement && document.documentElement.scrollLeft  ) {
+    scrOfX = document.documentElement.scrollLeft;
+  }
+  return scrOfX;
+}
+function setScrollX(val)
+{
+	scroll(val,0)
+}
+function getHeight() {
+  var myHeight = 0;
+  if( typeof( window.innerHeight ) == 'number' ) {
+    myHeight = window.innerHeight;
+  } else if( document.documentElement && document.documentElement.clientHeight  ) {
+    myHeight = document.documentElement.clientHeight;
+  } else if( document.body && document.body.clientHeight  ) {
+    myHeight = document.body.clientHeight;
+  }
+  return myHeight;
+}
+function getWidth() {
+  var myWidth = 0;
+  if( typeof( window.innerWidth ) == 'number' ) {
+    myWidth = window.innerWidth;
+  } else if( document.documentElement && document.documentElement.clientWidth  ) {
+    myWidth = document.documentElement.clientWidth;
+  } else if( document.body && document.body.clientWidth  ) {
+    myWidth = document.body.clientWidth;
+  }
+  return myWidth;
+}
+</script>
+<script type="text/javascript">
+
+			var flashvars = {};
+			var attributes = {id: "FieAppDiv"};
+var params = {};
+params.menu = "false";
+params.quality = "high";
+params.scale = "noscale";
+params.salign = "tl";
+params.bgcolor = "#ffffff";
+params.allowFullScreen = "true";
+params.allowScriptAccess = "always";
+swfobject.embedSWF("FieApp.swf", "FieAppDiv", "1200", "700", "0", "expressInstall.swf", flashvars, params, attributes);
+</script>
+<style type="text/css">
+			html{
+	background: #FFFFFF;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+}
+body{
+	background: #FFFFFF;
+	margin-right: 0px;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	height:100%;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin: 0; /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
+	padding: 0;
+	text-align: center; /* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the #container selector */
+	font-family: Helvetica, Geneva, Arial, sans-serif;
+	font-size: 13px
+}
+
+/*FLASH*/
+#FieAppDiv{
+ 	margin: 0 auto;
+ 	padding: 0px 0px 0px 0px;
+ 	border: none;
+}
+		</style>
+<!-- {end} -->
+
+</head>
+<body>
+<div id="FieAppDiv">
+<!-- Alternative content if somehow expressInstall.swf won't be able to auto-update flash player -->
+<center><br /><a href="http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash" target="_blank">You need to upgrade your Flash Player</a><br /><br /><img src="http://www.adobe.com/images/shared/download_buttons/get_adobe_flash_player.png"></center>
+</div>
+</body>
+</html>

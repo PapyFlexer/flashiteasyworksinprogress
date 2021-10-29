@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="255" key="DIALOG_WIDTH"/>
+		<item value="267" key="DIALOG_Y_ORIGIN"/>
+		<item value="391" key="DIALOG_HEIGHT"/>
+		<item value="832" key="DIALOG_X_ORIGIN"/>
+		<item value="1|Lucida Grande|11.0|0|CARBON|1|Lucida Grande" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="true" key="wrap"/>
+		<item value="false" key="isRegEx"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="incremental"/>
+		<item value="true" key="wholeword"/>
+		<item value="usradminlevel" key="selection"/>
+		<list key="findhistory">
+			<item value="usradminlevel"/>
+			<item value="doLogUser"/>
+			<item value="checkLogin"/>
+			<item value="enduser"/>
+			<item value="simple"/>
+			<item value="PROJECTS_INFO_REFRESING"/>
+			<item value="animated"/>
+			<item value="loading font from swf :"/>
+		</list>
+		<list key="replacehistory">
+			<item value="PROJECTS_INFO_REFRESHING"/>
+			<item value="AlignmentUtils"/>
+			<item value="tw"/>
+			<item value="child_list.length"/>
+			<item value="childIndex"/>
+			<item value="headerSprite"/>
+			<item value="headerSize"/>
+			<item value="child_list"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item value="388" key="DIALOG_Y_ORIGIN"/>
+		<item value="605" key="DIALOG_X_ORIGIN"/>
+	</section>
+</section>

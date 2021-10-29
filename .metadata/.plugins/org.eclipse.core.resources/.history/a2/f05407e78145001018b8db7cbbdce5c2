@@ -1,0 +1,113 @@
+package com.flashiteasy.admin.xml
+{
+	import com.flashiteasy.admin.ApplicationController;
+	import com.flashiteasy.admin.conf.Conf;
+	import com.flashiteasy.admin.fieservice.FileManagerService;
+	import com.flashiteasy.admin.popUp.MessagePopUp;
+	import com.flashiteasy.api.core.BrowsingManager;
+	import com.flashiteasy.api.core.project.Page;
+	import com.flashiteasy.api.core.project.XMLFile;
+	
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.TimerEvent;
+	import flash.utils.Dictionary;
+	import flash.utils.Timer;
+	
+	import mx.core.Application;
+	import mx.managers.CursorManager;
+
+	public class XmlSave extends EventDispatcher
+	{
+		private static var pageModificationList:Dictionary=new Dictionary();
+		private static var fms:FileManagerService=new FileManagerService();
+		private static var alert:MessagePopUp;
+		private static var _saveTimer:Timer;
+		
+		
+		private static var saver:XmlSerializeGT;
+
+		public static function temporarySave():void
+		{
+			_temporaryPage=BrowsingManager.getInstance().getCurrentPage();
+			var hasToBeSave:Boolean=ApplicationController.getInstance().getHasToBeSave(_temporaryPage);
+			if (hasToBeSave)
+			{
+				CursorManager.setBusyCursor()
+				alert=new MessagePopUp(Conf.languageManager.getLanguage("Prepare_for_saving..."), mx.core.Application.application as DisplayObject, true,true,false);
+				/* _saveTimer=new Timer(300);
+				_saveTimer.addEventListener(TimerEvent.TIMER, temporarySaving);
+				_saveTimer.start(); */
+				saver = new XmlSerializeGT();
+				saver.addEventListener(Event.COMPLETE, temporarySaving);
+				saver.serializePage(_temporaryPage);
+			}
+		}
+		private static var _temporaryPage : Page;
+		private static function temporarySaving(e:Event):void
+		{
+			trace ("GT complete");
+			saver.removeEventListener(Event.COMPLETE, temporarySaving);
+/* 			_saveTimer.stop();
+			_saveTimer.removeEventListener(TimerEvent.TIMER, temporarySaving);
+			_temporaryPage.xml=XmlSerializer.serializePage(_temporaryPage);
+ */			_temporaryPage.xml = saver.pageXML
+ 			ApplicationController.getInstance().removeFromToSave(_temporaryPage);
+			_temporaryPage = null;
+			alert.closePopUp();
+			CursorManager.removeBusyCursor();
+		}
+
+		public static function saveCurrentPage():void
+		{
+			alert=new MessagePopUp(Conf.languageManager.getLanguage("Prepare_for_saving..."), mx.core.Application.application as DisplayObject, true);
+			_saveTimer=new Timer(300);
+			_saveTimer.addEventListener(TimerEvent.TIMER, savingPage);
+			_saveTimer.start();
+		}
+
+		private static function savingPage(e:Event):void
+		{
+
+			_saveTimer.stop();
+			_saveTimer.removeEventListener(TimerEvent.TIMER, savingPage);
+			var page:Page=BrowsingManager.getInstance().getCurrentPage();
+			var hasToBeSave:Boolean=ApplicationController.getInstance().getHasToBeSave(page);
+			if (hasToBeSave)
+			{
+				page.xml=XmlSerializer.serializePage(page);
+				ApplicationController.getInstance().removeFromToSave(page);
+			}
+			alert.changeMessage(Conf.languageManager.getLanguage("Saving..."));
+			fms.addEventListener(FileManagerService.FILE_SAVED, saveSuccess, false, 0, true);
+			fms.addEventListener(FileManagerService.ERROR, saveError, false, 0, true);
+			if (BrowsingManager.getInstance().editType == "xml")
+			{
+				fms.saveContent(Conf.APP_ROOT + "/xml_library/" + XMLFile(page).name + ".xml", XMLFile(page).xml);
+			}
+			else
+			{
+				fms.saveContent(Conf.APP_ROOT + "/xml/" + page.getPageUrl() + ".xml", page.xml);
+			}
+
+		}
+
+		private static function saveError(e:Event):void
+		{
+			fms.removeEventListener(FileManagerService.ERROR, saveError);
+			//throw new Error(" Error : couldn t save XML ");
+			alert.changeMessage(Conf.languageManager.getLanguage("Error_while_saving"));
+			alert.showOk();
+		}
+
+		private static function saveSuccess(e:Event):void
+		{
+			fms.removeEventListener(FileManagerService.FILE_SAVED, saveSuccess);
+			trace("XML saved");
+			alert.closePopUp();
+		}
+
+
+	}
+}

@@ -1,0 +1,39 @@
+package com.flashiteasy.api.controls.Validator
+{
+	import com.flashiteasy.api.controls.TextInputElementDescriptor;
+	
+	import fl.controls.TextInput;
+	
+	public class RestrictValidator extends AbstractValidator implements IValidator
+	{
+		private var _restrictString:String;
+		
+		public function RestrictValidator(restr : String)
+		{
+			_restrictString = restr;
+			
+			/* var ti:TextInput = TextInputElementDescriptor(this.owner).getTextInput();
+			ti.restrict = _restrictString; */
+		}
+		
+		override public function check(value:String):Boolean
+		{
+			return true;
+		}
+		
+		override public function getErrorString():String
+		{
+			return null;
+		}
+		
+		public function get restrictString():String
+		{
+			return _restrictString;
+		}
+		public function set restrictString(value:String):void
+		{
+			_restrictString = value;
+		}
+		
+	}
+}

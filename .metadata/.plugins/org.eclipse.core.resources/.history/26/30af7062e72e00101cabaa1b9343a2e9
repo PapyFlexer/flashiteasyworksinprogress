@@ -1,0 +1,226 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ * 
+ *
+ */
+ 
+package com.flashiteasy.api.controls
+{
+	import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+	import com.flashiteasy.api.core.elements.IBackgroundColorableElementDescriptor;
+	import com.flashiteasy.api.core.elements.IColorMatrixElementDescriptor;
+	import com.flashiteasy.api.core.elements.IImgElementDescriptor;
+	import com.flashiteasy.api.core.elements.IResizableElementDescriptor;
+	import com.flashiteasy.api.core.elements.ISizableElementDescriptor;
+	import com.flashiteasy.api.core.elements.ISmoothElementDescriptor;
+
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.net.URLRequest;
+
+
+	public class ImgElementDescriptor extends SimpleUIElementDescriptor implements IBackgroundColorableElementDescriptor, IImgElementDescriptor, IResizableElementDescriptor, ISizableElementDescriptor, IColorMatrixElementDescriptor, ISmoothElementDescriptor
+	{
+
+		// ==== parameters
+
+		private var isResizable:Boolean;
+		private var _mode:String;
+		private var source:String;
+		private var smooth:Boolean;
+
+		// === Variables pour le chargement de l image
+
+		private var img:Loader;
+		private var loaded:Boolean=false;
+
+		// ==== Variable padding ==========
+
+		private var paddingTop:Number;
+		private var paddingRight:Number;
+		private var paddingLeft:Number;
+		private var paddingBottom:Number;
+
+
+		protected override function initControl():void
+		{
+			img=new Loader();
+		}
+
+
+		public function setImage(source:String):void
+		{
+			if (source != null && this.source != source)
+			{
+				loaded=false;
+				this.source=source;
+				var ul:URLRequest=new URLRequest(AbstractBootstrap.getInstance().getBaseUrl() + "/" + this.source);
+				img.contentLoaderInfo.addEventListener(Event.COMPLETE, init, false, 0, true);
+				img.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, imageError, false, 0, true);
+				img.load(ul);
+			}
+		}
+
+		private function imageError(e:Event):void
+		{
+			end();
+		}
+
+		public function setResize(resize:Boolean, mode:String):void
+		{
+			isResizable=resize;
+			_mode=mode;
+		}
+
+		public function setPadding(paddingLeft:Number, paddingRight:Number, paddingTop:Number, paddingBottom:Number):void
+		{
+			this.paddingLeft=paddingLeft;
+			this.paddingRight=paddingRight;
+			this.paddingBottom=paddingBottom;
+			this.paddingTop=paddingTop;
+		}
+
+		// ======== Fonctions complete =========
+
+		override protected function drawContent():void
+		{
+			if (source == null || source == "" )
+			{
+				end();
+			}
+			else
+			{
+				if (isResizable && loaded)
+				{
+					var ratioW:Number=Math.abs(width) / img.contentLoaderInfo.width;
+					var ratioH:Number=Math.abs(height) / img.contentLoaderInfo.height;
+					var ratioMin:Number=Math.min(ratioH, ratioW);
+					var ratioMax:Number=Math.max(ratioH, ratioW);
+
+					if (_mode == "scale")
+					{
+						img.height=img.contentLoaderInfo.height * ratioMin;
+						img.width=img.contentLoaderInfo.width * ratioMin;
+
+					}
+					else if (_mode == "fit")
+					{
+						img.width=Math.abs(width);
+						img.height=Math.abs(height);
+					}
+					else
+					{
+						img.width=img.contentLoaderInfo.width;
+						img.height=img.contentLoaderInfo.height;
+					}
+					img.scaleX=width < 0 ? -Math.abs(img.scaleX) : Math.abs(img.scaleX);
+					img.scaleY=height < 0 ? -Math.abs(img.scaleY) : Math.abs(img.scaleY);
+
+				}
+				else
+				{
+					img.width=Math.abs(width);
+					img.height=Math.abs(height);
+				}
+
+				if (img.content is Bitmap)
+				{
+					Bitmap(img.content).smoothing=smooth;
+				}
+			}
+		}
+
+		private function init(e:Event):void
+		{
+			face.addChild(img);
+			loaded=true;
+			drawContent();
+			end();
+		}
+
+		//===============================
+
+		override public function getDescriptorType():Class
+		{
+			return ImgElementDescriptor;
+		}
+
+		public function removeImage():void
+		{
+			if (source != null)
+			{
+				loaded=false;
+				img.unload();
+				img.contentLoaderInfo.removeEventListener(Event.INIT, init);
+				img.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, imageError);
+				source=null;
+				if (img.parent != null)
+				{
+					face.removeChild(img);
+				}
+			}
+		}
+
+		public override function remove(e:Event):void
+		{
+			super.remove(e);
+			removeImage();
+		}
+
+		// === Fonctions specifiques aux images 
+
+		public function changeImage(URL:String):void
+		{
+			removeBitmap();
+			removeImage();
+			setImage(URL);
+		}
+
+
+		public function hasImage():Boolean
+		{
+			if (source == null)
+				return false;
+			return true;
+		}
+
+		public function isValid():Boolean
+		{
+			return loaded;
+		}
+
+		public function setSmooth(value:Boolean):void
+		{
+			smooth=value;
+
+		}
+
+		// === Fonctions generiques aux controls ====
+
+		public override function destroy():void
+		{
+			removeImage();
+			img=null;
+			super.destroy();
+		}
+
+
+		override public function setContent(a:Array):void
+		{
+			source=a.pop();
+			changeImage(source);
+		}
+
+		override public function getContent():Array
+		{
+			var ar:Array=new Array();
+			ar.push(source);
+			return ar;
+		}
+	}
+}

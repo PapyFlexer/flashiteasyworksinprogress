@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 paddingLeft="10" height="100%">
+
+
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.browser.BrowserAction;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import com.flashiteasy.admin.font.FontCompiler;
+			import com.flashiteasy.admin.utils.FlexComponentsUtils;
+			import mx.core.Application;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.popUp.MessagePopUp;
+			import com.flashiteasy.api.utils.FontLoader;
+			import com.flashiteasy.admin.font.FontReader;
+			import com.flashiteasy.admin.event.FieAdminEvent;
+			import com.flashiteasy.admin.browser.FolderData;
+			import com.flashiteasy.admin.utils.TextInputErrorUtils;
+
+			[Bindable]
+			public var description:String;
+			[Bindable]
+			public var inputLabel:String=Conf.languageManager.getLanguage("Custom_Family");
+			[Bindable]
+			public var inputError:String;
+			[Bindable]
+			public var inputValue:String;
+			[Bindable]
+			public var comboLabel:String=Conf.languageManager.getLanguage("Font_Family");
+			[Bindable]
+			public var familyValue:Array;
+
+			private var _fd:FolderData;
+			private var _ba:BrowserAction;
+			private var fms:FileManagerService;
+
+			public function init(ba:BrowserAction):void
+			{
+				fms=new FileManagerService;
+				_ba = ba;
+				_fd=ba.getFd();
+				_fd.addEventListener(FolderData.CHANGED_FILE, loadFontInfo);
+				_fd.addEventListener(FolderData.CHANGED_DEFAULT_DIRECTORY, changeDefault);
+				_fd.addEventListener(FolderData.CHANGED_DIRECTORY, changeDirectory);
+			}
+
+			private var alert:MessagePopUp;
+
+			private function changeDefault(e:Event):void
+			{
+				trace("Change Default");
+				compile.enabled=false;
+				remove.enabled=true;
+			}
+
+			private function changeDirectory(e:Event):void
+			{
+				trace("Change Directory");
+			}
+
+			private function loadFontInfo(e:Event):void
+			{
+				//e.target.removeEventListener(FieAdminEvent.COMPLETE, loadFontInfo);
+
+				var fontName:String=e.target.currentFile; //.getSelectedFileName();
+				var currentdirectory:String=FolderData(e.target).currentDirectory != "" ? "/" + FolderData(e.target).currentDirectory : "";
+				var url:String=FolderData(e.target).default_directory + currentdirectory;
+				var actionType:String=url.indexOf("ttf") == -1 ? "remove" : "compile";
+				switch (actionType)
+				{
+					case "compile":
+
+						compile.enabled=true;
+						remove.enabled=false;
+						if (FontReader.fontDictionnary[fontName] == null && e.target.hasSelectableFile)
+						{
+							var fontReader:FontReader=new FontReader(url); //Conf.APP_ROOT + "/font");
+							fontReader.addEventListener(FontReader.COMPLETE, fontReadSuccess);
+							fontReader.addEventListener(FontReader.ERROR, fontReadFail);
+							fontReader.readFont(fontName);
+						}
+						else
+						{
+							fill(fontName);
+						}
+
+						break;
+					case "remove":
+
+						fontName=fontName.split(".")[0];
+						family_combo.enabled=false;
+						input_family.enabled=false;
+						if (FontLoader.hasFont(fontName))
+						{
+
+							compile.enabled=false;
+							remove.enabled=true;
+							trace("haveFont");
+							var font:Font=FontLoader.getFont(fontName);
+							if (font != null)
+							{
+								var o:Object={fontsubfamily: font.fontStyle, fontfamily: font.fontName};
+								makeAboutText(o);
+								input_family.text=font.fontName;
+								FlexComponentsUtils.setSimpleComboSelection(family_combo, font.fontName);
+								trace("Style :: " + font.fontStyle + " family :: " + font.fontName);
+							}
+							else
+							{
+								trace("the font was loaded but overriden by another one it should be delete");
+								text_infos.htmlText=getLang("The_font")+" <B>" + fontName + " </B>"+getLang("was_loaded_but_overriden");
+							}
+						}
+						else
+						{
+
+							text_infos.htmlText=getLang("The_font")+" <B>" + fontName + " </B>"+getLang("is_not_loaded")+"<BR>";
+							compile.enabled=true;
+							remove.enabled=false;
+							trace("noFont");
+						}
+
+						break;
+				}
+			}
+
+			private function fill(fontName:String):void
+			{
+
+				var contentArray:Object=FontReader.getFontInfo(fontName);
+				if (contentArray != null)
+				{
+					FlexComponentsUtils.setSimpleComboSelection(family_combo, "_" + contentArray.fontfamily);
+					if (family_combo.selectedIndex == -1)
+					{
+						family_combo.editable=true;
+					}
+					else
+					{
+						family_combo.editable=false;
+					}
+					//selectFamily(contentArray.fontfamily);
+					input_family.text=contentArray.fontfamily;
+					makeAboutText(contentArray);
+				}
+
+			}
+
+			private function makeAboutText(contentArray:Object):void
+			{
+				var infoStr:String="";
+				for (var s:String in contentArray)
+				{
+					infoStr+="<B>" + getLang(s) + ": </B> " + contentArray[s] + "<BR>";
+				}
+				text_infos.htmlText=infoStr;
+			}
+
+			private function fontReadSuccess(e:Event):void
+			{
+				fill(e.target.fontName);
+			}
+
+			private function fontReadFail(e:Event):void
+			{
+				alert=new MessagePopUp(Conf.languageManager.getLanguage("Font_not_readed"), Application.application as DisplayObject, true);
+				alert.showOk();
+			}
+
+			public function setError(error:String):void
+			{
+				//TextInputErrorUtils.showError( input_error , error );	
+			}
+
+			private function compileFont(e:Event):void
+			{
+				var fontName:String=_fd.currentFile.split(".")[0]; //.getSelectedFileName();
+				var currentdirectory:String=_fd.currentDirectory != "" ? "/" + _fd.currentDirectory : "/";
+				var url:String=_fd.default_directory + currentdirectory;
+				var actionType:String=url.indexOf("ttf") == -1 ? "remove" : "compile";
+				switch (actionType)
+				{
+					case "compile":
+						//var url:String=_fd.default_directory + "/" + _fd.currentDirectory;
+						//var font:String=_fd.currentFile;
+						var contentArray:Object=FontReader.getFontInfo(_fd.currentFile);
+						var fontSimplify:String=fontName.replace(/[^\w|\d|_]/g, '');
+						//var loader:FontLoader=new FontLoader(Conf.APP_ROOT + "/font"); //baseURL+"/font"
+						if (FontLoader.hasFont(fontSimplify))
+						{
+							alert=new MessagePopUp(Conf.languageManager.getLanguage("The_font_") + fontName + Conf.languageManager.getLanguage("_is_already_loaded_f"), Application.application as DisplayObject, true);
+							alert.showOk();
+						}
+						else
+						{
+							var fontfamily:String=input_family.text; //contentArray.fontfamily;
+							var fontweight:String=(contentArray.fontsubfamily.indexOf("Bold") == -1 && contentArray.fontsubfamily.indexOf("bold") == -1) ? "normal" : "bold";
+							var fontstyle:String=contentArray.fontsubfamily.indexOf("Italic") == -1 ? "normal" : "italic";
+							var fontCompiler:FontCompiler=new FontCompiler(url); //Conf.APP_ROOT + "/font");
+							fontCompiler.compileFont(fontName, fontfamily, fontweight, fontstyle);
+							fontCompiler.addEventListener(FontCompiler.COMPLETE, fontLoadSuccess);
+							fontCompiler.addEventListener(FontCompiler.ERROR, fontLoadFail);
+							alert=new MessagePopUp(Conf.languageManager.getLanguage("Loading_Font"), Application.application as DisplayObject, true);
+						}
+						break;
+					case "remove":
+
+						var loader:FontLoader=new FontLoader(url);
+						loader.addEventListener(FontLoader.ERROR, loadError);
+						loader.addEventListener(FontLoader.COMPLETE, loadComplete);
+						alert=new MessagePopUp(Conf.languageManager.getLanguage("Loading_Font"), Application.application as DisplayObject, true);
+						loader.loadSWF(fontName);
+						break;
+				}
+			}
+
+
+
+			private function removeFont(e:Event):void
+			{
+
+				var fontName:String=_fd.currentFile.split(".")[0];
+				FontLoader.removeFont(fontName);
+				fms.saveContent(Conf.APP_ROOT + "/config/fonts.txt", FontLoader.getFontList().join("\n"));
+				
+				_fd.dispatchEvent(new Event(FolderData.CHANGED_FILE));
+			}
+
+			private function loadError(e:Event):void
+			{
+				_fd.dispatchEvent(new Event(FolderData.CHANGED_FILE));
+				alert.changeMessage(Conf.languageManager.getLanguage("Font_not_loaded"));
+				alert.showOk();
+			}
+
+			private function loadComplete(e:Event):void
+			{
+				fms.appendToFile(Conf.APP_ROOT + "/config/fonts.txt", "\n" + e.target.fontName);
+
+				_fd.dispatchEvent(new Event(FolderData.CHANGED_FILE));
+				alert.changeMessage(Conf.languageManager.getLanguage("Success_loading_font"));
+				alert.showOk();
+			}
+
+			private function fontLoadSuccess(e:Event):void
+			{
+				
+				//_fd.dispatchEvent(new Event(FolderData.CHANGED_DEFAULT_DIRECTORY));
+				//_ba.getFolder();
+				alert.changeMessage(Conf.languageManager.getLanguage("Success_loading_font"));
+				alert.showOk();
+				fms.appendToFile(Conf.APP_ROOT + "/config/fonts.txt", "\n" +FontCompiler(e.target).fontName);
+				fms.addEventListener(FileManagerService.DATA_ADDED, refreshTree);
+				//callLater(refreshTree,[FontCompiler(e.target).fontName]);
+				
+			}
+			
+			private function refreshTree(e:Event/*name:String*/):void
+			{
+				fms.removeEventListener(FileManagerService.DATA_ADDED, refreshTree);
+				_fd.dispatchEvent(new Event(FolderData.CHANGED_DEFAULT_DIRECTORY));
+				//_ba.getFolder();
+			}
+			private function fontLoadFail(e:Event):void
+			{
+				//_fd.dispatchEvent(new Event(FolderData.CHANGED_DEFAULT_DIRECTORY));
+				alert.changeMessage(Conf.languageManager.getLanguage("Font_not_loaded"));
+				alert.showOk();
+			}
+			public function getLang(s:String):String
+				{
+					return Conf.languageManager.getLanguage(s);
+				}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%">
+		<mx:Label id="input_label"
+				  text="{inputLabel}"/>
+		<mx:Spacer width="100%"/>
+		<mx:TextInput id="input_family"
+					  text="{inputValue}"
+					  width="160"/>
+	</mx:HBox>
+	<mx:HBox width="100%">
+		<mx:Label id="combo_label"
+				  text="{comboLabel}"/>
+		<mx:Spacer width="100%"/>
+		<mx:ComboBox id="family_combo"
+					 dataProvider="{familyValue}"
+					 width="160"/>
+	</mx:HBox>
+	<mx:HBox width="100%">
+		<mx:Text id="text_infos"
+				 width="100%"/>
+	</mx:HBox>
+	<mx:Spacer width="100%" height="100%"/>
+	<mx:HBox width="100%">
+		<mx:Button id="remove"
+				   label="{getLang('Remove_Font')}"
+				   click="removeFont(event)"
+				   enabled="false"/>
+		<mx:Spacer width="100%"/>
+		<mx:Button id="compile"
+				   label="{getLang('Compile_Font')}"
+				   click="compileFont(event)"/>
+	</mx:HBox>
+
+</mx:VBox>
+

@@ -1,0 +1,32 @@
+package com.flashiteasy.snow.parameters
+{
+	import com.flashiteasy.api.core.AbstractParameterSet;
+	import com.flashiteasy.api.core.IDescriptor;
+	import com.flashiteasy.snow.lib.ISnowableElementDescriptor;
+
+	[ParameterSet(description="Snow", type="Reflexion",  groupname="Emitter")]
+	public class SnowEmitterParameterSet extends AbstractParameterSet
+	{
+
+
+		override public function apply(target:IDescriptor):void
+		{
+			ISnowableElementDescriptor( target ).setSnowStorm(_flakesQuantity); 
+		} 
+
+		private var _flakesQuantity : uint = 100;
+		
+		[Parameter(type="Number", defaultValue="100",  row="0", sequence="0", label="Nb")]
+		public function get numberOfFlakes() : uint
+		{
+			return _flakesQuantity;
+		}
+		
+		public function set numberOfFlakes( value : uint ) : void
+		{
+			_flakesQuantity = value;
+		}
+		
+		
+	}
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CommitComments>	<CommitComment>Added 2 things :
+- a simple condition that prevents a double slash in the font compiler path parameters
+- an initialization of the env var DYLD_LIBRARY_PATH before sending the compilation command : it fixes some recurrent problem with font cimpilation on some macs</CommitComment>
+	<CommitComment>oops xml library was forgotten</CommitComment>
+	<CommitComment>First commit</CommitComment>
+	<CommitComment>utility for page export as bitmap</CommitComment>
+	<CommitComment>Added a FLVPlayer Component with its skins</CommitComment>
+	<CommitComment>Dynamic list now reckognizes the innerLink Action in template</CommitComment>
+	<CommitComment>tentative de reparation de l&apos;err1053</CommitComment>
+	<CommitComment>DynamicList is now working not only with images, but also with video, youtube and dailymotion</CommitComment>
+	<CommitComment>Changed the way the Carrousel plays in the list : the carrousel speed is now set using mouse position relative to list horizontal center (ie: reverse movement when left of center, maximum speed at left and right horizontal bounds)</CommitComment>
+	<CommitComment>CloneElementDescriptor works better if not perfectly....</CommitComment>
+</CommitComments>

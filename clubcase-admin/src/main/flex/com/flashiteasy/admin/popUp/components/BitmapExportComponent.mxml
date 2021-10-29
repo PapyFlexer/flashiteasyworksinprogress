@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:components="com.flashiteasy.admin.components.*"
+		 width="280"
+		 initialize="init()"
+		 paddingBottom="10"
+		 paddingLeft="10"
+		 paddingRight="10"
+		 paddingTop="10">
+		 	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import com.flashiteasy.admin.visualEditor.VisualSelector;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+			import com.flashiteasy.admin.utils.BitmapUtils;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.core.IUIElementDescriptor;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.admin.browser.FileManager;
+
+			private var fms:FileManagerService;
+
+			[Bindable]
+			public var selectedControl : IUIElementDescriptor;
+			[Bindable]
+			public var pathToExportFolder : String;
+			[Bindable]
+			public var nameOfExportedFile : String;
+			
+			private function init() : void
+			{
+				
+			}
+
+			public function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+			
+			public function doExport( e:Event ) : void
+			{
+				if ( VisualSelector.getInstance().getSelectedElement() != null)
+				{
+					fms = new FileManagerService();
+					selectedControl = VisualSelector.getInstance().getSelectedElement();
+					var type : String = exporttype.selectedValue == 0 ? "png" : "jpg";
+					var fileName : String = this.filename.text =="" ? selectedControl.uuid + "." + type : this.filename.text+ "." + type;
+					var bytes : String = BitmapUtils.generateBitmap( Sprite(selectedControl.getFace()), type );
+					fms.addEventListener(FileManagerService.EXPORT_BITMAP, onExportComplete);
+					fms.addEventListener(FileManagerService.ERROR, onExportComplete);
+					fms.exportBitmap( fileName, "", bytes );
+				}
+			}
+			
+			private function onExportComplete( e : Event ) : void
+			{
+				//trace (e.type);
+				fms.removeEventListener(FileManagerService.EXPORT_BITMAP, onExportComplete);
+				fms.removeEventListener(FileManagerService.ERROR, onExportComplete);
+				switch (e.type)
+				{
+
+					//export ok
+					case "filemanager_export_bitmap":
+						Alert.show(getLang("Export_created"), getLang("Export"));
+						break;
+
+					//error
+					case "filemanager_error":
+						Alert.show(getLang("Error"), getLang("Export"));
+						break;
+				}
+			}
+
+		]]>
+	</mx:Script>
+	<mx:Label id="title" text="{getLang( 'Export_selected_element_on_stage' )}" />
+	<mx:RadioButtonGroup id="exporttype" />
+	<mx:RadioButton id="png" label="{getLang( 'Export_as_PNG' )}" value="0" groupName="exporttype" selected="true" />
+	<mx:RadioButton id="jpg" label="{getLang( 'Export_as_JPG' )}" value="1" groupName="exporttype" />
+	<mx:Label id="filenamelabel" text="{getLang( 'Name_of_the_file_to_export' )}" />
+	<mx:TextInput id="filename" text="" width="260" />
+	<mx:HBox horizontalAlign="right">
+		<mx:Spacer width="180" />
+		<mx:Button id="exportBtn" label="{getLang( 'Export' )}" click="doExport( event )" />
+	</mx:HBox>
+</mx:VBox>

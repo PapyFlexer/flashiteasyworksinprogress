@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" creationComplete="init()" xmlns:components="com.flashiteasy.admin.components.*">
+<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.xml.XmlSave;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import com.flashiteasy.api.utils.NameUtils;
+			import mx.skins.halo.ButtonBarButtonSkin;
+			import mx.events.ItemClickEvent;
+			import com.flashiteasy.admin.popUp.MessagePopUp;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.admin.utils.EditorUtil;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.popUp.InputStringPopUp;
+			import com.flashiteasy.api.selection.XMLFileList;
+			import com.flashiteasy.api.core.project.XMLFile;
+			import com.flashiteasy.api.utils.StringUtils;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.assets.XMLContainerLoader;	
+			import mx.controls.buttonBarClasses.ButtonBarButton;
+		
+		private var fms : FileManagerService
+		private function init():void
+		{
+			fms = new FileManagerService();
+			fms.addEventListener(FileManagerService.FILE_CREATED , xmlCreated );
+			fms.addEventListener(FileManagerService.ERROR , creationError ) ;
+			toolBar.callLater(initToolBar);
+		}
+	
+		private function initToolBar():void
+		{
+			toolBar.disableAll();
+			toolBar.addButton.enabled = true ;
+			toolBar.addEventListener( ItemClickEvent.ITEM_CLICK , selectButton ) ;
+			//toolBar.addButton.addEventListener( MouseEvent.CLICK , startCreatingXML ) ;
+		}
+		
+		private function selectButton(e:ItemClickEvent):void
+		{
+			var item:ButtonBarButton =toolBar.getChildAt(e.FieAdmin) as ButtonBarButton;
+			var itemId : String =toolBar.dataProvider[e.FieAdmin].id;
+			switch (itemId)
+			{
+				case "delete":
+					break;
+				case "cut":
+					break;
+				case "copy":
+					break;
+				case "paste":
+					break;
+				case "add":
+					startCreatingXML();
+					break;
+			}
+		}
+		
+		private var namePopUp  : InputStringPopUp ;
+		
+		private function startCreatingXML () : void 
+		{
+			namePopUp=new InputStringPopUp();
+			namePopUp.description=Conf.languageManager.getLanguage("New_XML_Container");
+			namePopUp.label=Conf.languageManager.getLanguage("xml_name")+": ";
+			namePopUp.setInputDefaultValue(EditorUtil.findUniqueName("XMLContainer", XMLFileList.getInstance().getXMLNames()));
+			namePopUp.addEventListener(InputStringPopUp.SUBMIT, namePopUpHandler);
+			namePopUp.addEventListener(PopUp.CLOSED, creationCancel);
+		}
+		
+		private function creationCancel(e:Event):void
+		{
+			namePopUp.removeEventListener(PopUp.CLOSED, creationCancel);
+			namePopUp.removeEventListener(InputStringPopUp.SUBMIT, namePopUpHandler);
+		}
+		
+		public function creationError ( e : Event ) : void 
+		{
+			var msg : MessagePopUp = new MessagePopUp(  Conf.languageManager.getLanguage("couldn't_create_xml"));
+			msg.showOk();
+		}
+		
+		private function namePopUpHandler ( e : Event ) : void 
+		{
+			
+			
+			var name : String = namePopUp.getInput();
+			
+			if( XMLFileList.getInstance().getXMLNames().indexOf(name) != -1 )
+			{
+				namePopUp.setError(Conf.languageManager.getLanguage("name_already_used"));
+			}
+			else
+			{
+				namePopUp.removeEventListener(PopUp.CLOSED, creationCancel);
+				namePopUp.removeEventListener(InputStringPopUp.SUBMIT, namePopUpHandler);
+				namePopUp.closePopUp();
+				xmls.selectedItem=name;
+				fms.createFile( Conf.SERVICE_URL + "/xml_library/" + name + ".xml" , "<page></page>");
+			}
+			
+		}
+		
+		private function xmlCreated( e : Event ) : void 
+		{
+			var msg : MessagePopUp = new MessagePopUp(  Conf.languageManager.getLanguage("xml_created"));
+			msg.showOk();
+			var name : String = namePopUp.getInput();
+			var newXML : XMLFile = new XMLFile( name ) ;
+			newXML.setXML(new XML("<page></page>"));
+			fms.appendToFile(Conf.SERVICE_URL + "/xml_library/xml_container_list.txt" , "\n"+name);
+			BrowsingManager.getInstance().showXML(newXML);
+			update();
+		}
+		
+		public function update() : void 
+		{
+			callLater( updateDataProvider );
+		}
+		
+		private function updateDataProvider():void
+		{
+			xmls.dataProvider = XMLFileList.getInstance().getXMLNames();
+		}
+		
+		private function XMLSelected( e : Event ) : void 
+		{
+			XmlSave.temporarySave();
+			var item : String = xmls.selectedItem.toString();
+			var xml : XMLFile = XMLFileList.getInstance().findXML(item);
+			BrowsingManager.getInstance().showXML( xml );
+		}
+		
+		
+		]]>
+	</mx:Script>
+	<mx:List id="xmls" width="100%"
+		itemClick="XMLSelected(event)"/>
+	<components:FileManipulationBar id="toolBar" />
+</mx:VBox>

@@ -1,0 +1,14 @@
+package com.flashiteasy.api.controls.Validator {
+
+	/**
+	 * Flash'Iteasy
+	 * Fie team is
+	 * dany, didier, gilles
+	 * & many thanks to alexis, ghazi, jean-françois
+	 */
+
+	public interface IValidator {
+		function check(value:String):Boolean;
+		function getErrorString():String;
+	}
+}

@@ -1,0 +1,20 @@
+package com.flashiteasy.api.parameters
+{
+	import com.flashiteasy.api.controls.TextInputElementDescriptor;
+	import com.flashiteasy.api.core.IDescriptor;
+
+	public class TextInputParameterSet extends FormItemParameterSet
+	{
+			
+		override public function apply( target: IDescriptor ) : void
+		{
+			if ( target is TextInputElementDescriptor)
+			{
+				super.apply(target);
+				TextInputElementDescriptor(target).drawAsteriskForRequired();
+			}
+		}
+		
+		
+	}
+}

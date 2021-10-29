@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flexlibContainer:WindowShade xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:flexlibContainer="flexlib.containers.*"
+        xmlns:flexlibControl="flexlib.controls.*" openedChanged="changedState(event)"
+		styleName="linkButtonWindowShade" width="300" paddingBottom="8" paddingTop="0"
+		>
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+			
+			private var parameterSetDescriptor:ParameterSetEditionDescriptor;
+
+			public function reset(descriptor: ParameterSetEditionDescriptor):void
+			{
+				this.parameterSetDescriptor=descriptor;
+				groupname=parameterSetDescriptor.getGroupName();
+				label = Conf.languageManager.getLanguage(groupname)
+				opened = Ref.adminManager.getGroupIsOpen(groupname);
+			}
+			
+			private function changedState(e:Event):void
+			{
+				Ref.adminManager.setClosedGroupList(groupname, opened);
+			}
+			
+			public function getDescriptor():ParameterSetEditionDescriptor{
+				return parameterSetDescriptor;
+			}
+
+			[Bindable]
+			private var groupname:String;
+		]]>
+	</mx:Script>
+
+</flexlibContainer:WindowShade>

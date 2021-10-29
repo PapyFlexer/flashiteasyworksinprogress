@@ -1,0 +1,609 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<mx:Application xmlns:mx = "http://www.adobe.com/2006/mxml"
+				creationComplete = "init();">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ListEvent;
+			import mx.collections.XMLListCollection;
+			import mx.managers.PopUpManager;
+			import mx.containers.Panel;
+			import mx.utils.LoaderUtil;
+			import flash.display.Sprite;
+
+
+			[Bindable]
+			public var dp : XMLList = new XMLList;
+
+			//Changes to Selected Contact's XML Data
+			[Bindable] 
+			private var selectedData:XML;
+			 public var fileRef : FileReference;
+			[Bindable]
+			public var dmn : String = ".*localhost.*|.*flashiteasy.com|.*127.0.0.1.*|.*clubcase.*|.*roquefeuil.*";//|.*thesilex.com
+			//public var dmn : String = "";//".*lejardinsecret93.com";//|.*thesilex.com
+			//public var dmn : String = ".*flashiteasy.com";
+			//path = /Users/gillesroquefeuil/Desktop/fie-access-files/jardinsecret93/users.xml
+			//path = /Users/gillesroquefeuil/Desktop/fie-access-files/jardinsecret93/access.xml
+			
+			public var pop : user;
+			
+			 private var accessData : XML = <alloweddomains><domain url="" /></alloweddomains>; 
+				
+			/* private var accessData : XML = <alloweddomains>
+					<domain url='.*flashiteasy.com' />
+				</alloweddomains>; */
+			//private var defaultPathToUsersXml : String = "/Applications/MAMP/htdocs/target/fie-admin/res/users.xml";
+			private var defaultPathToUsersXml : String = "/Users/gillesroquefeuil/Desktop/flashiteasy_1-0-0-576/fie-admin/res/users.xml";
+			//private var defaultPathToAccessXml : String = "/Applications/MAMP/htdocs/target/fie-project/fie-sample-app/conf/access.xml";
+			private var defaultPathToAccessXml : String = "/Users/gillesroquefeuil/Desktop/flashiteasy_1-0-0-576/fie-projects/fie-sample-app/config/access.xml";
+
+			private var usersData : XML ; /*= <access>
+					<validitydate>01/01/2013</validitydate>
+					<users usrfirstname="Gilles" usrlastname="Roquefeuil" usrlogin="gilles" usrpassword="1009" usremail="gr@flashiteasy.com" usradminlevel="0" usrlanguage="fr" />
+					<users usrfirstname="Didier" usrlastname="Reyt" usrlogin="didier" usrpassword="1984" usremail="dr@flashiteasy.com" usradminlevel="0" usrlanguage="fr" />
+					<users usrfirstname="Patrice" usrlastname="Durand" usremail="p.durand@incuballiance.fr" usrlogin="patrice" usrpassword="ecirtap" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="alexandre" usrlastname="juhel" usremail="juhel.alexandre@gmail.com" usrlogin="juhel.alexandre@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="philippe" usrlastname="soria" usremail="philippe@ostral.com.au" usrlogin="philippe@ostral.com.au" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="gilles" usrlastname="gazan" usremail="gazan@akkaza.com" usrlogin="gazan@akkaza.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="richard" usrlastname="veillat" usremail="energynat@gmail.com" usrlogin="energynat@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="bertrand" usrlastname="michau" usremail="bertrandmichau@hotmail.com" usrlogin="bertrandmichau@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="jerome" usrlastname="" usremail="jeromefreelance@free.fr" usrlogin="jeromefreelance@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="ron" usrlastname="cuffie" usremail="ronjoshua@mac.com" usrlogin="ronjoshua@mac.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="thomas" usrlastname="albertini" usremail="tomjack@wanadoo.fr" usrlogin="tomjack@wanadoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="nancy" usrlastname="" usremail="ocemik@gmail.com" usrlogin="ocemik@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="ludovic" usrlastname="piquet" usremail="lepouvantail@gmail.com" usrlogin="lepouvantail@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="edith" usrlastname="perrier" usremail="edith.perrier@ird.fr" usrlogin="edith.perrier@ird.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="laurent" usrlastname="manson" usremail="lolomanson@free.fr" usrlogin="lolomanson@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="laurent" usrlastname="senechal" usremail="contact@creatifweb.com" usrlogin="contact@creatifweb.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="guy" usrlastname="wart" usremail="gw.itservices@gmail.com" usrlogin="gw.itservices@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="olivier" usrlastname="demoly" usremail="olivier.demoly@9online.fr" usrlogin="olivier.demoly@9online.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="ida" usrlastname="reyt" usremail="ida.reyt@etu.univ-poitiers.fr" usrlogin="ida.reyt@etu.univ-poitiers.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="mohamhed" usrlastname="misftahou" usremail="mmohamed@jamsler-concept.com" usrlogin="mmohamed@jamsler-concept.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="gilles" usrlastname="le duy" usremail="LDLretouching@hotmail.com" usrlogin="LDLretouching@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="alain" usrlastname="damanti" usremail="alain.damanti@wanadoo.fr" usrlogin="alain.damanti@wanadoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="yohan" usrlastname="marchal" usremail="marchalyoan@gmail.com" usrlogin="marchalyoan@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="thierry" usrlastname="quiguer" usremail="tqr-test@neuf.fr" usrlogin="tqr-test@neuf.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="laurent" usrlastname="danquigny" usremail="prestimages@gmail.com" usrlogin="prestimages@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="a" usrlastname="a" usremail="a@wanadoo.fr" usrlogin="a@wanadoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="jean" usrlastname="guillaume" usremail="jeanslegel@hotmail.fr" usrlogin="jeanslegel@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="fabrice" usrlastname="nollen" usremail="chewtoy13@gmail.com" usrlogin="chewtoy13@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="e" usrlastname="dodard" usremail="e.dodard@accord-diffusion.com" usrlogin="e.dodard@accord-diffusion.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="gripois" usrlastname="gripois" usremail="aviacam@free.fr" usrlogin="aviacam@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="flex" usrlastname="mat" usremail="flex-mat@hotmail.fr" usrlogin="flex-mat@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="b10" usrlastname="killer" usremail="painkil@hotmail.com" usrlogin="painkil@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="arnold" usrlastname="arnold" usremail="arnold@free.fr" usrlogin="arnold@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="kulasegaran" usrlastname="kirubakaran" usremail="kulasegaran.kirubakaran@chipkidz.com" usrlogin="kulasegaran.kirubakaran@chipkidz.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="nancy" usrlastname="gaudreau" usremail="ngaudreau@kerv.ca" usrlogin="ngaudreau@kerv.ca" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Michael" usrlastname="Chaize" usremail="mchaize@adobe.com" usrlogin="mchaize@adobe.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Rapahel" usrlastname="Robil" usremail="r.robil@lemon-interactive.com" usrlogin="r.robil@lemon-interactive.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Antonio" usrlastname="Viala" usremail="aviana@strategy.loreal.com" usrlogin="aviana@strategy.loreal.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Stephane" usrlastname="Des Lierres" usremail="deslierres@valorip.com" usrlogin="deslierres@valorip.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Blandine" usrlastname="Fraissé" usremail="blandine.fraisse@idplace.net" usrlogin="blandine.fraisse@idplace.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Anthony" usrlastname="Kuntz" usremail="akuntz@kreactive-technologies.com" usrlogin="akuntz@kreactive-technologies.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Laurent" usrlastname="Gregoire" usremail="l.gregoire@groupe-synapse.com" usrlogin="l.gregoire@groupe-synapse.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Thibaud" usrlastname="Imbert" usremail="timbert@adobe.com" usrlogin="timbert@adobe.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Julie" usrlastname="Landry" usremail="jl@agencecosmic.com" usrlogin="jl@agencecosmic.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Patrick" usrlastname="Charni" usremail="charni@vocationgraphique.com" usrlogin="charni@vocationgraphique.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Charles-Edouard" usrlastname="Marin" usremail="charly@agence-vertu.com" usrlogin="charly@agencevertu.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Bruno" usrlastname="Gallimand" usremail="bgalimand@viedoc.biz" usrlogin="bgalimand@viedoc.biz" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Françoise" usrlastname="Le Coz" usremail="francoise.lecoz@musee-orsay.fr" usrlogin="francoise.lecoz@musee-orsay.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Maurice" usrlastname="Bochantouff" usremail="maurice@idealprod.fr" usrlogin="maurice@idealprod.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Adrien" usrlastname="Cusimberche" usremail="sofresh@agencefresh.com" usrlogin="sofresh@agencefresh.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Frédéric" usrlastname="Fieulaine" usremail="ffieulaine@clickeo.fr" usrlogin="ffieulaine@clickeo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Frédéric" usrlastname="Defaut" usremail="f.defaut@horizon-bleu.com" usrlogin="f.defaut@horizon-bleu.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Patrick" usrlastname="Raymond" usremail="praymond@groupe-manitoba.com" usrlogin="praymond@groupe-manitoba.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="François" usrlastname="Rochet" usremail="francois.rochet@publicisnet.fr" usrlogin="francois.rochet@publicisnet.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Corinne" usrlastname="Durville" usremail="c.durville@europhi.fr" usrlogin="c.durville@europhi.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Cyrille " usrlastname="Poette" usremail="cpoette@altima.fr" usrlogin="cpoette@altima.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Thomas" usrlastname="Regembal" usremail="contact@ocedille.com" usrlogin="contact@ocedille.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Stéphane" usrlastname="Coutelot" usremail="s.coutelot@horizon-bleu.com" usrlogin="s.coutelot@horizon-bleu.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Antoine" usrlastname="Legendre" usremail="antoine@topdeluxe.net" usrlogin="antoine@topdeluxe.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Laurent" usrlastname="Lepelletier" usremail="l.lepelletier@altavia-lille.com" usrlogin="l.lepelletier@altavia-lille.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Guewen" usrlastname="Loussouarn" usremail="guewen@napkin.fr" usrlogin="guewen@napkin.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Akh" usrlastname="Akh" usremail="dessin-technique@hotmail.fr" usrlogin="dessin-technique@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Arnaud" usrlastname="Marty" usremail="arnaud.marty@akrio.fr" usrlogin="arnaud.marty@akrio.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Adou" usrlastname="Doudou" usremail="adou06@hotmail.com" usrlogin="adou06@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Double" usrlastname="Sentertainment" usremail="double-sentertainment@hotmail.com" usrlogin="double-sentertainment@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Guillaume" usrlastname="77" usremail="guillaume77@wanadoo.fr" usrlogin="guillaume77@wanadoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jean-François" usrlastname="Mathiot" usremail="jmathiot@servebox.com" usrlogin="jmathiot@servebox.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Ana" usrlastname="Martins" usremail="anaritamartins@gmail.com" usrlogin="anaritamartins@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jean-François" usrlastname="Grenier" usremail="jf_grenier87@hotmail.com" usrlogin="jf_grenier87@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Reto" usrlastname="Portner" usremail="goboj@farside.ch" usrlogin="goboj@farside.ch" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Eric" usrlastname="Bordeleau" usremail="eric.bordeleau@netc.net" usrlogin="eric.bordeleau@netc.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Yann" usrlastname="Tee" usremail="yann@babayaga-music.com" usrlogin="yann@babayaga-music.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nancy" usrlastname="Godreau" usremail="ngaudreau@kerv.ca" usrlogin="ngaudreau@kerv.ca" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Ono" usrlastname="Zendai" usremail="onozen@gmail.com" usrlogin="onozen@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Dany" usrlastname="Siriphol" usremail="dany.siriphol@hotmail.fr " usrlogin="dany.siriphol@hotmail.fr " usrpassword="luffy" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Guillaume" usrlastname="Tirard" usremail="gtirard@brand-image.com" usrlogin="gtirard@brand-image.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nicolas" usrlastname="Nicolas" usremail="info@d3mvf.com" usrlogin="info@d3mvf.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="A" usrlastname="Benx" usremail="abenx@free.fr" usrlogin="abenx@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="thomas" usrlastname="benazech" usremail="thomas.benazech@gmail.com" usrlogin="thomas.benazech@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Thierry" usrlastname="Fevre" usremail="thierry.fevre@kuryo.com" usrlogin="thierry.fevre@kuryo.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Marc" usrlastname="Ganmpieri" usremail="marc.giampieri@kuryo.com" usrlogin="marc.giampieri@kuryo.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Hicap" usrlastname="HICAP" usremail="contact@hicap.co.uk" usrlogin="contact@hicap.co.uk" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Timothée" usrlastname="Barbier" usremail="tim.barbier@hotmail.fr" usrlogin="tim.barbier@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Michel" usrlastname="Bergein" usremail="m.bergein@domexperts.com" usrlogin="m.bergein@domexperts.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Pascal" usrlastname="Thiaville" usremail="pthiaville@original-vision.fr" usrlogin="pthiaville@original-vision.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Vincent" usrlastname="Helwig" usremail="vincent.helwig@duke-interactive.com" usrlogin="vincent.helwig@duke-interactive.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Steffen" usrlastname="Strobel" usremail="s.strobel@gmx.de" usrlogin="s.strobel@gmx.de" usrpassword="demo" usrlanguage="de" usradminlevel="1" />
+					<users usrfirstname="Grégory" usrlastname="Herblé" usremail="ghe@mac-allister.com" usrlogin="ghe@mac-allister.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jacques" usrlastname="Barbier" usremail="jb@jbcom.fr" usrlogin="jb@jbcom.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Gilles" usrlastname="Despierres" usremail="gilles.despierres@sfr.fr" usrlogin="gilles.despierres@sfr.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Yannick" usrlastname="Brunel" usremail="webmasterloire@gmail.com" usrlogin="webmasterloire@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nevin" usrlastname="Sonmez" usremail="nsonmez@gmail.com" usrlogin="nsonmez@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Henri" usrlastname="Serge" usremail="henry.serge@cogicube.fr" usrlogin="henry.serge@cogicube.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jean" usrlastname="Mourain" usremail="jmourain@adobe.com" usrlogin="jmourain@adobe.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Flo" usrlastname="Flo" usremail="flo.news@minfel.fr" usrlogin="flo.news@minfel.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Yves" usrlastname="Alliman" usremail="yallimann@gmail.com" usrlogin="yallimann@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Joachim" usrlastname="Johann" usremail="joachim.johann@gmail.com" usrlogin="joachim.johann@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Eric" usrlastname="Lehric" usremail="lerhyc@gmail.com" usrlogin="lerhyc@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Gerald" usrlastname="Montigny" usremail="montigny.gerald@wanadoo.fr" usrlogin="montigny.gerald@wanadoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Serge" usrlastname="Ahran" usremail="serge.arhan@gmail.com" usrlogin="serge.arhan@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Franz" usrlastname="Kfranz" usremail="franzk@wanadoo.fr" usrlogin="franzk@wanadoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Chérubin" usrlastname="Mome" usremail="cherubin_mome@hotmail.fr" usrlogin="cherubin_mome@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Safya" usrlastname="Maguiraga" usremail="smaguiraga@gmail.com" usrlogin="smaguiraga@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Greg" usrlastname="Cavin" usremail="poubelle@gregcavin.ch" usrlogin="poubelle@gregcavin.ch" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Christophe" usrlastname="Pcv" usremail="christophe@pcv.fr" usrlogin="christophe@pcv.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Strymon" usrlastname="Strymon" usremail="strymon@laposte.net" usrlogin="strymon@laposte.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Hervé" usrlastname="Piron" usremail="pironh@orange.fr" usrlogin="pironh@orange.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jean-Louis" usrlastname="Cell" usremail="jlccell@yahoo.fr" usrlogin="jlccell@yahoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="0" />
+					<users usrfirstname="tepat" usrlastname="tepat" usremail="tepat@auto-music.net" usrlogin="tepat@auto-music.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="François" usrlastname="Sutter" usremail="fsutter@blueacacia.com" usrlogin="fsutter@blueacacia.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Marc" usrlastname="Griffon" usremail="marc.griffon@gmail.com" usrlogin="marc.griffon@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Anthony" usrlastname="Gauge" usremail="tony_floyd@hotmail.com" usrlogin="tony_floyd@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Eric" usrlastname="Ludinard" usremail="datagenesis.contact@gmail.com" usrlogin="datagenesis.contact@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jacques" usrlastname="Tatin" usremail="texpress1@sfr.fr" usrlogin="texpress1@sfr.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Gilles" usrlastname="Maire" usremail="gilles@gillesmaire.com" usrlogin="gilles@gillesmaire.com" usrpassword="demo" usrlanguage="fr" usradminlevel="0" />
+					<users usrfirstname="Jacques" usrlastname="Duquesne" usremail="jacquesdduquesne@aol.com" usrlogin="jacquesdduquesne@aol.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Olivier" usrlastname="Le Roch" usremail="o.leroch@chrom.fr" usrlogin="o.leroch@chrom.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jean-Christophe" usrlastname="Habault" usremail="jean-christophe.habault@laposte.net" usrlogin="jean-christophe.habault@laposte.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jean-Marie" usrlastname="Gauthier" usremail="jm.gauthier25@free.fr" usrlogin="jm.gauthier25@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Sébastien" usrlastname="Morizot" usremail="seb.morizot@gmail.com" usrlogin="seb.morizot@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Sandra" usrlastname="Serafini" usremail="s.serafini@laposte.net" usrlogin="s.serafini@laposte.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nicolas" usrlastname="Slim" usremail="slim.nicolas@gmail.com" usrlogin="nicolas" usrpassword="flash09" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Caz" usrlastname="Caz" usremail="cazbiz@hotmail.fr" usrlogin="cazbiz@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Olivier" usrlastname="Coen" usremail="ocoen@anares.com" usrlogin="ocoen@anares.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Fabien" usrlastname="Thomas" usremail="fabien.thomas@hotmail.fr" usrlogin="fabien.thomas@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nicolas" usrlastname="Peraudeau" usremail="nicolas@nymphea-studio.fr" usrlogin="nicolas@nymphea-studio.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Serge" usrlastname="ArsConsulting" usremail="contact@ars-consulting.fr" usrlogin="contact@ars-consulting.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Bernard" usrlastname="Michalet" usremail="bmichalet@yahoo.fr" usrlogin="bmichalet@yahoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Vincent" usrlastname="Bodennec" usremail="vbodennec@hotmail.com" usrlogin="vbodennec@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Thierry" usrlastname="Durand" usremail="t_durand@laposte.net" usrlogin="t_durand@laposte.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Olivier" usrlastname="Guillin" usremail="oguillin@bluewin.ch" usrlogin="oguillin@bluewin.ch" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Moon" usrlastname="The Whilte" usremail="moonthewhite@hotmail.com" usrlogin="moonthewhite@hotmail.com" usrpassword="demo" usrlanguage="gb" usradminlevel="1" />
+					<users usrfirstname="Alexandre" usrlastname="Girardot" usremail="alexandregirardot@sfr.fr" usrlogin="alexandregirardot@sfr.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Arnaud" usrlastname="Santimaria" usremail="contact@ivoirweb.fr" usrlogin="contact@ivoirweb.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Malcolm" usrlastname="Prince" usremail="malcolm.prince@orange.fr" usrlogin="malcolm.prince@orange.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Rachel" usrlastname="Grellier" usremail="rachelgrellier@gmail.com" usrlogin="rachelgrellier@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Christophe" usrlastname="Rancoeur" usremail="crancoeur@free.fr" usrlogin="crancoeur@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Karim" usrlastname="Tadjene" usremail="tadjene@free.fr" usrlogin="tadjene@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Guillaume" usrlastname="Hissung" usremail="contact@ecllaconsulting.com" usrlogin="contact@ecllaconsulting.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Fabien" usrlastname="Romul" usremail="double-sentertainment@hotmail.fr" usrlogin="double-sentertainment@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Alfred" usrlastname="Marcel" usremail="amarcel@laposte.net" usrlogin="amarcel@laposte.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Guillaume" usrlastname="Ang" usremail="guillaume.ang@gmail.com" usrlogin="guillaume.ang@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Pierre" usrlastname="Lebouleux" usremail="plx@leboulleux.fr" usrlogin="plx@leboulleux.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Abenx" usrlastname="Abenx" usremail="abenx@yopmail.com" usrlogin="abenx@yopmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Eric" usrlastname="Sulzer" usremail="eric@sulzer.fr" usrlogin="vongag" usrpassword="vincent120" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jojo" usrlastname="Neufquatrequatre" usremail="jojo_944@hotmail.com" usrlogin="jojo_944@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Gundja" usrlastname="The Ouf" usremail="gundja@hotmail.com" usrlogin="gundja@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Alain" usrlastname="Fai" usremail="alfai@club.fr" usrlogin="alfai@club.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Julien" usrlastname="Matha" usremail="contact@3octets.fr" usrlogin="contact@3octets.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Claire" usrlastname="Willot" usremail="willot.claire@scarlet.be" usrlogin="willot.claire@scarlet.be" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jo" usrlastname="Lindien" usremail="jolicart@yahoo.fr" usrlogin="jolicart@yahoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Fred" usrlastname="Wallich" usremail="wall@usine.com" usrlogin="wall@usine.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Lep" usrlastname="Lepo" usremail="lepo@monsieurlepo.fr" usrlogin="lepo@monsieurlepo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Sinku" usrlastname="Iwana" usremail="deepredmountainfish@yahoo.fr" usrlogin="deepredmountainfish@yahoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Salvador" usrlastname="Abaldo" usremail="salvabaldo@ono.com" usrlogin="salvabaldo@ono.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Rue" usrlastname="Milieu" usremail="contact@laruedumilieu.org" usrlogin="contact@laruedumilieu.org" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Emmanuel" usrlastname="Balsan" usremail="ebalsan@laposte.net" usrlogin="ebalsan@laposte.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Thierry" usrlastname="Paoli" usremail="contact@panther-pc.fr" usrlogin="contact@panther-pc.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Geofrroy" usrlastname="Cloix" usremail="geoff@mustartprod.com" usrlogin="geoff@mustartprod.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Guy" usrlastname="Roullier" usremail="ggeherr@gmail.com" usrlogin="ggeherr@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Alex" usrlastname="Frenchy" usremail="alexfrenchy@gmail.com" usrlogin="alexfrenchy@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Yves" usrlastname="Ollivro" usremail="yves@houba.com" usrlogin="yves@houba.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Thibaud" usrlastname="Meinsier" usremail="tmeinsier@nordsoft.fr" usrlogin="tmeinsier@nordsoft.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Lysiane" usrlastname="Durr" usremail="lysianedurr@gmail.com" usrlogin="lysianedurr@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jean-Louis" usrlastname="Vargas" usremail="jean-louis.vargas@ac-rouen.fr" usrlogin="jean-louis.vargas@ac-rouen.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Akan" usrlastname="Hurkan" usremail="hurkan@hotmail.fr" usrlogin="hurkan@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jordi" usrlastname="Castellano" usremail="jordi@free.fr" usrlogin="jordi@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Gerald" usrlastname="Cauchi" usremail="studio.faust@wanadoo.fr" usrlogin="studio.faust@wanadoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nci" usrlastname="Studio" usremail="contact@nci-studio.com" usrlogin="contact@nci-studio.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="John" usrlastname="Libs" usremail="jeanpaul.libes@gmail.com" usrlogin="jeanpaul.libes@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Valérie" usrlastname="Foulquier" usremail="valerie_foulquier@yahoo.fr" usrlogin="valerie_foulquier@yahoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Tad" usrlastname="Bisaha" usremail="tadbisaha@gmail.com" usrlogin="tadbisaha@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Véronique" usrlastname="Lacroix" usremail="veronique@lacroix.net" usrlogin="veronique@lacroix.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Lola" usrlastname="Reider" usremail="andrealee3@gmail.com" usrlogin="andrealee3@gmail.com" usrpassword="demo" usrlanguage="gb" usradminlevel="1" />
+					<users usrfirstname="Bernard" usrlastname="Lescure" usremail="b.lescure@operantis.fr" usrlogin="b.lescure@operantis.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nicolas" usrlastname="Rey" usremail="n.rey@operantis.fr" usrlogin="n.rey@operantis.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Samuel" usrlastname="Lambert" usremail="kptainsam@gmail.com" usrlogin="kptainsam@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Olivier" usrlastname="Torres" usremail="oliloconcept@gmail.com" usrlogin="oliloconcept@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Michel" usrlastname="Simonnet" usremail="michel.simonnet@wanadoo.fr" usrlogin="michel.simonnet@wanadoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Romain" usrlastname="Lavielle" usremail="rlavielle@gmail.com" usrlogin="rlavielle@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Bernard" usrlastname="Corcos" usremail="bco@brandon.fr" usrlogin="bco@brandon.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Serge" usrlastname="Billon" usremail="serge@web54.fr" usrlogin="serge@web54.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Tubular" usrlastname="Tos" usremail="tubulartos@gmail.com" usrlogin="tubulartos@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Thierry" usrlastname="Durbec" usremail="messdurbec@free.fr" usrlogin="messdurbec@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Daniel" usrlastname="Jaylet" usremail="djaylet@gmail.com" usrlogin="djaylet@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Alan" usrlastname="Mahe" usremail="alan.pev@gmail.com" usrlogin="alan.pev@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Gaël" usrlastname="Guy" usremail="gael.guy@u-bourgogne.fr" usrlogin="gael.guy@u-bourgogne.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Dominique" usrlastname="Robert" usremail="robertdominique72@gmail.com" usrlogin="robertdominique72@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jean" usrlastname="Gallas" usremail="tfou@rcpt.at" usrlogin="tfou@rcpt.at" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Patrick" usrlastname="Dauvigny" usremail="patrick.dauvigny@altazeo.com" usrlogin="patrick.dauvigny@altazeo.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Jean-Christophe" usrlastname="Habault" usremail="jean-christophe.habault@laposte.net" usrlogin="jean-christophe.habault@laposte.net" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Samuel" usrlastname="Bouly" usremail="contact@idcomweb.fr" usrlogin="contact@idcomweb.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Compte" usrlastname="De Test" usremail="demo@flashiteasy.com" usrlogin="admin" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Aurélien" usrlastname="Chaumont" usremail="aurelien.chaumont@free.fr" usrlogin="aurelien.chaumont@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Rostyslav" usrlastname="Sokolov" usremail="arzal@sfr.fr" usrlogin="arzal@sfr.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Caludio" usrlastname="Lucchesi" usremail="clucchesi@abmintelligence.com" usrlogin="clucchesi@abmintelligence.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Fabrice" usrlastname="Verbeke" usremail="fabwebmaster@aliceadsl.fr" usrlogin="fabwebmaster@aliceadsl.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Steffen" usrlastname="Strobel" usremail="s.strobel@gmx.de" usrlogin="s.strobel@gmx.de" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Christophe" usrlastname="Gouteix" usremail="gouteix@brocelia.fr" usrlogin="gouteix@brocelia.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nicolas" usrlastname="Bennato" usremail="info@gencewop.com" usrlogin="info@gencewop.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Serge" usrlastname="Arhan" usremail="serge.arhan@gmail.com" usrlogin="serge.arhan@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nadine" usrlastname="Ferret" usremail="nf28100@hotmail.fr" usrlogin="nf28100@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Gerald" usrlastname="Montigny" usremail="creation@woodragon.fr" usrlogin="creation@woodragon.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nejah" usrlastname="Bensalem" usremail="bensalem@yahoo.fr" usrlogin="bensalem@yahoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Marc" usrlastname="Pariset" usremail="webmaster@oisans.com" usrlogin="webmaster@oisans.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Christ Nguessan" usrlastname="Atse" usremail="atsechrist@gmail.com" usrlogin="atsechrist@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Loic" usrlastname="Loic" usremail="loik@voila.fr" usrlogin="loik@voila.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Fabien" usrlastname="Martin" usremail="fmartin@agencecare.com" usrlogin="fmartin@agencecare.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="M." usrlastname="Arditi" usremail="m.arditi@operantis.fr" usrlogin="m.arditi@operantis.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Celia" usrlastname="Sandjak" usremail="Sandjakad@gmail.com" usrlogin="celia" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Loic" usrlastname="Kervajan" usremail="loic.kervajan@voxign.fr" usrlogin="voxign" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Anne" usrlastname="Fouquet" usremail="a.fouquet@yahoo.fr" usrlogin="a.fouquet@yahoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Sébastien" usrlastname="Stylecom" usremail="sebastien@stylecom.fr" usrlogin="sebastien@stylecom.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Magy" usrlastname="Duchmoll" usremail="margauxmm@hotmail.fr" usrlogin="margauxmm@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Romain" usrlastname="Cimenta" usremail="romain.cimenta@gmail.com" usrlogin="romain.cimenta@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Fred" usrlastname="Ansom" usremail="texpress1@free.fr" usrlogin="texpress1@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Georges" usrlastname="Rouvrais" usremail="georges.rouvrais@free.fr" usrlogin="georges.rouvrais@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Mathieu" usrlastname="Espaze" usremail="m.espaze@fromkayz.com" usrlogin="m.espaze@fromkayz.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Florence" usrlastname="Le Vot" usremail="florence.levot@radianceconseil.com" usrlogin="florence.levot@radianceconseil.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Florian" usrlastname="Rey" usremail="studio.del.reyos@hotmail.fr" usrlogin="studio.del.reyos@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Christian" usrlastname="Durant" usremail="durant22@aliceadsl.fr" usrlogin="durant22@aliceadsl.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Abdoulaye" usrlastname="Naba" usremail="napal85@yahoo.fr" usrlogin="napal85@yahoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="CCM" usrlastname="CCM" usremail="ccmtravail@live.fr" usrlogin="ccmtravail@live.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Julien" usrlastname="Moyne" usremail="jmoyne@wanadoo.fr" usrlogin="jmoyne@wanadoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Sebastien" usrlastname="Ple" usremail="ple.sebastien@gmail.com" usrlogin="ple.sebastien@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Laurent" usrlastname="Dreyfus" usremail="ld@lagencelibre.com" usrlogin="ld@lagencelibre.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Pierre" usrlastname="Larkin" usremail="larkinpierre@aol.com" usrlogin="larkinpierre@aol.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Rémi" usrlastname="Coste" usremail="teufer42@yahoo.fr" usrlogin="teufer42@yahoo.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Christophe" usrlastname="David" usremail="christophe.david768@orange.fr" usrlogin="christophe.david768@orange.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="0" />
+					<users usrfirstname="Florian" usrlastname="Husquinet" usremail="florian_husquinet311@hotmail.com" usrlogin="florian_husquinet311@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Farid" usrlastname="Ben" usremail="faridrif@msn.com" usrlogin="faridrif@msn.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Alain" usrlastname="Kotto" usremail="ckotto@hotmail.fr" usrlogin="ckotto@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nath" usrlastname="Moine" usremail="nathmoine@live.fr" usrlogin="nathmoine@live.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Uness" usrlastname="Barqui" usremail="younes_henry@hotmail.com" usrlogin="younes_henry@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Matthieu" usrlastname="Gastinne" usremail="m.gastinne@gmail.com" usrlogin="m.gastinne@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="0" />
+					<users usrfirstname="Binou" usrlastname="Oson" usremail="binouoson@hotmail.com" usrlogin="binouoson@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Manu" usrlastname="Ceuppens" usremail="terra-fotografica@live.fr" usrlogin="terra-fotografica@live.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Xavier" usrlastname="Barreau" usremail="xavier.barreau1@bbox.fr" usrlogin="xavier.barreau1@bbox.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Maurice" usrlastname="Mallard" usremail="zay@monmail.fr.nf" usrlogin="zay@monmail.fr.nf" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Alain" usrlastname="Kotto" usremail="ckotto@hotmail.fr" usrlogin="ckotto@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Benoit" usrlastname="Dupont" usremail="bd@sirs-ba.org" usrlogin="bd@sirs-ba.org" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Hassan" usrlastname="Tazi" usremail="hassane.tazi@gmail.com" usrlogin="hassane.tazi@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nicolas" usrlastname="Laurent" usremail="lo-l-o@hotmail.fr" usrlogin="lo-l-o@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Tristan" usrlastname="Cressot" usremail="tcressot@free.fr" usrlogin="tcressot@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Christophe" usrlastname="Robert" usremail="c.robert@cybfor.com" usrlogin="c.robert@cybfor.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Yassine" usrlastname="Almarhoum" usremail="zidyassine@hotmail.com" usrlogin="zidyassine@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Lom" usrlastname="Since" usremail="romumarion@hotmail.fr" usrlogin="romumarion@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Romuald" usrlastname="Kever" usremail="lombrick.2002@hotmail.fr" usrlogin="lombrick.2002@hotmail.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Vo" usrlastname="Mihn Quang" usremail="minhquang.vo@gmail.com" usrlogin="minhquang.vo@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Kyriakos" usrlastname="Kazazis" usremail="kazaziskyriakos@gmail.com" usrlogin="kazaziskyriakos@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Julien" usrlastname="Petit" usremail="contact@rdvgd.com" usrlogin="contact@rdvgd.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Babacar" usrlastname="Wade" usremail="serignebabacarwade@gmail.com" usrlogin="serignebabacarwade@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="0" />
+					<users usrfirstname="Franck" usrlastname="Deloitte" usremail="franck.deloitte@gmail.com" usrlogin="franck.deloitte@gmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Nelson" usrlastname="Cishugi" usremail="nelsonc73@hotmail.com" usrlogin="nelsonc73@hotmail.com" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+					<users usrfirstname="Véronique" usrlastname="Mercier" usremail="mercierv1@free.fr" usrlogin="mercierv1@free.fr" usrpassword="demo" usrlanguage="fr" usradminlevel="1" />
+				</access>;*/
+
+
+			private function init() : void
+			{
+				var today : Date = new Date();
+				trace (today);
+				//var validity : Number = today.getTime() + (3*30*24*3600*1000);// 3 mois
+				var validity : Number = today.getTime() + (3*355*24*3600*1000);// 5 ans
+				var validityDate : Date= new Date(validity);
+				usersData = new XML (<access>
+					<validitydate>{validityDate.fullYear+"/"+(validityDate.getMonth()+1).toString()+"/"+validityDate.date}</validitydate>
+					<alloweddomains>{dmn}</alloweddomains>
+					<users usrfirstname="Gilles" usrlastname="Roquefeuil" usrlogin="gilles" usrpassword="1009" usremail="gilles.roquefeuil@sfr.fr" usradminlevel="0" usrlanguage="fr" />
+					<users usrfirstname="Didier" usrlastname="Reyt" usrlogin="didier" usrpassword="1984" usremail="dr@flashiteasy.com" usradminlevel="0" usrlanguage="fr" />
+					<users usrfirstname="Dany" usrlastname="Siriphol" usrlogin="dany" usrpassword="1987" usremail="ds@flashiteasy.com" usradminlevel="0" usrlanguage="fr" />
+					<users usrfirstname="Carine" usrlastname="Magda" usrlogin="carine" usrpassword="1980" usremail="cm@flashiteasy.com" usradminlevel="0" usrlanguage="fr" />
+					<users usrfirstname="Local" usrlastname="User" usrlogin="local" usrpassword="local" usremail="contact@flashiteasy.com" usradminlevel="0" usrlanguage="fr" />
+					<users usrfirstname="Sune" usrlastname="Reyt" usrlogin="sunray" usrpassword="sune1985" usremail="sune.reyt@clubcase.fr" usradminlevel="0" usrlanguage="fr" />
+					</access>);
+					trace (usersData.toString());
+				this.validitydate.selectedDate=validityDate;		
+			}
+
+			private function generate( e : MouseEvent ) : void
+			{
+				//var s : String = Base64.encrypt( domain.text);
+				//trace (s); 
+			}
+
+			private function saveAccess( e : MouseEvent ) : void
+			{
+				accessData.domain.@url = dmn;
+				trace ("saving... "+accessData.toString());
+				var data : ByteArray = new ByteArray();
+				data.writeUTFBytes( accessData ); // xmlData is original XML string
+				data.compress();
+				// feable encryption (rotation by 128)
+				var j : int = data.length;
+				while ( j-- )
+				{
+					data[ j ] += 128;
+				}
+				// save access in binary encrypted form
+				new FileReference().save( data, "access.xml" );
+			}
+			private function testFileRef():void
+			{
+				fileRef.data.readBytes(new ByteArray(),0,0);
+			}
+
+			private function saveAdminUsers( e : MouseEvent ) : void
+			{
+				usersData.alloweddomains[0] = dmn;
+				var data : ByteArray = new ByteArray();
+				data.writeUTFBytes( usersData ); // xmlData is original XML string
+				data.compress();
+				// feable encryption (rotation by 128)
+				var j : int = data.length;
+				while ( j-- )
+				{
+					data[ j ] += 128;
+				}
+				// save access in binary encrypted form
+				new FileReference().save( data, "users.xml" );
+			}
+
+			private function loadAdminUsers( e : MouseEvent ) : void
+			{
+				var pathToXMLFile : String = pathToUser.text != "" ? pathToUser.text : defaultPathToUsersXml;
+				trace( "loading users file..." );
+				var ldr : URLLoader = new URLLoader();
+				ldr.dataFormat = URLLoaderDataFormat.BINARY;
+				ldr.addEventListener( Event.COMPLETE, onAdminUsersLoaded );
+				ldr.addEventListener( IOErrorEvent.IO_ERROR, onAdminUsersLoaded );
+				ldr.load( new URLRequest( pathToXMLFile ));
+			}
+
+			private function loadAccessFile( e : MouseEvent ) : void
+			{
+				var pathToXMLAccessFile : String = pathToAccess.text != "" ? pathToAccess.text : defaultPathToAccessXml;
+				trace( "loading access file..."+pathToXMLAccessFile+" ///" );
+				var ldr : URLLoader = new URLLoader();
+				ldr.dataFormat = URLLoaderDataFormat.BINARY;
+				ldr.addEventListener( Event.COMPLETE, onAccessLoaded );
+				ldr.addEventListener( IOErrorEvent.IO_ERROR, onAccessLoaded );
+				ldr.load( new URLRequest( pathToXMLAccessFile ));
+			}
+
+			private function onAdminUsersLoaded( e : Event ) : void
+			{
+				
+				if ( e.type == Event.COMPLETE )
+				{
+					var data : * = URLLoader( e.target ).data;
+					if ( data is ByteArray )
+					{
+						try
+						{
+							var i : uint = data.length;
+							while ( i-- )
+							{
+								data[ i ] += 128
+							}
+							ByteArray( data ).uncompress();
+						}
+						catch ( e : Error )
+						{
+						}
+					}
+					trace (data);
+					usersData = XML( data );
+					domain.text = usersData.alloweddomains[0].toString();
+					//pathToUser.text = usersData.
+					this.validitydate.selectedDate = new Date(usersData.validitydate[0].toString());
+					refreshGrid();
+
+				}
+			}
+			private function onAccessLoaded( e : Event ) : void
+			{
+				trace ("callback access loaded"+URLLoader( e.target ).data);
+				if ( e.type == Event.COMPLETE )
+				{
+					var data : * = URLLoader( e.target ).data;
+					if ( data is ByteArray )
+					{
+						try
+						{
+							var i : uint = data.length;
+							while ( i-- )
+							{
+								data[ i ] += 128
+							}
+							ByteArray( data ).uncompress();
+						}
+						catch ( e : Error )
+						{
+						}
+					}
+					trace (data);
+					accessData = XML( data );
+					dmn = accessData.domain.@url;
+					domain.text = dmn
+				}
+			}
+			
+			private function refreshGrid() : void
+			{
+				dp = usersData.users as XMLList;
+			}
+			
+			private function editUser(e:MouseEvent):void
+			{
+				var i : uint = usersList.selectedIndex;
+				
+				pop = new user;
+				trace ("==>"+usersData.users[i].@usrfirstname);
+				
+				pop.currentUserState = "edit";
+				PopUpManager.addPopUp(pop, this, true);
+				PopUpManager.centerPopUp(pop);
+				pop.usrfirstname.text = usersData.users[i].@usrfirstname;
+				pop.usrlastname.text = usersData.users[i].@usrlastname;
+				pop.usremail.text = usersData.users[i].@usremail;
+				pop.usrlogin.text = usersData.users[i].@usrlogin;
+				pop.usrpassword.text = usersData.users[i].@usrpassword;
+				pop.usradminlevel.selectedIndex = pop.selectAdminLevelCombo( Number( usersData.users[i].@adminlevel ) );
+				pop.usrlanguage.selectedIndex = pop.selectAdminLanguageCombo(usersData.users[i].@usrlanguage);
+				
+			}
+			
+			private function addAdminUser(e:MouseEvent):void
+			{
+				pop  =  new user;
+				pop.currentUserState = "add";
+				PopUpManager.addPopUp(pop,this,true);
+				PopUpManager.centerPopUp(pop);
+			}
+			
+			public function validateNewUser( name : String,
+											 firstname : String,
+											 email : String,
+											 login : String,
+											 password : String,
+											 admlevel : uint = 5,
+											 admlang : String = "fr_FR"
+											) : void
+			{
+				var newUser : XML = new XML;
+				newUser = <users usrfirstname={firstname} usrlastname={name} usremail={email} usrlogin={login} usrpassword={password} usradminlevel={admlevel} usrlanguage={admlang} />
+				trace ("new user = " + newUser.toString());
+				if (newUser.@usrlogin == "") newUser.@usrlogin = newUser.@usremail;
+				if (newUser.@usrpassword == "") newUser.@usrpassword = "demo";
+				 if (!usersData.contains(newUser)) usersData.appendChild(newUser);
+				refreshGrid();
+			}
+			
+			public function saveUser( name : String,
+											 firstname : String,
+											 email : String,
+											 login : String,
+											 password : String,
+											 admlevel : uint = 5,
+											 admlang : String = "fr_FR"
+											) : void
+			{
+				
+				usersData.users[usersList.selectedIndex] = <users usrfirstname={firstname} usrlastname={name} usremail={email} usrlogin={login} usrpassword={password} usradminlevel={admlevel} usrlanguage={admlang} />
+				refreshGrid();
+			}
+			
+			public function deleteUser(e:MouseEvent) : void
+			{
+				var i : uint = usersList.selectedIndex;
+				delete usersData.users[i];
+				refreshGrid();
+			}
+			
+			private function onChange(e:ListEvent):void
+			{
+			}
+			private function doChangeValidityDate():void
+			{
+				usersData.@validitydate = this.validitydate.selectedDate;
+				trace ("new validity date : "+usersData.@validitydate);
+			}
+			
+		]]>
+	</mx:Script>
+<mx:Canvas id="app"  >
+	<mx:VBox paddingLeft="30" paddingRight="30" paddingTop="30" paddingBottom="30" horizontalAlign="center">
+		<mx:Label text = "Allowed domains"
+				  width = "156" />
+		<mx:TextInput id = "domain"
+					  width = "400"
+					  text = "{dmn}" />
+		<mx:Spacer />
+		<mx:Label text = "Path to users.xml"
+				  width = "156" />
+		<mx:TextInput id = "pathToUser"
+					  width = "400"
+					   />
+		<mx:Spacer />
+	
+		<mx:Label text = "Path to access.xml"
+				  width = "156" />
+		<mx:TextInput id = "pathToAccess"
+					  width = "400"
+					   />
+		<mx:Spacer />
+	
+		<mx:Label text = "Users list"
+				  width = "156" />
+		<mx:VBox height = "490">
+			<mx:DataGrid id = "usersList"
+						 x = "10"
+						 y = "240"
+						 width = "900" change="onChange(event)"
+						 doubleClick="editUser(event)"
+						 doubleClickEnabled="true"
+						 dataProvider = "{dp}">
+				<mx:columns>
+					<mx:DataGridColumn dataField = "@usrlastname"
+									   headerText = "Name"
+									   width="150" />
+					<mx:DataGridColumn dataField = "@usrfirstname"
+									   headerText = "Firstname" width="150"  />
+					<mx:DataGridColumn dataField = "@usremail"
+									   headerText = "Email" width="250" />
+					<mx:DataGridColumn dataField = "@usradminlevel"
+									   headerText = "Level" width="40" />
+					<mx:DataGridColumn dataField = "@usrlanguage"
+									   headerText = "Lng" width="40" />
+					<mx:DataGridColumn dataField = "@usrlogin"
+									   headerText = "Login" width="200" />
+					<mx:DataGridColumn dataField = "@usrpassword"
+									   headerText = "Pass" width="100" />
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:DateField id="validitydate" change="doChangeValidityDate()"/>
+		</mx:VBox>
+		<mx:HBox>
+			<mx:Button width = "150"
+					   label = "generateClientAccess"
+					   click = "saveAccess(event);" />
+			<mx:Button width = "150"
+					   label = "generateAdminAccess"
+					   click = "saveAdminUsers(event);" />
+			<mx:Button width = "200"
+					   label = "loadAdminAccess"
+					   click = "loadAdminUsers(event);" />
+			<mx:Button width = "200"
+					   label = "loadDomainsAccess"
+					   click = "loadAccessFile(event);" />
+			<mx:Button width = "60"
+					   label = "ADD"
+					   click = "addAdminUser(event);" />
+			<mx:Button width = "60"
+					   label = "EDIT"
+					   click = "editUser(event);" enabled="{usersList.selectedIndices.length>0}" />
+			<mx:Button width = "60"
+					   label = "DEL"
+					   click = "deleteUser(event);" enabled="{usersList.selectedIndices.length>0}" />
+			
+				
+		</mx:HBox>
+		
+	</mx:VBox>
+	
+</mx:Canvas>
+</mx:Application>

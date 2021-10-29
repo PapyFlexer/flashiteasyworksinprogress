@@ -1,0 +1,10 @@
+package com.flashiteasy.snow.lib
+{
+
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	
+	public interface ISnowableElementDescriptor extends IUIElementDescriptor
+	{
+		function setSnowStorm( quantity : Number ) : void; 
+	}
+}

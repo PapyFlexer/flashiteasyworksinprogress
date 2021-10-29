@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				xmlns:yahoo="http://www.yahoo.com/astra/2006/mxml"
+				paddingLeft="10"
+				paddingRight="10"
+				paddingTop="10"
+				paddingBottom="10"
+				title="Color Picker"
+				showCloseButton="true"
+				close="PopUpManager.removePopUp(this);"
+				initialize="addListeners()"
+				creationComplete="handleCreationComplete();">
+
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.conf.Conf;
+			import com.yahoo.astra.utils.CMYKColor;
+			import com.yahoo.astra.utils.ColorUtil;
+			import com.yahoo.astra.utils.HSBColor;
+			import com.yahoo.astra.utils.RGBColor;
+			
+			import mx.core.UIComponent;
+			import mx.events.ColorPickerEvent;
+			import mx.managers.PopUpManager;
+
+			[Bindable]
+			public var newColor:Number;
+
+			[Bindable]
+			public var oldColor:Number=0xCC;
+
+			[Bindable]
+			public var redValue:int;
+
+			[Bindable]
+			public var greenValue:int;
+
+			[Bindable]
+			public var blueValue:int;
+
+			[Bindable]
+			public var hueValue:int;
+
+			[Bindable]
+			public var brightnessValue:int;
+
+			[Bindable]
+			public var saturationValue:int;
+
+			[Bindable]
+			public var hexValue:String;
+
+			private var hsbValue:HSBColor;
+			private var rgbValue:RGBColor;
+
+			private var hexIsFocus:Boolean=false;
+
+			public var targetedColorPicker:FieColorPicker;
+			public var CMYColor:CMYKColor;
+
+			private function closeMe():void
+			{
+				PopUpManager.removePopUp(this);
+			/*if(targetedColorPicker) {
+			   targetedColorPicker.popAdvancedColor=null;
+			 }*/
+			}
+
+			[Inspectable]
+			//passez en public pour l'utilisation en popupcentre;
+			public function updateColor():void
+			{
+				newColor=imageColorPicker.selectedColor;
+				rgbValue=com.yahoo.astra.utils.ColorUtil.uintToRGB(newColor);
+				redValue=Math.round(rgbValue.red);
+				blueValue=Math.round(rgbValue.blue);
+				greenValue=Math.round(rgbValue.green);
+				hsbValue=com.yahoo.astra.utils.ColorUtil.uintToHSB(newColor);
+				hueValue=Math.round(hsbValue.hue);
+				brightnessValue=Math.round(hsbValue.brightness);
+				saturationValue=Math.round(hsbValue.saturation);
+
+				hexValue=hexIsFocus ? hexField.text : com.yahoo.astra.utils.ColorUtil.toHexString(newColor);
+				if (targetedColorPicker)
+				{
+					targetedColorPicker.selectedColor=newColor;
+					targetedColorPicker.dispatchEvent(new ColorPickerEvent(ColorPickerEvent.CHANGE));
+				}
+			}
+
+			private function setHsbColor():void
+			{
+				hsbValue.hue=Number(hueField.text);
+				hsbValue.saturation=Number(saturationField.text);
+				hsbValue.brightness=Number(brightnessField.text);
+				imageColorPicker.selectedColor=com.yahoo.astra.utils.ColorUtil.HSBTouint(hsbValue);
+				updateColor();
+			}
+
+			private function setHexColor():void
+			{
+				hexIsFocus=true;
+				newColor=Number("0x" + hexField.text);
+				imageColorPicker.selectedColor=newColor;
+				updateColor();
+			}
+
+			private function addSwatch():void
+			{
+				//for later use to add colors to application
+				//targetedColorPicker.addSwatches({color:imageColorPicker.selectedColor});
+
+			}
+
+			private function cancelMe():void
+			{
+				closeMe();
+			}
+
+			private function hexIsFocusHandler():void
+			{
+				hexIsFocus=true;
+			}
+
+			private function verifyValueHandler(event:FocusEvent):void
+			{
+				switch (event.currentTarget)
+				{
+					case hexField:
+						hexIsFocus=false;
+						hexValue=com.yahoo.astra.utils.ColorUtil.toHexString(newColor);
+						break;
+					case hueField:
+						if (Number(event.currentTarget.text) > 360 || Number(event.currentTarget.text) < 0)
+						{
+							event.currentTarget.text=Number(event.currentTarget.text) > 360 ? "360" : Number(event.currentTarget.text) < 0 ? "0" : event.currentTarget.text;
+							setHsbColor();
+						}
+						break;
+					case redField:
+					case greenField:
+					case blueField:
+						if (Number(event.currentTarget.text) > 255 || Number(event.currentTarget.text) < 0)
+						{
+							event.currentTarget.text=Number(event.currentTarget.text) > 255 ? "255" : Number(event.currentTarget.text) < 0 ? "0" : event.currentTarget.text;
+							setRgbColor();
+						}
+						break;
+					default:
+						if (Number(event.currentTarget.text) > 100 || Number(event.currentTarget.text) < 0)
+						{
+							event.currentTarget.text=Number(event.currentTarget.text) > 100 ? "100" : Number(event.currentTarget.text) < 0 ? "0" : event.currentTarget.text;
+							setHsbColor();
+						}
+						break;
+				}
+			}
+
+			private function addListeners():void
+			{
+				var elt:UIComponent;
+				for each (elt in[hexField, hueField, brightnessField, saturationField, redField, greenField, blueField])
+				{
+					elt.addEventListener(FocusEvent.FOCUS_OUT, verifyValueHandler);
+				}
+			}
+
+			private function handleCreationComplete():void
+			{
+				imageColorPicker.selectedColor=newColor;
+				updateColor();
+			}
+
+			private function setRgbColor():void
+			{
+				rgbValue.red=Number(redField.text);
+				rgbValue.green=Number(greenField.text);
+				rgbValue.blue=Number(blueField.text);
+				imageColorPicker.selectedColor=com.yahoo.astra.utils.ColorUtil.RGBTouint(rgbValue);
+				updateColor();
+			}
+			import com.flashiteasy.admin.conf.Ref;
+			public function getLang(s:String):String
+			{
+				
+				return Conf.languageManager.getLanguage(s);
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox width="100%"
+			 height="100%">
+		<mx:HBox>
+			<mx:VBox>
+				<yahoo:ColorPlaneAndSliderPicker id="imageColorPicker"
+												 sliderComponent="{colorComponents.selectedValue}"
+												 change="updateColor();"
+												 width="200"
+												 height="150"/>
+				<mx:HBox>
+					<mx:Label text="#:"
+							  paddingRight="-10"/>
+					<mx:TextInput width="54"
+								  tabIndex="6"
+								  id="hexField"
+								  maxChars="6"
+								  restrict="A-F a-f 0-9"
+								  change="{setHexColor()}"
+								  text="{hexValue}"/>
+				</mx:HBox>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:HBox>
+					<mx:Canvas borderStyle="inset"
+							   width="40"
+							   height="40">
+						<mx:Canvas left="0"
+								   right="0"
+								   top="0"
+								   backgroundColor="{newColor}"
+								   height="18"
+								   id="currentColor">
+						</mx:Canvas>
+						<mx:Canvas left="0"
+								   right="0"
+								   top="18"
+								   bottom="0"
+								   backgroundColor="{oldColor}"
+								   id="previousColor"
+								   click="{imageColorPicker.selectedColor=oldColor;updateColor();}">
+						</mx:Canvas>
+					</mx:Canvas>
+				</mx:HBox>
+				<mx:RadioButtonGroup id="colorComponents"/>
+				<mx:HBox>
+					<mx:VBox>
+						<mx:HBox>
+							<mx:RadioButton paddingRight="-10"
+											selected="true"
+											id="hueRadio"
+											groupName="colorComponents"
+											value="hue"
+											label="{getLang('H:')}"/>
+							<mx:TextInput width="34"
+										  text="{hueValue}"
+										  textAlign="right"
+										  id="hueField"
+										  change="{setHsbColor()}"
+										  maxChars="3"
+										  tabIndex="0"
+										  restrict="0-9"/>
+							<mx:Label paddingLeft="-10"
+									  text="°"/>
+						</mx:HBox>
+						<mx:HBox>
+							<mx:RadioButton paddingRight="-10"
+											id="saturationRadio"
+											value="saturation"
+											groupName="colorComponents"
+											label="{getLang('S:')}"/>
+							<mx:TextInput width="34"
+										  change="{setHsbColor()}"
+										  textAlign="right"
+										  text="{saturationValue}"
+										  id="saturationField"
+										  maxChars="3"
+										  tabIndex="1"
+										  restrict="0-9"/>
+							<mx:Label paddingLeft="-10"
+									  text="%"/>
+						</mx:HBox>
+						<mx:HBox>
+							<mx:RadioButton paddingRight="-10"
+											id="brightnessRadio"
+											groupName="colorComponents"
+											label="{getLang('B:')}"
+											value="brightness">
+							</mx:RadioButton>
+							<mx:TextInput width="34"
+										  text="{brightnessValue}"
+										  id="brightnessField"
+										  textAlign="right"
+										  change="{setHsbColor()}"
+										  maxChars="3"
+										  tabIndex="2"
+										  restrict="0-9"/>
+							<mx:Label paddingLeft="-10"
+									  text="%"/>
+						</mx:HBox>
+						<mx:HBox paddingTop="5">
+							<mx:RadioButton paddingRight="-10"
+											id="redRadio"
+											groupName="colorComponents"
+											label="{getLang('R:')}"
+											value="red"/>
+							<mx:TextInput width="34"
+										  text="{redValue}"
+										  id="redField"
+										  maxChars="3"
+										  change="{setRgbColor()}"
+										  tabIndex="3"
+										  textAlign="right"
+										  restrict="0-9"/>
+						</mx:HBox>
+						<mx:HBox>
+							<mx:RadioButton paddingRight="-10"
+											id="greenRadio"
+											groupName="colorComponents"
+											label="{getLang('G:')}"
+											value="green"/>
+							<mx:TextInput width="34"
+										  text="{greenValue}"
+										  id="greenField"
+										  maxChars="3"
+										  change="{setRgbColor()}"
+										  tabIndex="4"
+										  textAlign="right"
+										  restrict="0-9"/>
+						</mx:HBox>
+						<mx:HBox>
+							<mx:RadioButton paddingRight="-10"
+											id="blueRadio"
+											groupName="colorComponents"
+											label="{getLang('Bl:')}"
+											value="blue"/>
+							<mx:TextInput width="34"
+										  text="{blueValue}"
+										  id="blueField"
+										  maxChars="3"
+										  change="{setRgbColor()}"
+										  tabIndex="5"
+										  textAlign="right"
+										  restrict="0-9"/>
+						</mx:HBox>
+					</mx:VBox>
+				</mx:HBox>
+			</mx:VBox>
+		</mx:HBox>
+		<mx:HBox>
+
+			<mx:Button x="244"
+					   y="286"
+					   label="{getLang('Add_Swatch')}"
+					   width="90"
+					   tabIndex="22"
+					   id="swatchButton"
+					   click="addSwatch();"/>
+			<mx:Button x="339"
+					   y="286"
+					   label="{getLang('Validate')}"
+					   width="80"
+					   click="closeMe()"
+					   tabIndex="21"
+					   id="okButton"/>
+			<mx:Button x="160"
+					   y="286"
+					   label="{getLang('Cancel')}"
+					   width="80"
+					   tabIndex="22"
+					   id="cancelButton"
+					   click="cancelMe();"/>
+		</mx:HBox>
+
+
+
+	</mx:VBox>
+</mx:TitleWindow>

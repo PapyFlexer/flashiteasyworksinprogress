@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ButtonBar xmlns:mx="http://www.adobe.com/2006/mxml"
+			  creationComplete="initData();">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ItemClickEvent;
+			import com.flashiteasy.admin.conf.Conf;
+
+			import mx.collections.ArrayCollection;
+			import mx.controls.buttonBarClasses.ButtonBarButton;
+
+			[Embed(source="../../../../../resources/assets/DeleteRecord.png")]
+			private var deleteIco:Class;
+			[Embed(source="../../../../../resources/assets/cut.png")]
+			private var cutIco:Class;
+			[Embed(source="../../../../../resources/assets/page_copy.png")]
+			private var copyIco:Class;
+			[Embed(source="../../../../../resources/assets/page_paste.png")]
+			private var pasteIco:Class;
+			[Embed(source="../../../../../resources/assets/AddRecord.png")]
+			private var addIco:Class;
+
+
+
+			private var DGArray:ArrayCollection=new ArrayCollection([{toolTip: Conf.languageManager.getLanguage("Delete"), id: "delete", icon: deleteIco}, {toolTip: Conf.languageManager.getLanguage("Cut"), id: "cut", icon: cutIco}, {toolTip: Conf.languageManager.getLanguage("Copy"), id: "copy", icon: copyIco}, {toolTip: Conf.languageManager.getLanguage("Paste"), id: "paste", icon: pasteIco}, {toolTip: Conf.languageManager.getLanguage("Add"), id: "add", icon: addIco},]);
+
+			// Initialize ArrayCollection variable from the ArrayCollection.
+			private function initData():void
+			{
+				//Listeners for delaying complete and prevent call to children not being there
+				addEventListener(Event.ENTER_FRAME, completed);
+				addEventListener(Event.RENDER, render);
+				this.dataProvider=DGArray;
+			}
+			//Real complete
+			private var _isComplete:Boolean=false;
+
+			private function completed(e:Event):void
+			{
+				removeEventListener(Event.ENTER_FRAME, completed);
+				_isComplete=true; //
+				dispatchEvent(new Event(Event.RENDER));
+			}
+
+			private function render(e:Event):void
+			{
+				if (_isComplete)
+				{
+					removeEventListener(Event.RENDER, render);
+					dispatchEvent(new Event(Event.COMPLETE));
+					//addEventListener(ItemClickEvent.ITEM_CLICK , click ) ;
+				}
+			}
+			
+			private function click( e : ItemClickEvent ) : void 
+			{
+				var item:ButtonBarButton=this.getChildAt(e.FieAdmin) as ButtonBarButton;
+			
+			var itemId : String =this.dataProvider[e.FieAdmin].id;
+			switch (itemId)
+			{
+				case "delete":
+					deleteButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+					break;
+				case "cut":
+					cutButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+					break;
+				case "copy":
+					copyButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+					break;
+				case "paste":
+					pasteButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+					break;
+				case "add":
+					addButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+					break;
+				}
+			}
+			
+			public function get deleteButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(0));
+			}
+
+			public function get cutButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(1));
+			}
+
+			public function get copyButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(2));
+			}
+
+			public function get pasteButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(3));
+			}
+
+			public function get addButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(4));
+			}
+			
+			public function disableAll():void
+			{
+				ButtonBarButton(getChildAt(0)).enabled = false;
+				ButtonBarButton(getChildAt(1)).enabled = false;
+				ButtonBarButton(getChildAt(2)).enabled = false;
+				ButtonBarButton(getChildAt(3)).enabled = false;
+				ButtonBarButton(getChildAt(4)).enabled = false;
+			}
+		]]>
+	</mx:Script>
+
+
+
+</mx:ButtonBar>

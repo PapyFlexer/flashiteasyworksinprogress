@@ -1,0 +1,69 @@
+package com.flashiteasy.api.controls {
+	import com.flashiteasy.api.core.IUIElementContainer;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.elements.IFormElementDescriptor;
+	import com.flashiteasy.api.core.elements.INumericStepperElementDescriptor;
+	import com.flashiteasy.api.core.project.Page;
+	
+	import fl.controls.NumericStepper;
+
+	/**
+	 * @author hanne
+	 */
+	public class NumericStepperElementDescriptor extends FormItemElementDescriptor implements IUIElementDescriptor,IFormElementDescriptor,INumericStepperElementDescriptor {
+		private var ns:NumericStepper;
+
+		protected override function initControl():void{
+			
+			ns=new NumericStepper();
+			face.addChild(ns);
+			
+		}
+		
+		public function set maximum(value:Number):void{
+			ns.maximum=value;
+		}
+		
+		public function set minimum(value:Number):void{
+			ns.minimum=value;
+		}
+		
+		public function get maximum():Number{
+			return ns.maximum;
+		}
+		
+		public function get minimum():Number{
+			return ns.minimum;
+		}
+		
+		public function set  stepSize(value:Number):void{
+			ns.stepSize=value;
+		}
+		override public function getValue():String{
+			return ""+ns.value;
+		}
+		
+		protected override function onSizeChanged():void
+		{
+			ns.height = face.height;
+			ns.width = face.width;
+		}
+		
+		 override public function resetValues():void
+		 {
+		 	ns.value = -1;
+		 }
+		 
+		 override public function displayError( s : String ):void
+		 {
+		 	ns.setStyle("backgroundColor", 0xCC0000);
+		 		this.getParameterSet().apply(this);
+		 }
+		 
+		
+		override public function getDescriptorType():Class
+		{
+			return NumericStepperElementDescriptor;
+		}
+	}
+}

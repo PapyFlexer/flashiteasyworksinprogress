@@ -1,0 +1,75 @@
+package com.flashiteasy.api.controls {
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.elements.IFormItemLabelElementDescriptor;
+	import com.flashiteasy.api.core.elements.ILabelElementDescriptor;
+	
+	import fl.controls.CheckBox;
+	
+	/**
+	 * @author hanne
+	 */
+	public class CheckBoxElementDescriptor extends FormItemElementDescriptor implements IUIElementDescriptor,ILabelElementDescriptor,IFormItemLabelElementDescriptor
+	{
+		
+		private var cb:CheckBox;
+
+		protected override function initControl():void
+		{
+			cb=new CheckBox();
+			cb.label = "CheckBox";
+			cb.labelPlacement="left";
+			face.addChild(cb);
+		}
+		
+		public function set label(value:String):void{
+			cb.label=value;
+			//rb.textField.text=value;
+		}
+
+		public function get label():String{
+			return cb.label;
+		}
+		
+		override public function getValue():String{
+			if(cb.selected)
+				return ""+cb.label+"=true";
+			return null;
+		}
+		public function setLabelText(value:String):void
+		{
+			cb.label = value;
+		}
+		
+		public function setLabelPlacement(value:String):void
+		{
+			cb.labelPlacement = value;
+		}
+		
+		protected override function onSizeChanged():void
+		{
+			cb.height = face.height;
+			cb.width = face.width;
+		}
+		/**
+		 * 
+		 */
+		 override public function resetValues():void
+		 {
+		 	cb.selected = false;
+		 }
+		 
+		 override public function displayError( s : String ):void
+		 {
+		 	cb.setStyle("BorderColor", 0xCC0000);
+		 }
+		 
+		//===============================
+
+		override public function getDescriptorType():Class
+		{
+			return CheckBoxElementDescriptor;
+		}
+
+
+	}
+}

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+		width="100%"
+		paddingTop="0">
+	<mx:Script>
+		<![CDATA[
+			
+			import mx.controls.Button;
+			
+			import com.flashiteasy.api.core.project.storyboard.Story;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.motion.TimerStoryboardPlayerImpl;
+			
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.popUp.NewStoryPopup;
+			import com.flashiteasy.admin.popUp.PopUp;
+			
+			
+			private var popup : PopUp;
+			private var timer : TimerStoryboardPlayerImpl= new TimerStoryboardPlayerImpl;
+			
+			private function replayAll():void
+			{
+				//timer  = new TimerStoryboardPlayerImpl;
+				timer.start(BrowsingManager.getInstance().getCurrentPage().getStoryboard());
+			}
+
+			private function stopAll():void
+			{
+				//timer  = new TimerStoryboardPlayerImpl;
+				timer.stop(BrowsingManager.getInstance().getCurrentPage().getStoryboard());
+			}
+
+			private function addStory ():void
+			{
+				popup = new PopUp(Ref.workspaceContainer, true, true, true);
+				var newStCreator : NewStoryPopup = new NewStoryPopup;
+				popup.addChild(newStCreator);
+				popup.display();
+			}
+			
+			
+			public function getLang(s:String, len:int=-1):String
+			{
+
+				return Conf.languageManager.getLanguage(s, len);
+			}
+		]]>
+	</mx:Script>
+		<mx:Button label="{getLang('Replay_All')}" click="replayAll()" />
+		<mx:Button label="{getLang('Stop_All')}" click="stopAll()" />
+		<!--<mx:Button label="{Conf.languageManager.getLanguage('Add_Story')}" click="addStory()" />-->
+</mx:VBox>

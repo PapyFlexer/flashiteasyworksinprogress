@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<projects>
+	<project name="fie-sample-app" url="../fie-projects/fie-sample-app" nature="site_project" owner="" />
+	<project name="fie-app" url="../fie-projects/fie-app" nature="site_project" owner="" />
+	<project name="test-site" url="../fie-projects/test-site" nature="presentation_project" owner="" />
+	<project name="fie-fable" url="../fie-projects/fie-fable" nature="banner_project" owner="" />
+	<project name="jardin" url="../fie-projects/jardin" nature="site_project" owner="" />
+	<project name="yaateh" url="../fie-projects/yaateh" nature="site_project" owner="" />
+</projects>

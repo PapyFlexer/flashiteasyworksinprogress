@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="package-fie-version">
+	<exec executable="svn" outputproperty="svninfo.xml">
+<arg line="info --xml"/>
+</exec>
+	<exec executable="svn" dir="../../fie-api/src" outputproperty="svninfoapi.xml">
+<arg line="info --xml"/>
+</exec>
+	<exec executable="svn" dir="../../fie-service/src" outputproperty="svninfoservice.xml">
+<arg line="info --xml"/>
+</exec>
+<xmlproperty collapseAttributes="true" prefix="admin">
+<propertyresource name="svninfo.xml"/>
+</xmlproperty>
+<xmlproperty collapseAttributes="true" prefix="api">
+<propertyresource name="svninfoapi.xml"/>
+</xmlproperty>
+<xmlproperty collapseAttributes="true" prefix="service">
+<propertyresource name="svninfoservice.xml"/>
+</xmlproperty>
+
+	<property prefix="svn" file="svn.properties"/>
+	<delete file="config/versionConfig.xml" quiet="true"/>
+	<copy file="config/versionConfig.xml_tpl" tofile="config/versionConfig.xml">
+	<filterchain>
+    <replacetokens>
+        <token key="Revision" value="${admin.info.entry.revision}"/>
+        <token key="LastChangedRev" value="${admin.info.entry.commit.revision}"/>
+        <token key="LastChangedDate" value="${admin.info.entry.commit.date}"/>
+        <token key="ApiRevision" value="${api.info.entry.revision}"/>
+        <token key="ServiceRevision" value="${service.info.entry.revision}"/>
+     </replacetokens>
+	</filterchain>
+	</copy>
+	<delete file="config/fie-version.xml" quiet="true"/>
+	<copy file="config/fie-version.xml_tpl" tofile="config/fie-version.xml">
+	<filterchain>
+    <replacetokens>
+        <token key="Revision" value="${admin.info.entry.revision}"/>
+        <token key="ApiRevision" value="${api.info.entry.revision}"/>
+        <token key="ServiceRevision" value="${service.info.entry.revision}"/>
+     </replacetokens>
+	</filterchain>
+	</copy>
+	<echo message="${api.info.entry.revision}" />
+	<echo message="${admin.info.entry.revision}" />
+	<echo message="${service.info.entry.revision}" />
+	<echo message="${svninfo.xml}" />
+	<echo message="${svninfoapi}" />
+	<echo message="${svninfoservice.xml}" />
+	 
+</project>

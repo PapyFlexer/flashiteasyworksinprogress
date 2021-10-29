@@ -1,0 +1,198 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<mx:Canvas xmlns:mx = "http://www.adobe.com/2006/mxml"
+		   xmlns:comps = "com.flashiteasy.admin.uicontrol.*"
+		   width = "480"
+		   height = "480"
+		   creationComplete = "init()"
+		   xmlns:popUp = "com.flashiteasy.admin.popUp.*">
+
+
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.fieservice.IndexationService;
+			import mx.managers.BrowserManager;
+			import mx.events.ListEvent;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.core.project.Page;
+			import com.flashiteasy.admin.manager.AdminManager;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.uicontrol.PageTree;
+			
+			import com.flashiteasy.api.indexation.IndexationManager;
+			import com.flashiteasy.api.indexation.PageInformation;
+
+			
+			public var pi : PageInformation;
+			
+			[Bindable]
+			private var ids : IndexationService = new IndexationService;
+				
+			
+			[Bindable]
+			public var tit : String;
+			[Bindable]
+			public var desc : String;
+			[Bindable]
+			public var keywds : String;
+			[Bindable]
+			public var gacode : String;
+			
+			/**
+			 * 
+			 *  INITIALISATION
+			 * 
+			 * 
+			 * 
+			 * */
+			 
+			 
+			private function init():void
+			{
+				buildProjectTree();
+				gacode = IndexationManager.getInstance().googlecode;
+				//loadPageInfos();
+			}	
+
+			private function buildProjectTree() : void
+			{
+				pageTree.addEventListener(ListEvent.CHANGE, onPageSelection);
+				var provider : XMLList = ApplicationController.getInstance().getNavigation().buildDataProvider();
+				pageTree.dataProvider = provider;
+				pageTree.selectedIndex = 0;
+				callLater(pageTree.dispatchEvent,[new ListEvent(ListEvent.CHANGE)]);
+				
+				//return pageTree;
+			}
+			
+			private function loadPageInfos():void
+			{
+				// 
+			}
+			
+			private function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+			
+			private function validateSinglePageInfos( e : MouseEvent ) : void
+			{
+				var pageHasBeenIndexed : Boolean = false;
+				var page:Page = pageTree.selectedItem as Page;
+				var pageInfo : PageInformation = new PageInformation(page);
+				var title : String = this.pageTitle.text;
+				var descr : String = this.pageDescription.text;
+				var kwstr : String = this.pageKeyWords.text;
+				var kwArr : Array = kwstr.split(",");
+				for each (var kw:String in kwArr)
+				{
+					pageInfo.addKeyword(kw);
+				}
+				
+				IndexationManager.getInstance().addPageInformation(pageInfo);
+				//pageHasBeenIndexed = true;
+				trace ("page info locally saved");
+				trace (IndexationManager.getInstance().getPageInformation(page));
+				//ids.saveIndexationObject(page);
+			}
+
+			private function validateIndexation( e : MouseEvent ) : void
+			{
+				var pages : Array = BrowsingManager.getInstance().getProject().getPages();
+				for each (var page : Page in pages)
+				{
+					trace ("indexing page '"+page.link+"'...");
+					ids = new IndexationService;
+					ids.savePageIndexation(page);
+				}
+				var a:Array = saveIndexationInfos();
+				ids.saveIndexationObject(a[0], a[1]);	
+			}
+			
+			private function onPageSelection( e:ListEvent ) : void
+			{
+				//var page : Page = pageTree.selectedItem as Page;
+				var pageName : String = PageTree(e.currentTarget).selectedItem.@label
+				var page : Page = BrowsingManager.getInstance().getPageByName(BrowsingManager.getInstance().getProject(),pageName);
+				pi  = IndexationManager.getInstance().getPageInformation(page);
+				if(pi != null ) 
+				{
+					tit = pi.title;
+					desc = pi.description;
+					keywds = pi.keywords.join(", ");
+				}
+				else
+				{
+					pageTitle.text = "";
+					pageDescription.text = "";
+					pageKeyWords.text = "";
+					/*
+					tit = "";
+					desc ="" ;
+					keywds = "";
+					*/
+				}
+			}
+		
+		public function saveIndexationInfos():Array
+		{
+			var xmlStr : String = new String;
+			xmlStr += "<?xml version='1.0' encoding='UTF-8' ?>\n";
+			xmlStr += "<indexation>\n";
+			xmlStr += "\t<googlecode>"+googlecode.text+"</googlecode>\n";
+			
+			var xPageList : XMLList = ApplicationController.getInstance().getNavigation().buildDataProvider();
+			for each (var xPage : XML in xPageList)
+			{
+				var pageName : String = xPage.@label
+				var page : Page = BrowsingManager.getInstance().getPageByName(BrowsingManager.getInstance().getProject(),pageName);
+				
+				xmlStr += "\t<page url='"+pi.page.getPageUrl()+"' >\n";
+				xmlStr += "\t\t<title>"+pi.title+"</title>\n";
+				xmlStr += "\t\t<description>"+pi.description+"</description>\n";
+				xmlStr += "\t\t<keywords>"+pi.keywords.join(", ")+"</keywords>\n";
+				xmlStr += "\t</page>\n";
+			} 
+			xmlStr += "</indexation>";
+			var fileToSave : String = "info.xml";
+			trace ("this has been saved in indexobj\n"+xmlStr);
+			return [fileToSave, xmlStr];
+		}
+			
+		]]>
+	</mx:Script>
+		<mx:VBox paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+			<mx:HBox>
+				<mx:Label  text="{getLang('GoogleAnalyticsCode')}" width="200" />
+				<mx:TextInput id="googlecode"  width="250" text="{gacode}"/>
+			</mx:HBox>
+			<mx:Spacer width="100%" height="10" />
+			<mx:HBox height="100%">
+				<mx:VBox height="100%">
+					<mx:Label  text="{getLang('PageList')}" width="150" />
+					<comps:PageTree id="pageTree" height="100%" />
+				</mx:VBox>
+				<mx:VBox height="100%">
+					<mx:Label text="{getLang('PageTitle')}" width="150" />
+					<mx:TextInput id="pageTitle"  width="250" text="{tit}"/>
+					<mx:Spacer />
+					
+					<mx:Label text="{getLang('PageKeywords')}" />
+					<mx:TextArea id="pageKeyWords" width="250" height="100%"  text="{keywds}"/>
+					<mx:Spacer />
+					
+					<mx:Label text="{getLang('PageDescription')}"/>
+					<mx:TextArea id="pageDescription"  text="{desc}" width="250" height="100%" />
+					<mx:Spacer />
+					<mx:Text id="indexationNotifier" text="{ids.content}" />
+					
+				</mx:VBox>
+			</mx:HBox>
+			<mx:HBox width="100%">
+				
+				<mx:Button label="{this.getLang('ValidateSiteIndexation')}" click="validateIndexation(event)" />
+				<mx:Spacer width="100%" />
+				<mx:Button label="{this.getLang('ValidatePage')}" click="validateSinglePageInfos(event)" />
+			</mx:HBox>
+		</mx:VBox>
+</mx:Canvas>

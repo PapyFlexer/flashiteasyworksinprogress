@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="100%" 
+		 paddingTop="0"
+		 implements="com.flashiteasy.admin.edition.IElementEditorPanel">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.components.MaskType;
+			import com.flashiteasy.api.core.CompositeParameterSet;
+			import com.flashiteasy.api.parameters.TextParameterSet;
+			import mx.controls.RichTextEditor;
+			import mx.controls.Tree;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.parameters.FilterParameterSet;
+			import com.flashiteasy.admin.components.filterComponents.FilterWorkbench;
+			import com.flashiteasy.admin.components.filterComponents.FilterPopUp;
+			import com.flashiteasy.api.core.project.Page;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+			import com.flashiteasy.api.parameters.InternalLinkParameterSet;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.admin.visualEditor.VisualSelector;
+			import com.flashiteasy.admin.commands.menus.ChangeParameterCommand;
+			import com.flashiteasy.admin.commands.ICommand;
+			import mx.events.FlexEvent;
+			import mx.core.UIComponent;
+			import com.flashiteasy.api.core.AbstractParameterSet;
+			import mx.controls.List;
+			import com.flashiteasy.admin.components.EventEditor;
+			import com.flashiteasy.admin.components.FieColorPicker;
+			import com.flashiteasy.admin.components.FilePicker;
+			import com.flashiteasy.admin.components.advancedSlider;
+			import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+			import com.flashiteasy.admin.parameter.Parameter;
+			import com.flashiteasy.api.utils.DisplayListUtils;
+			import com.flashiteasy.admin.workbench.IElementEditor;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.api.core.IParameterSetStaticValues;
+			import com.flashiteasy.api.parameters.PositionParameterSet;
+			import com.flashiteasy.api.parameters.RotationParameterSet;
+			import com.flashiteasy.api.parameters.SizeParameterSet;
+			import com.flashiteasy.api.utils.ArrayUtils;
+
+			import mx.containers.FormItem;
+			import mx.containers.HBox;
+			import com.flashiteasy.admin.components.advancedSlider;
+			import com.flashiteasy.api.core.IParameterSetStaticValues;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.admin.workbench.IElementEditor;
+			import mx.controls.CheckBox;
+			import mx.controls.Label;
+			import mx.controls.TextInput;
+			import mx.controls.NumericStepper;
+			import mx.containers.FormItem;
+			import com.flashiteasy.admin.parameter.Parameter;
+			import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+			import mx.controls.ComboBox;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import com.flashiteasy.admin.components.FieColorPicker;
+			import mx.controls.HSlider;
+
+			private var editor:IElementEditor;
+			private var parameterSetDescriptor:ParameterSetEditionDescriptor;
+			private var _parameterSet:IParameterSet;
+			private var control:DisplayObject;
+
+			import com.flashiteasy.admin.conf.Ref;
+
+			public function getDescriptor():ParameterSetEditionDescriptor
+			{
+				return parameterSetDescriptor;
+			}
+
+			public function reset(editor:IElementEditor, descriptor:ParameterSetEditionDescriptor):void
+			{
+				//We set the focus to prevent a bug with the AdminManager KeyBoardListener not reacting anymore when the component that had focus is destroy
+				this.setFocus();
+				this.editor=editor;
+				this.parameterSetDescriptor=descriptor;
+				form.removeAllChildren();
+				description=Conf.languageManager.getLanguage(parameterSetDescriptor.getDescription());
+				if(description=="null")
+				removeChild(topLabel);
+				_parameterSet=descriptor.getParameterSet();
+				layoutParameters(parameterSetDescriptor.getParameters());
+			}
+
+			public function update(param:IParameterSet, update:Boolean=false):void
+			{
+				var d:DisplayObject;
+				if (param is PositionParameterSet)
+				{
+					d=DisplayListUtils.findControl(form, "x");
+					NumericStepper(d).value=new Number((param as PositionParameterSet).x);
+					d=DisplayListUtils.findControl(form, "y");
+					NumericStepper(d).value=new Number((param as PositionParameterSet).y);
+				}
+				else if (param is SizeParameterSet)
+				{
+					d=DisplayListUtils.findControl(form, "width");
+					NumericStepper(d).value=new Number((param as SizeParameterSet).width);
+					d=DisplayListUtils.findControl(form, "height");
+					NumericStepper(d).value=new Number((param as SizeParameterSet).height);
+				}
+				else if (param is RotationParameterSet)
+				{
+					d=DisplayListUtils.findControl(form, "rotation");
+					advancedSlider(d).value=new Number((param as RotationParameterSet).rotation);
+				}
+				else if (param is InternalLinkParameterSet)
+				{
+
+				}
+				if (update)
+				{
+					d.dispatchEvent(new Event(Event.CHANGE));
+				}
+			}
+
+			private function layoutParameters(params:Array):void
+			{
+				// Waiting for the form to be ready
+				if (form == null)
+				{
+					callLater(layoutParameters, [params]);
+					return;
+				}
+				var startRowIndex:Number=-1;
+				var itemBox:HBox=new HBox();
+				itemBox.percentWidth=100;
+				itemBox.percentHeight=100;
+				var method:Function;
+				for each (var p:Parameter in params)
+				{
+					var rowIndex:Number=p.row;
+					var la:Label=new Label();
+					la.width=50;
+					if (rowIndex > startRowIndex)
+					{
+						form.addChild(itemBox);
+						itemBox=new HBox();
+						itemBox.percentWidth=100;
+						itemBox.percentHeight=100;
+						startRowIndex=rowIndex;
+					}
+					
+					la.text= Conf.languageManager.getLanguage(p.getLabel());
+					method=this["get" + p.getType() + "Control"];
+					method.apply(this, [p]);
+					if(p.getLabel() != "null")
+						itemBox.addChild(la);
+					if (control != null)
+					{
+						// As the properties correspond to accessors, we're sure they are unique
+						control.name=p.getName();
+						itemBox.addChild(control);
+						control.addEventListener("change", itemChanged, false, 0, true);
+						control.addEventListener(FocusEvent.FOCUS_OUT, outFocusHandler, false, 0, true);
+					}     
+				}
+
+				form.addChild(itemBox);
+			}
+
+
+
+			/**
+			 * Returns a default Label as editor
+			 */
+			private function getControl(p:Parameter):void
+			{
+				control=new Label();
+				Label(control).text="-";
+			}
+
+			/**
+			 * Returns a TextInput control
+			 */
+			private function getTextInputControl(p:Parameter):void
+			{
+				control=new TextInput();
+				TextInput(control).text=p.getDefaultValue();
+			}
+
+			/**
+			 * Returns a TextInput control
+			 */
+			private function getMaskTypeControl(p:Parameter):void
+			{
+				control=new MaskType();
+				MaskType(control).init(p.getDefaultValue(), parameterSetDescriptor.getParameterSet());
+				//MaskType(control).text=p.getDefaultValue();
+			}
+
+			/**
+			 * Returns a NumericStepper as editor
+			 */
+			private function getNumberControl(p:Parameter):void
+			{
+				control=new NumericStepper();
+				if (p.getDefaultValue() != null)
+				{
+					NumericStepper(control).minimum=new Number(p.getMin());
+					NumericStepper(control).maximum=new Number(p.getMax());
+					NumericStepper(control).value=new Number(p.getDefaultValue());
+					NumericStepper(control).stepSize=new Number(p.getInterval());
+				}
+			}
+
+			/**
+			 * Returns a FilePicker as editor
+			 */
+			private function getSourceControl(p:Parameter):void
+			{
+				control=new FilePicker();
+				if (p.getDefaultValue() != null)
+				{
+					FilePicker(control).selectedFile=p.getDefaultValue();
+				}
+			}
+
+			private function getFilterControl(p:Parameter):void
+			{
+				control=new FilterWorkbench;
+				FilterWorkbench(control).setFilters(FilterParameterSet(parameterSetDescriptor.getParameterSet()));
+			}
+
+			/**
+			 * Returns a CheckBox as editor
+			 */
+			private function getBooleanControl(p:Parameter):void
+			{
+				control=new CheckBox();
+				if (p.getDefaultValue() != null)
+				{
+					CheckBox(control).selected=p.getDefaultValue().toString() == "true" ? true : false;
+				}
+			}
+
+			private function getListControl(p:Parameter):void
+			{
+				control=new List();
+				{
+					List(control).dataProvider=IParameterSetStaticValues(_parameterSet).getPossibleValues(p.getName());
+					List(control).allowMultipleSelection=true;
+					List(control).labelField=p.getLabelFiled();
+					List(control).percentWidth=100;
+					if (p.getDefaultValue() != null)
+					{
+						if(p.getDefaultValue() is Array)
+						List(control).selectedItems=p.getDefaultValue();
+						else
+						List(control).selectedItem=p.getDefaultValue();
+					}
+				}
+			}
+			
+			
+			/**
+			 * Returns a ColorPicker as editor
+			 */
+			private function getColorControl(p:Parameter):void
+			{
+				control=new FieColorPicker();
+				if (p.getDefaultValue() != null)
+				{
+					FieColorPicker(control).setColorValue(Number(p.getDefaultValue()));
+				}
+			}
+
+			/**
+			 * Returns an EventEditor as editor
+			 */
+			private function getEventControl(p:Parameter):void
+			{
+				control=new EventEditor();
+				if (p.getDefaultValue() != null)
+				{
+					var o:*=p.getDefaultValue();
+					EventEditor(control).setTriggers(o);
+				}
+			}
+
+			/**
+			 * Returns a advancedSlider as editor
+			 */
+			private function getSliderControl(p:Parameter):void
+			{
+				control=new advancedSlider();
+				advancedSlider(control).minimum=new Number(p.getMin());
+				advancedSlider(control).maximum=new Number(p.getMax());
+				advancedSlider(control).interval=new Number(p.getInterval());
+				if (p.getDefaultValue() != null)
+				{
+					advancedSlider(control).value=new Number(p.getDefaultValue());
+				}
+			}
+			
+			/**
+			 * Returns a TextInput as editor
+			 */
+			private function getTextControl(p:Parameter):void
+			{
+				control = new RichTextEditorPanel;
+				RichTextEditorPanel(control).setText( String(p.getDefaultValue()));
+				RichTextEditorPanel(control).setTextParameter(TextParameterSet(parameterSetDescriptor.getParameterSet()));
+			}
+			
+			/**
+			 * Returns a TextInput as editor
+			 */
+			private function getStringControl(p:Parameter):void
+			{
+				control=new TextInput();
+				if (p.getDefaultValue() != null)
+				{
+					TextInput(control).text=new String(p.getDefaultValue());
+				}
+			}
+
+			/**
+			 * Returns a ComboBox as editor
+			 */
+			private function getComboControl(p:Parameter):void
+			{
+				control=new ComboBox();
+				
+					var values:Array=IParameterSetStaticValues(_parameterSet).getPossibleValues(p.getName());
+					ComboBox(control).dataProvider=values;
+					ComboBox(control).labelFunction = translateLabel;
+					if (p.getDefaultValue() != null)
+					{
+						var index:int=ArrayUtils.getIndex(values, p.getDefaultValue());
+						ComboBox(control).selectedIndex=index;
+					}
+					else
+					{
+						ComboBox(control).selectedIndex = -1;
+					}
+			}
+			
+			private function translateLabel(item:Object):String
+			{
+				return Conf.languageManager.getLanguage(String(item));
+			}
+
+			/**
+			 * Returns a ComboBox containing the list of pages.
+			 */
+			private function getPageComboControl(p:Parameter):void
+			{
+				control=new PageTree();
+				var provider:XMLList = ApplicationController.getInstance().getNavigation().buildDataProvider();
+				PageTree(control).dataProvider=provider;
+				PageTree(control).setSelectedPage(p.getDefaultValue() as String);
+			}
+
+
+			private function itemChanged(e:Event):void
+			{
+
+				var targetName:String=e.target.name;
+				var param:IParameterSet=parameterSetDescriptor.getParameterSet();
+				//TODO this condition should be replace by a clean check for linked parameters
+				if (getQualifiedClassName(e.target).split("::")[1] == "FilterWorkbench")
+				{
+					changedList=ApplicationController.getInstance().getElementEditor().getParameterList(parameterSetDescriptor.getParameterSet());
+				}
+				else
+				{
+					changedList=[e.target.name];
+				}
+				if (!ArrayUtils.compareArrays(Ref.adminManager.changedParameterList, changedList) && Ref.adminManager.changedParameterList != null)
+					Ref.adminManager.checkForCommitParameterChange();
+
+
+				//Before changing value we stock a previousValueList object for undo
+				setPreviousValue();
+
+				Ref.adminManager.changedDescriptor=parameterSetDescriptor;
+				Ref.adminManager.changedParameterList=changedList;
+
+
+				// TODO Replace the if...else if statements with a clean mapping class
+
+				switch (getQualifiedClassName(e.target).split("::")[1])
+				{
+					case "NumericStepper":
+						param[targetName]=NumericStepper(e.target).value;
+						break ;
+					case "MaskType":
+						param["enable"]=true;//MaskType(e.target).
+						CompositeParameterSet(param).setParameterSet( MaskType(e.target).getParameter());
+						break;
+					case "CheckBox":
+						param[targetName]=CheckBox(e.target).selected;
+						break;
+					case "List":
+						param[targetName]=List(e.target).selectedItems;
+						break;
+					case "ComboBox":
+						param[targetName]=ComboBox(e.target).selectedItem;
+						break;
+					case "HSlider":
+						param[targetName]=HSlider(e.target).value;
+						break;
+					case "advancedSlider":
+						param[targetName]=advancedSlider(e.target).value;
+						break;
+					case "FieColorPicker":
+						param[targetName]=FieColorPicker(e.target).getColorValue();
+						break;
+					case "TextInput":
+						param[targetName]=TextInput(e.target).text;
+						break;
+					case "FilePicker":
+						param[targetName]=FilePicker(e.target).selectedFile;
+						break;
+					case "EventEditor":
+						param[targetName]=EventEditor(e.target).triggers;
+						break;
+					case "PageTree":
+						param[targetName]=PageTree(e.target).getSelectedLink();
+						break;
+
+				}
+
+				editor.parameterSetUpdated(parameterSetDescriptor.getParameterSet());
+				//We get the values for each selected blocks
+				var newValueList:Object=ApplicationController.getInstance().getElementEditor().getParameterValueList(Ref.adminManager.changedParameterList, Ref.adminManager.changedDescriptor);
+				//
+				addParameterChangeCommand(changedList, parameterSetDescriptor, newValueList, Ref.adminManager.previousValueList);
+
+			}
+
+			/**
+			 * Handler used for check of change values when we Focus out of the component
+			 */
+			private function outFocusHandler(e:FocusEvent):void
+			{
+
+				//If changes have occured
+				if (Ref.adminManager.changedParameterList != null)
+				{
+					//If the component that loses focus is the current param or one of is child
+					var currentParamLostFocus:Boolean=(String(e.target).indexOf(("." + Ref.adminManager.changedParameterList[0] + ".")) != -1 || Ref.adminManager.changedParameterList[0] == e.target.name);
+
+					//And if the current param have been change
+					if (currentParamLostFocus && Ref.adminManager.focusOutEnabled)
+					{
+						Ref.adminManager.checkForCommitParameterChange();
+
+					}
+				}
+			}
+
+			private var changedList:Array=[];
+
+			public function setPreviousValue(changedParameterList:Array=null):void
+			{
+
+				if (!ArrayUtils.compareArrays(Ref.adminManager.changedParameterList, changedList))
+				{
+
+					Ref.adminManager.previousValueList=ApplicationController.getInstance().getElementEditor().getParameterValueList(changedList, parameterSetDescriptor);
+					trace("Setpreviousvalue :: " + Ref.adminManager.previousValueList);
+				}
+			}
+
+			public function addParameterChangeCommand(propertyList:Array, descriptor:ParameterSetEditionDescriptor, valueList:Object, oldValueList:Object):void
+			{
+				ApplicationController.getInstance().getElementEditor().notifyParameterChange(propertyList, descriptor, valueList, oldValueList);
+
+
+			}
+
+
+			[Bindable]
+			private var description:String;
+		]]>
+	</mx:Script>
+	<mx:Label text="{description}"
+			  id="topLabel"
+			  paddingLeft="4"
+			  paddingBottom="0"/>
+	<mx:Form id="form" indicatorGap="4" height="100%"
+			 paddingLeft="4"
+			 paddingRight="4"
+			 paddingBottom="0"
+			 paddingTop="0"
+			 width="290"/>
+</mx:VBox>

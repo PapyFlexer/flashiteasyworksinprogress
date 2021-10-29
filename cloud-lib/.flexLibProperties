@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties version="1">
+  <includeClasses>
+    <classEntry path="com.flashiteasy.clouds.ExternalLibrary"/>
+    <classEntry path="com.flashiteasy.clouds.lib.ICloudableElementDescriptor"/>
+    <classEntry path="com.flashiteasy.clouds.lib.CloudsElementDescriptor"/>
+    <classEntry path="com.flashiteasy.clouds.lib.MovingCloud"/>
+    <classEntry path="com.flashiteasy.clouds.parameters.CloudsLayerParameterSet"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

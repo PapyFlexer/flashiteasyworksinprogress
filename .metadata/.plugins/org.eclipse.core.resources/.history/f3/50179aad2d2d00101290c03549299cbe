@@ -1,0 +1,43 @@
+package com.flashiteasy.api.utils
+{
+	import com.flashiteasy.api.core.CompositeParameterSet;
+	
+	import flash.net.registerClassAlias;
+	import flash.utils.ByteArray;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
+	
+	public class CloneUtils
+	{
+		public static function clone(ob:*):*
+		{
+			var qualifiedClassName : String = getQualifiedClassName( ob ).replace( "::", "." );
+			
+			if (ob is CompositeParameterSet)
+			{
+				trace ("this is composite for good : "+qualifiedClassName);
+				var pSet:CompositeParameterSet = CompositeParameterSet(ob);
+				var clonedPset:CompositeParameterSet=new CompositeParameterSet;
+				var params:Array=ArrayUtils.clone(pSet.getParametersSet());	
+				for each ( var _ob : Object in params)
+				{
+					trace ("\t => adding "+getQualifiedClassName(_ob) +" internally");
+					clone(_ob);	
+				}
+				
+			}
+			else 
+			{
+				var bytes : ByteArray = new ByteArray();
+				registerClassAlias( qualifiedClassName, getDefinitionByName( qualifiedClassName ) as Class );
+				bytes.writeObject( ob );
+				bytes.position = 0;
+				return bytes.readObject() as (getDefinitionByName( qualifiedClassName ) as Class) ;
+
+			}
+	
+
+		}
+
+	}
+}

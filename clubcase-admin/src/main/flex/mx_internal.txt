@@ -1,0 +1,8 @@
+Utilisation de mx_internal  dans l'admin :
+
+CustomTree : ligne 237 - fonction getObjectTarget 
+			 ligne 254 - fonction getDropData
+			 
+RichTextEditorPanel : ligne 89/90  - fonction setTextAreaStyle (  TextArea : getTextField() )  ) 
+
+FieRichTextEditor : ligne 21 - fonction textField (  TextArea : getTextField() )  ) 

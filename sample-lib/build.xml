@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     7 janv. 10 12:03:50                                                        
+
+     Sample-Lib    
+                   
+     J.F.Mathiot                                                                
+     ====================================================================== -->
+<project name="Sample-Lib" default="copy-lib">
+
+    <!-- ================================= 
+          target: copy-lib              
+         ================================= -->
+    <target name="copy-lib">
+        <unzip dest="../fie-app/src/main/resources/external" src="bin/sample-lib.swc" overwrite="true">
+        	<patternset>
+        	        <include name="*.swf"/>
+			</patternset>
+    	</unzip>
+    	<delete file="com_flashiteasy_sample_sample-lib_0.2-SNAPSHOT.swf" failonerror="false"/>
+    	<move file="../fie-app/src/main/resources/external/library.swf" tofile="../fie-app/src/main/resources/external/com_flashiteasy_sample_sample-lib_0.2-SNAPSHOT.swf"/>
+    	    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_sample_sample-lib_0.2-SNAPSHOT.swf" todir="../fie-admin/src/main/resources/libraries"/>
+    	    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_sample_sample-lib_0.2-SNAPSHOT.swf" todir="../fie-admin/bin-release/libraries"/>
+    	    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_sample_sample-lib_0.2-SNAPSHOT.swf" todir="../fie-app/bin-release/external"/>
+    	    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_sample_sample-lib_0.2-SNAPSHOT.swf" todir="../fie-sample-app/external"/>
+    			<copy file="../fie-app/src/main/resources/external/com_flashiteasy_sample_sample-lib_0.2-SNAPSHOT.swf" todir="../../../../../../Applications/MAMP/htdocs/target/fie-admin/libraries"/>
+    	    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_sample_sample-lib_0.2-SNAPSHOT.swf" todir="../../../../../../Applications/MAMP/htdocs/target/fie-projects/fie-app/external"/>
+    	    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_sample_sample-lib_0.2-SNAPSHOT.swf" todir="../../../../../../Applications/MAMP/htdocs/target/fie-projects/fie-sample-app/external"/>
+    	    </target>
+
+
+</project>

@@ -1,0 +1,138 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ * 
+ *
+ */
+ 
+package com.flashiteasy.api.controls
+{
+	import com.flashiteasy.api.core.BrowsingManager;
+	import com.flashiteasy.api.core.IDescriptor;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.elements.ICloneElementDescriptor;
+	import com.flashiteasy.api.core.elements.IResizableElementDescriptor;
+	import com.flashiteasy.api.selection.ElementList;
+	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.IBitmapDrawable;
+	import flash.display.Sprite;
+	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
+	
+	public class CloneElementDescriptor extends SimpleUIElementDescriptor implements ICloneElementDescriptor, IResizableElementDescriptor
+	{
+		private var _mode:String;
+		private var isResizable:Boolean
+		private var _bm : Bitmap;
+		private var _src : Sprite
+		private var _bmd : BitmapData
+		private var _target:IDescriptor;
+		private var _applyEnterFrame:Boolean = false;
+		
+		public function CloneElementDescriptor()
+		{
+			super();
+		}
+		
+		public function cloneTarget( source : String, enterFrame : Boolean ) : void
+		{
+			trace("CloneTarget constructed, source.uuid="+source);
+			_target = ElementList.getInstance().getElement(source, BrowsingManager.getInstance().getCurrentPage());
+			_applyEnterFrame =  enterFrame;
+			
+			if (_target != null) {
+				trace ("drawing");
+				_src= Sprite(IUIElementDescriptor(_target).getFace());				
+				var bmsource:IBitmapDrawable = IBitmapDrawable(_src);
+				var matrix:Matrix = null;
+				var ct:ColorTransform = null;
+				var blendMode:String = null;
+				var clipRect:Rectangle = new Rectangle;
+				clipRect.height = _src.height;
+				clipRect.width = _src.width;
+				clipRect.x = getFace().x;
+				clipRect.y = getFace().y
+				var smoothing:Boolean = false;
+				//create 400x400 bitmapdata object
+				_bmd = new BitmapData(_src.width, _src.height,true);
+				//copy movieclip to bitmapData object
+				_bmd.draw(bmsource, matrix, ct, blendMode, clipRect, smoothing);
+				trace ("clone width="+_src.width"+ clone height="+_src.height);
+			}
+
+		}
+
+		override protected function initControl():void
+		{
+		}
+
+		override protected function drawContent():void
+		{
+			if (isResizable  && _src != null)
+			{
+				var ratioW:Number=Math.abs(width) / _src.width;
+				var ratioH:Number=Math.abs(height) / _src.height;
+				var ratioMin:Number=Math.min(ratioH, ratioW);
+				var ratioMax:Number=Math.max(ratioH, ratioW);
+				if (_mode == "scale")
+				{
+					getFace().height = _src.height * ratioMin;
+					getFace().width = _src.width * ratioMin;
+
+				}
+				else if (_mode == "fit")
+				{
+					getFace().width=Math.abs(width);
+					getFace().height=Math.abs(height);
+				}
+				else 
+				{
+					getFace().width=_src.width;
+					getFace().height=_src.height;
+				}
+				getFace().scaleX=width < 0 ? -Math.abs(getFace().scaleX) : Math.abs(getFace().scaleX);
+				getFace().scaleY=height < 0 ? -Math.abs(getFace().scaleY) : Math.abs(getFace().scaleY);
+			//end();
+			}
+			else
+			{
+				end();
+			}
+			
+		}
+
+		/**
+		 * 
+		 * @param resize
+		 * @param mode
+		 */
+		public function setResize( resize:Boolean, mode:String ):void
+		{
+			isResizable=resize;
+			_mode=mode;
+		}
+
+		public function get applyEnterFrame() : Boolean
+		{
+			return _applyEnterFrame;
+		}
+
+		public function set applyEnterFrame( value : Boolean )
+		{
+			_applyEnterFrame = value;
+		}
+
+		override public function getDescriptorType():Class
+		{
+			
+			return CloneElementDescriptor;
+		}
+
+		
+	}
+}

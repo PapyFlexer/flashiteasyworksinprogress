@@ -1,0 +1,63 @@
+<page>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="Block1">
+    <BlockListParameterSet/>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>87</y>
+      <x>21</x>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationY>0</rotationY>
+      <rotationX>0</rotationX>
+    </RotationParameterSet>
+  </container>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="Block2">
+    <BlockListParameterSet/>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>165</y>
+      <x>162</x>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationY>0</rotationY>
+      <rotationX>0</rotationX>
+    </RotationParameterSet>
+  </container>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="Block">
+    <BlockListParameterSet/>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>155</y>
+      <x>40</x>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationY>0</rotationY>
+      <rotationX>0</rotationX>
+    </RotationParameterSet>
+  </container>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="Block3">
+    <BlockListParameterSet/>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>157</y>
+      <x>16</x>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationY>0</rotationY>
+      <rotationX>0</rotationX>
+    </RotationParameterSet>
+  </container>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="Block4">
+    <BlockListParameterSet/>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>-32</y>
+      <x>-86</x>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationY>0</rotationY>
+      <rotationX>0</rotationX>
+    </RotationParameterSet>
+  </container>
+  <storyboard/>
+</page>

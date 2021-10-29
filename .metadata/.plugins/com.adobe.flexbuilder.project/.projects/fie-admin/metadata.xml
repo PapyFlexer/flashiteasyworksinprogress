@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<projectMetadata>
+  <generatedHTMLResources/>
+  <swf bgcolor="333333" fullPath="/fie-admin/bin-debug/FieAdmin.swf" height="100%" pageTitle="" width="100%"/>
+<swf bgcolor="869ca7" fullPath="/fie-admin/bin-debug/main.swf" height="100%" pageTitle="" width="100%"/>
+<swf bgcolor="333333" fullPath="/fie-admin/bin-debug/index.swf" height="100%" pageTitle="" width="100%"/>
+  <swf bgcolor="333333" fullPath="/fie-admin/bin-release1/index.swf" height="100%" pageTitle="" width="100%"/>
+<swf bgcolor="333333" fullPath="/fie-admin/bin-release/index.swf" height="100%" pageTitle="" width="100%"/>
+</projectMetadata>

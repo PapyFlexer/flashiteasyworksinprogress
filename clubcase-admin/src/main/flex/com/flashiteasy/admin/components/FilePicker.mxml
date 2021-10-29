@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox maxWidth="224" xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import com.flashiteasy.admin.popUp.FileBrowser;
+			import com.flashiteasy.admin.event.FieAdminEvent;
+			import com.flashiteasy.admin.browser.Browser;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+
+			private var browser:FileBrowser;
+			[Bindable]
+			[Embed(source='../../../../../resources/assets/link.png')]
+			private var Link_ico:Class;
+			[Bindable]
+			public var selectedFile:String;
+
+			public var folder:String="media";
+
+			public function showBrowser():void
+			{
+				//browser = new FileBrowser(Conf.APP_ROOT + "/media", Application.application as DisplayObject ,true , false , true);
+				var directory:String = Conf.APP_ROOT + "/media";
+				var fileToSelect:String = null;
+				if(selectedFile != null )
+				{
+					if(selectedFile.indexOf(".") != -1 && selectedFile.indexOf("http") == -1)
+					{
+						fileToSelect = selectedFile.slice(selectedFile.lastIndexOf("/")+1);
+						directory = Conf.APP_ROOT + "/"+selectedFile.slice(0,selectedFile.lastIndexOf("/"));
+					}
+				}
+				
+				browser = new FileBrowser(directory, Application.application as DisplayObject,true,true ,true , true , true, true, fileToSelect);
+				browser.addEventListener(FieAdminEvent.COMPLETE, setSelectedFile);
+
+			}
+
+			private function setSelectedFile(e:Event):void
+			{
+				var file:String=browser.selectedFile;
+				selectedFile= file;
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+		]]>
+	</mx:Script>
+	<mx:TextInput width="100%"
+				  id="textBox"
+				  text="{selectedFile}"
+				  enabled="false"
+				  height="24"/>
+	<mx:Button click="showBrowser()" icon="{Link_ico}"/>
+</mx:HBox>

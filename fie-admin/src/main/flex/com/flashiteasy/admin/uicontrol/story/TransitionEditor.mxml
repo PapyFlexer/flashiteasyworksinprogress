@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:flexlib="http://code.google.com/p/flexlib/"
+		 width="100%" xmlns:sliderClasses="flexlib.controls.sliderClasses.*" xmlns:story="com.flashiteasy.admin.uicontrol.story.*" >
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.popUp.components.UpdateTimeline;
+			import mx.events.SliderEvent;
+			import com.flashiteasy.admin.utils.LabelUtils;
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.admin.utils.IconUtility;
+			import com.flashiteasy.api.events.FieEvent;
+			import com.flashiteasy.api.core.project.storyboard.Update;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.utils.SkinUtils;
+			import com.flashiteasy.api.core.project.storyboard.Transition;
+			import flexlib.controls.HSlider;
+			import com.flashiteasy.api.easing.InterpolationTypes;
+
+			//[Bindable]
+			private var transition:Transition;
+			//[Bindable]
+			private var interpolations:Array=InterpolationTypes.INTERPOLATIONS;
+
+			public var beginTimeLimit : int = 0 ;
+			public var endTimeLimit : int = 0 ;
+			
+			//[Bindable]
+			private var start:int;
+
+			//[Bindable]
+			private var stop:int;
+			
+			public function getTransition():Transition
+			{
+				return transition;
+			}
+
+			public function setTransition(transition:Transition):void
+			{
+				this.transition=transition
+				callLater(init);
+			}
+			
+			public function changeAndMoveBeginValue ( value : int ) : void 
+			{
+				
+				beginTimeLimit = value ;
+				//trans.values[0] = value ;
+				transition.begin = value ;
+				trans.setThumbValueAt( 0 , value );
+				trans.invalidateDisplayList();
+			}
+			
+			public function changeAndMoveEndValue ( value : int ) :void 
+			{
+				endTimeLimit = value ;
+				transition.end = value ;
+				trans.setThumbValueAt( 1 , value );
+				trans.invalidateDisplayList();
+			}
+			
+			private function init():void
+			{
+				this.beginValue.text= transition.beginValue;
+				this.endValue.text=transition.endValue;
+				start=transition.begin;
+				stop=transition.end;
+				trans.values=[start, stop];
+				affectEasingTypes();
+				//this.trans.addEventListener(SliderEvent.THUMB_DRAG , changeSlider , false , 0 , true  );
+			}
+
+			private function changeValues():void
+			{
+				transition.beginValue=!isNaN(Number(beginValue.text)) ? Number(beginValue.text) : beginValue.text;
+				transition.endValue=!isNaN(Number(endValue.text)) ? Number(endValue.text) : endValue.text;
+				transition.begin=start;
+				transition.end=stop;
+			}
+
+			private function changeSlider( e : Event ):void
+			{
+				if( Number( trans.values[0]) < beginTimeLimit )
+				{
+					trans.values[0] = beginTimeLimit;
+				} 
+				if( Number(trans.values[1]) > endTimeLimit )
+				{
+					trans.values[1] = endTimeLimit;
+				}
+				start=trans.values[0];
+				stop=trans.values[1];
+				transition.begin=start;
+				transition.end=stop;
+				//dispatchEvent(new Event( Event.CHANGE )) ;
+				UpdateTimeline(this.owner).transitionChanged(this);
+				_update.story.stop();
+			}
+			
+			private function replayStory():void
+			{
+				_update.story.calculateTimes();
+				_update.story.start();
+				
+				Ref.stageTimeLine.refreshTimelines();
+			}
+
+			private function affectEasingTypes():void
+			{
+				interpolCB.dataProvider=InterpolationTypes.INTERPOLATIONS;
+				easingCB.dataProvider=InterpolationTypes.EASINGS;
+				interpolCB.selectedItem=transition.easingClass;
+				easingCB.selectedItem=transition.easingType;
+			}
+
+			private function changeEasings():void
+			{
+				transition.easingClass=Class(interpolCB.selectedItem);
+				transition.easingType=easingCB.selectedItem.toString();
+			}
+			
+			private var _update :Update;
+			
+			public function setUpdate ( update : Update ) : void 
+			{
+				_update = update;	
+			}
+			
+			public function getUpdate() : Update
+			{
+				return _update;
+			}
+			
+			private function deleteTransition( e : Event ) :void 
+			{
+				_update.removeTransition(transition) ;
+				UpdateTimeline(owner).transitionDeleted(this);
+				//dispatchEvent(new Event(FieEvent.REMOVED));
+			}
+			
+			[Bindable]
+			public var timeMax:Number = Ref.stageTimeLine.timeMax;
+			
+			
+		]]>
+	</mx:Script>
+	
+		<mx:HBox width="100%">
+			<mx:TextInput width="50"
+						  id="beginValue"
+						  change="changeValues()"/>
+			<mx:HSlider id="trans" width="100%" change="changeSlider(event)"
+						trackHighlightSkin="{SkinUtils.TrackHighlight}"
+						trackSkin="{SkinUtils.Track}"
+						thumbDisabledSkin="{SkinUtils.ThumbDisabled}"
+						thumbUpSkin="{SkinUtils.ThumbUp}"
+						thumbDownSkin="{SkinUtils.ThumbDown}"
+						thumbOverSkin="{SkinUtils.ThumbOver}"
+						allowTrackClick="false"
+						allowThumbOverlap="false"
+						liveDragging="true"
+						showDataTip="true"
+						dataTipPlacement="top"
+						dataTipOffset="3"
+						showTrackHighlight="true"
+						thumbCount="2"
+						thumbRelease="replayStory()"
+						minimum="0"
+						maximum="{timeMax}"
+						snapInterval="100"/>
+							 
+			<mx:TextInput width="50"
+						  id="endValue"
+						  change="changeValues()"/>
+		</mx:HBox>
+		<mx:HBox width="100%">
+			<mx:ComboBox id="interpolCB"
+						 change="changeEasings()"
+						 dataProvider="{InterpolationTypes.INTERPOLATIONS}" labelFunction="{LabelUtils.setClassLabel}"/>
+
+			<mx:ComboBox id="easingCB" maxWidth="140"
+						 change="changeEasings()"
+						 dataProvider="{InterpolationTypes.EASINGS}" labelFunction="{LabelUtils.setLabel}"/>
+			<mx:Spacer width="100%"/>
+			<mx:Button id="deleteButton" icon="{IconUtility.getClass(deleteButton, 'assets/DeleteRecord.png')}"
+			click="deleteTransition(event)"  />
+		</mx:HBox>
+</mx:VBox>

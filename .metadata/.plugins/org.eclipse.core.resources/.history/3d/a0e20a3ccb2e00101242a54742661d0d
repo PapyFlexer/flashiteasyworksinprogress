@@ -1,0 +1,27 @@
+package com.flashiteasy.api.controls.Validator
+{
+	/**
+	 * Flash'Iteasy
+	 * Fie team is
+	 * dany, didier, gilles
+	 * & many thanks to alexis, ghazi, jean-françois
+	 */
+
+	public class IsEmailValidator extends AbstractValidator implements IValidator
+	{
+		
+		public function IsEmailValidator() {}
+		
+		override public function check(value:String):Boolean
+		{
+			var emailExpression:RegExp = /^[a-z][\w.-]+@\w[\w.-]+\.[\w.-]*[a-z][a-z]$/i;
+			return emailExpression.test(value);
+		}
+		
+		override public function getErrorString():String
+		{
+			return "Adresse mail invalide !";
+		}
+		
+	}
+}

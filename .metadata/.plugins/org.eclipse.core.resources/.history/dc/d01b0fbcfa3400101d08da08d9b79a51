@@ -1,0 +1,133 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ * 
+ *
+ */
+
+package com.flashiteasy.snow.lib
+{
+
+	import flash.display.Sprite;
+	import flash.filters.BlurFilter;
+	import flash.geom.Rectangle; 
+	
+	public class SnowFlake extends Sprite
+	{
+		/** the horizontal and vertical speed of the snowflake  */
+		public var hSpeed:Number; 
+		public var vSpeed:Number; 
+		
+		/** the size of the snowflake */
+		public var size:Number ;
+		
+		/** the size of the emitter */
+		public var screenArea:Rectangle; 
+		
+		
+		
+		public function SnowFlake(screenarea:Rectangle, color:uint=0xFFFFFF, baseSpeed:int = 3)
+		{
+			
+			/** draw a dot */
+			graphics.lineStyle(2,color); 
+			graphics.moveTo(0,0); 
+			graphics.lineTo(0.1,0.1); 
+			
+			/** record the face area */
+			screenArea = screenarea; 
+			
+			/** determine randomly where the flake will appear */
+			x = Math.random()*screenArea.width; 
+			
+			
+			/** determine a random z position */
+			var z:Number = (Math.random()*600)-250; 
+			
+			/** size the flake, based on z */
+			size = calculatePerspectiveSize(z);
+			
+			
+			/** apply size to flake */
+			scaleX = scaleY = size; 
+			
+			
+			/** if z inferior to -150, the flake is close to camera, so gets a big bluramount */
+			if(z<-150)
+			{
+				// manipulate z so we get a number between 0 and 1
+				/**  manipulate z so we get a number between 0 and 1 */
+				var bluramount:Number = z+150; 
+				bluramount /= -100;
+				
+				/**  manipulate bluramount so we get a blur between 1 and 16 */
+				bluramount = (bluramount * 16) + 1;  
+				
+				/**  filter the flake using bluramount */
+				filters = [new BlurFilter(bluramount, bluramount, 1)]; 
+				
+			}
+			else 
+			{
+				/** those flakes are distant, they get a standard blur of 1  */
+				filters = [new BlurFilter(1,1,1)]; 
+			}
+			cacheAsBitmap = true; 
+			
+			/** now set a random x velocity between -1 and 1 */
+			hSpeed = (Math.random()*2)-1; 
+			vSpeed = 3; 
+			/** apply flake size to velocity (farthest flakes will move slower) */
+			hSpeed*=size; 
+			vSpeed*=size; 
+			
+		}
+		
+		public function update(wind:Number, screenarea:Rectangle):void
+		{
+			screenArea = screenarea;
+			// first let's add the x velocity to the x position
+			x+=hSpeed; 
+			y+=vSpeed;
+			
+			
+			// the wind only affects the x position so let's add it to
+			// the x position (multiply by size so foreground flakes
+			// move faster!
+		
+			x += (wind*size);
+			
+			// now let's check that the flake is within the screen area
+			// if not move it to the other side
+			
+			if(y>screenArea.bottom)
+			{
+				y = screenArea.top; 
+			} 
+			if(x>screenArea.right)
+			{
+				x = screenArea.left; 
+			} 
+			else if(x<screenArea.left)
+			{
+				x = screenArea.right; 
+			} 
+		}
+		
+		public function calculatePerspectiveSize(z:Number) : Number
+		{
+			// an arbitrary field of view (ish)
+			var fov:Number = 500; 
+			
+			// dodgy magic function to calculate the scale factor for
+			// an object at the specified z position
+			return fov/(z+fov); 
+			
+		}
+		
+		
+	}
+	
+}

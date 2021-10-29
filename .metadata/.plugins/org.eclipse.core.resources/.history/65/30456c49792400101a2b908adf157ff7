@@ -1,0 +1,69 @@
+package com.flashiteasy.api.parameters
+{
+	import com.flashiteasy.api.controls.Validator.*;
+	import com.flashiteasy.api.core.AbstractParameterSet;
+	import com.flashiteasy.api.core.IDescriptor;
+	import com.flashiteasy.api.core.IParameterSetStaticValues;
+	import com.flashiteasy.api.core.elements.IFormElementDescriptor;
+	import com.flashiteasy.api.utils.ArrayUtils;
+
+	[ParameterSet(description="null",type="Reflection", groupname="Form Item")]
+	public class FormItemParameterSet extends AbstractParameterSet //implements IParameterSetStaticValues
+	{
+		
+		private var _required : Boolean;
+				
+		private var _name : String;
+				
+		override public function apply(target : IDescriptor ) : void
+		{
+			if (target is IFormElementDescriptor)
+			{
+				IFormElementDescriptor(target).required = _required;
+				IFormElementDescriptor(target).name = _name;
+			}
+		}
+		
+		[Parameter(type="Boolean",defaultValue="false",row="0", sequence="0" , label="Required")]
+		public function set required( value : Boolean) : void
+		{
+			_required = value;
+		}
+		
+		public function get required() : Boolean
+		{
+			return _required;
+		}
+		
+ 		[Parameter(type="TextInput",defaultValue="FormItem",row="1", sequence="1" , label="Name")]
+		public function set name( value : String) : void
+		{
+			_name = value;
+		}
+		
+		public function get name() : String
+		{
+			return _name;
+		}
+		
+      /*  [Parameter(type="Combo", defaultValue="NoValidator",row="0", sequence="1", label="Validator")]
+		public function get validator() : IValidator
+		{
+			return _validator;
+		}
+
+		public function set validator(value : IValidator):void
+		{
+			_validator=value;
+		}
+		
+		public function getPossibleValues(name:String):Array
+		{
+			//return [{label:"NoValidator", data:NoValidator}, {label:"IsNullValidator", data:IsNullValidator}, {label:"IsEmailValidator",data:IsEmailValidator} , {label:"IsEqualValidator", data:IsEqualValidator}];
+			//return ["NoValidator","IsNullValidator","IsEmailValidator","IsEqualValidator"];
+			return ArrayUtils.getConstant(com.flashiteasy.api.controls.Validator.ValidatorTypes);
+		} */
+		
+		
+	}
+}

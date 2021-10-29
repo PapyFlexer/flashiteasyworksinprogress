@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ButtonBar xmlns:mx="http://www.adobe.com/2006/mxml"
+			  creationComplete="initData();"
+			  dataProvider="{DGArray}">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ItemClickEvent;
+			import com.flashiteasy.admin.conf.Conf;
+
+			import mx.collections.ArrayCollection;
+			import mx.controls.buttonBarClasses.ButtonBarButton;
+
+			[Embed(source="../../../../../resources/assets/DeleteRecord.png")]
+			private var deleteIco:Class;
+			[Embed(source="../../../../../resources/assets/cut.png")]
+			private var cutIco:Class;
+			[Embed(source="../../../../../resources/assets/page_copy.png")]
+			private var copyIco:Class;
+			[Embed(source="../../../../../resources/assets/page_paste.png")]
+			private var pasteIco:Class;
+			[Embed(source="../../../../../resources/assets/AddRecord.png")]
+			private var addIco:Class;
+			[Embed(source="../../../../../resources/assets/edit.png")]
+			private var editIco:Class;
+
+
+			[Bindable]
+			private var DGArray:ArrayCollection=new ArrayCollection([{toolTip: Conf.languageManager.getLanguage("Delete"), id: "delete", icon: deleteIco}, {toolTip: Conf.languageManager.getLanguage("Cut"), id: "cut", icon: cutIco}, {toolTip: Conf.languageManager.getLanguage("Copy"), id: "copy", icon: copyIco}, {toolTip: Conf.languageManager.getLanguage("Paste"), id: "paste", icon: pasteIco}, {toolTip: Conf.languageManager.getLanguage("Add"), id: "add", icon: addIco}, {toolTip: Conf.languageManager.getLanguage("Edit"), id: "edit", icon: editIco}]);
+
+			// Initialize ArrayCollection variable from the ArrayCollection.
+			private function initData():void
+			{
+				//Listeners for delaying complete and prevent call to children not being there
+				addEventListener(Event.ENTER_FRAME, completed);
+				addEventListener(Event.RENDER, render);
+			}
+			//Real complete
+			private var _isComplete:Boolean=false;
+
+			private function completed(e:Event):void
+			{
+				removeEventListener(Event.ENTER_FRAME, completed);
+				_isComplete=true; //
+				dispatchEvent(new Event(Event.RENDER));
+			}
+
+			private function render(e:Event):void
+			{
+				if (_isComplete)
+				{
+					removeEventListener(Event.RENDER, render);
+					dispatchEvent(new Event(Event.COMPLETE));
+						//addEventListener(ItemClickEvent.ITEM_CLICK , click ) ;
+				}
+			}
+
+			private function click(e:ItemClickEvent):void
+			{
+				var item:ButtonBarButton=this.getChildAt(e.index) as ButtonBarButton;
+
+				var itemId:String=this.dataProvider[e.index].id;
+				switch (itemId)
+				{
+					case "delete":
+						deleteButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						break;
+					case "cut":
+						cutButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						break;
+					case "copy":
+						copyButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						break;
+					case "paste":
+						pasteButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						break;
+					case "add":
+						addButton.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						break;
+				}
+			}
+
+			public function get deleteButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(0));
+			}
+
+			public function disableDelete():void
+			{
+				callLater(laterDisableDelete);
+			}
+
+			private function laterDisableDelete():void
+			{
+				ButtonBarButton(getChildAt(0)).enabled=false;
+			}
+
+			public function hideDelete():void
+			{
+				callLater(laterHideDelete);
+			}
+
+			private function laterHideDelete():void
+			{
+				ButtonBarButton(getChildAt(0)).visible=false;
+				ButtonBarButton(getChildAt(0)).width=0;
+			}
+
+			public function get cutButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(1));
+			}
+
+			public function disableCut():void
+			{
+				callLater(laterDisableCut);
+			}
+
+			private function laterDisableCut():void
+			{
+				ButtonBarButton(getChildAt(1)).enabled=false;
+			}
+
+			public function get copyButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(2));
+			}
+
+			public function get pasteButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(3));
+			}
+
+			public function enablePaste():void
+			{
+				callLater(laterEnablePaste);
+			}
+
+			private function laterEnablePaste():void
+			{
+				ButtonBarButton(getChildAt(3)).enabled=true;
+			}
+
+			public function disablePaste():void
+			{
+				callLater(laterDisablePaste);
+			}
+
+			private function laterDisablePaste():void
+			{
+				ButtonBarButton(getChildAt(3)).enabled=false;
+			}
+
+			public function get addButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(4));
+			}
+
+			public function hideAdd():void
+			{
+				callLater(laterHideAdd);
+			}
+
+			public function laterHideAdd():void
+			{
+				ButtonBarButton(getChildAt(4)).visible=false;
+				ButtonBarButton(getChildAt(4)).width = 0;
+			}
+
+			public function get editButton():ButtonBarButton
+			{
+				return ButtonBarButton(getChildAt(5));
+			}
+
+			public function hideEdit():void
+			{
+				callLater(laterHideEdit);
+			}
+
+			public function laterHideEdit():void
+			{
+				ButtonBarButton(getChildAt(5)).visible=false;
+				ButtonBarButton(getChildAt(5)).width = 0;
+			}
+
+			public function disableAll():void
+			{
+				callLater(callLaterDisable);
+			}
+
+			private function callLaterDisable():void
+			{
+				ButtonBarButton(getChildAt(0)).enabled=false;
+				ButtonBarButton(getChildAt(1)).enabled=false;
+				ButtonBarButton(getChildAt(2)).enabled=false;
+				ButtonBarButton(getChildAt(3)).enabled=false;
+				ButtonBarButton(getChildAt(4)).enabled=false;
+				ButtonBarButton(getChildAt(5)).enabled=false;
+			}
+
+			public function enableAll():void
+			{
+				callLater(laterEnableAll);
+			}
+
+			private function laterEnableAll():void
+			{
+				ButtonBarButton(getChildAt(0)).enabled=true;
+				ButtonBarButton(getChildAt(1)).enabled=true;
+				ButtonBarButton(getChildAt(2)).enabled=true;
+				ButtonBarButton(getChildAt(3)).enabled=true;
+				ButtonBarButton(getChildAt(4)).enabled=true;
+				ButtonBarButton(getChildAt(5)).enabled=true;
+			}
+		]]>
+	</mx:Script>
+
+
+
+</mx:ButtonBar>

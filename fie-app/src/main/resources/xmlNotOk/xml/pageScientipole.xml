@@ -1,0 +1,358 @@
+<page>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="page1">
+    <BlockListParameterSet>
+      <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="containerpage">
+        <BlockListParameterSet/>
+        <PositionParameterSet>
+          <mode>bottom</mode>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <width>1200</width>
+          <height>700</height>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+      </container>
+      <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="world1">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <x>-176</x>
+        </PositionParameterSet>
+        <AlignParameterSet>
+          <h_align>middle</h_align>
+        </AlignParameterSet>
+        <SizeParameterSet>
+          <width>352</width>
+          <is_percent_h>true</is_percent_h>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <ImgParameterSet>
+          <source>media/image/fonds/world_left.png</source>
+        </ImgParameterSet>
+        <ResizableParameterSet>
+          <resizable>true</resizable>
+          <mode>scale</mode>
+        </ResizableParameterSet>
+        <SmoothParameterSet>
+          <smooth>true</smooth>
+        </SmoothParameterSet>
+      </control>
+      <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="world2">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <x>175</x>
+        </PositionParameterSet>
+        <AlignParameterSet>
+          <h_align>middle</h_align>
+        </AlignParameterSet>
+        <SizeParameterSet>
+          <width>352</width>
+          <is_percent_h>true</is_percent_h>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <ImgParameterSet>
+          <source>media/image/fonds/world_right.png</source>
+        </ImgParameterSet>
+        <ResizableParameterSet>
+          <resizable>true</resizable>
+        </ResizableParameterSet>
+        <SmoothParameterSet>
+          <smooth>true</smooth>
+        </SmoothParameterSet>
+      </control>
+      <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="titre">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <y>37</y>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <is_percent_w>true</is_percent_w>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <TextOptionParameterSet>
+          <borderColor>0</borderColor>
+          <wordWrap>true</wordWrap>
+          <autoSize>center</autoSize>
+          <multiLines>true</multiLines>
+        </TextOptionParameterSet>
+        <TextParameterSet>
+          <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="CENTER"&gt;&lt;FONT FACE="_Impact" SIZE="48" COLOR="#FFFFFF" LETTERSPACING="0" KERNING="0"&gt;En route pour l&amp;apos;innovation...&lt;FONT COLOR="#000066"&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+          <police>Arial</police>
+        </TextParameterSet>
+      </control>
+      <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="typo">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <y>95</y>
+          <x>30</x>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <width>160</width>
+          <height>34</height>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <ImgParameterSet>
+          <source>media/typo_scientipole_blanc.swf</source>
+        </ImgParameterSet>
+        <ResizableParameterSet>
+          <resizable>true</resizable>
+          <mode>no_scale</mode>
+        </ResizableParameterSet>
+      </control>
+      <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="logo">
+        <BlockListParameterSet>
+          <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="img">
+            <PositionParameterSet>
+              <mode>bottom</mode>
+              <y>-35</y>
+              <x>-48</x>
+            </PositionParameterSet>
+            <SizeParameterSet>
+              <width>136</width>
+              <height>129</height>
+              <is_percent_w>true</is_percent_w>
+              <is_percent_h>true</is_percent_h>
+            </SizeParameterSet>
+            <RotationParameterSet>
+              <rotationX>0</rotationX>
+              <rotationY>0</rotationY>
+            </RotationParameterSet>
+            <ImgParameterSet>
+              <source>media/logotype_scientipole_blanc.swf</source>
+            </ImgParameterSet>
+            <ResizableParameterSet>
+              <resizable>true</resizable>
+              <mode>scale</mode>
+            </ResizableParameterSet>
+          </control>
+        </BlockListParameterSet>
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <y>62</y>
+          <x>119</x>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <width>46</width>
+          <height>55</height>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+          <rotation>360</rotation>
+        </RotationParameterSet>
+      </container>
+    </BlockListParameterSet>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <width>1200</width>
+      <height>700</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <BackgroundColorParameterSet>
+      <backgroundColor>16486</backgroundColor>
+    </BackgroundColorParameterSet>
+  </container>
+  <action type="com.flashiteasy.api.action::PlayStoryAction" id="s2">
+    <TargetsParameterSet>
+      <targets>titre</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="go">
+          <type/>
+          <events>click</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PlayStoryParameterSet>
+      <storyList>story3,story2</storyList>
+    </PlayStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::InternalBrowsingAction" id="sous">
+    <TargetsParameterSet>
+      <targets>titre</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="sousp">
+          <type/>
+          <events>click</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <InternalLinkParameterSet>
+      <page>pageScientipole/souspage</page>
+    </InternalLinkParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::InternalBrowsingAction" id="home">
+    <TargetsParameterSet>
+      <targets>typo</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="to">
+          <type/>
+          <events>click</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <InternalLinkParameterSet>
+      <page>home</page>
+    </InternalLinkParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::PlayStoryAction" id="return1">
+    <TargetsParameterSet>
+      <targets>img</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="worl1">
+          <type/>
+          <events>click</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <PlayStoryParameterSet>
+      <storyList>sw2,sw3</storyList>
+    </PlayStoryParameterSet>
+  </action>
+  <action type="com.flashiteasy.api.action::InternalBrowsingAction" id="SI">
+    <TargetsParameterSet>
+      <targets>img</targets>
+    </TargetsParameterSet>
+    <TriggerParameterSet>
+      <triggers>
+        <trigger type="com.flashiteasy.api.triggers::MouseTrigger" id="rr">
+          <type/>
+          <events>click</events>
+        </trigger>
+      </triggers>
+    </TriggerParameterSet>
+    <InternalLinkParameterSet>
+      <page>pageScientipole</page>
+    </InternalLinkParameterSet>
+  </action>
+  <storyboard>
+    <story uuid="story" autoPlay="true" autoPlayOnUnload="false" target="logo" loop="false">
+      <update target="RotationParameterSet" targetProperty="rotation">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>0</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>360</value>
+        </keyframe>
+      </update>
+      <update target="AlphaParameterSet" targetProperty="alpha">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>0</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>1</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="height">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>132</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>55</value>
+        </keyframe>
+      </update>
+      <update target="SizeParameterSet" targetProperty="width">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>129</value>
+        </keyframe>
+        <keyframe time="3000">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>46</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="story1" autoPlay="true" autoPlayOnUnload="false" target="typo" loop="false">
+      <update target="AlphaParameterSet" targetProperty="alpha">
+        <keyframe time="2700">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>0</value>
+        </keyframe>
+        <keyframe time="4600">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>1</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="sw2" autoPlay="false" autoPlayOnUnload="false" target="world2" loop="false">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>473</value>
+        </keyframe>
+        <keyframe time="2500">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>175</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="sw3" autoPlay="false" autoPlayOnUnload="false" target="world1" loop="false">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>-466</value>
+        </keyframe>
+        <keyframe time="2500">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>-176</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="story2" autoPlay="false" autoPlayOnUnload="false" target="world2" loop="false">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>175</value>
+        </keyframe>
+        <keyframe time="2500">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>473</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="story3" autoPlay="false" autoPlayOnUnload="false" target="world1" loop="false">
+      <update target="PositionParameterSet" targetProperty="x">
+        <keyframe time="0">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>-176</value>
+        </keyframe>
+        <keyframe time="2500">
+          <easing type="Linear" easingType="easeNone"/>
+          <value>-466</value>
+        </keyframe>
+      </update>
+    </story>
+  </storyboard>
+</page>

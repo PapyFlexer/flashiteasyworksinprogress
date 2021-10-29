@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="package-fie-service" default="copy-fie-service">
+	
+	<delete dir="/Applications/MAMP/htdocs/target/fie-service" />
+	 <mkdir dir="/Applications/MAMP/htdocs/target/fie-service" />
+
+	<target name="copy-fie-service" >
+	 	<!-- copy fie service -->
+		<copy todir="/Applications/MAMP/htdocs/target/fie-service">
+		 	<fileset dir="src/main/php" id="id">
+			</fileset>
+		</copy>
+	</target>
+	<exec executable="svn" output="svn.properties">
+	    <arg value="info" />
+	  </exec>
+	  <property prefix="svn" file="svn.properties"/>
+	  <echo>Sandbox Revision: ${svn.Revision}</echo>
+</project>
+	
+	

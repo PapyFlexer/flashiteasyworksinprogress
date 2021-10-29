@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10" creationComplete="init()" xmlns:mx="http://www.adobe.com/2006/mxml" width="420" height="300" xmlns:popUp="com.flashiteasy.admin.popUp.*">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.admin.manager.LanguageManager;
+			import com.flashiteasy.admin.utils.LabelUtils;
+			import com.gskinner.motion.easing.Linear;
+			import mx.events.ListEvent;
+			import com.flashiteasy.api.easing.InterpolationTypes;
+			import com.flashiteasy.api.core.IUIElementDescriptor;
+			import com.flashiteasy.api.core.project.storyboard.Story;
+			import com.flashiteasy.admin.visualEditor.VisualSelector;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.core.project.PageList;
+			import com.flashiteasy.api.core.project.Project;
+			import com.flashiteasy.api.selection.ElementList;
+			
+			import mx.events.ItemClickEvent;
+			
+			[Bindable]
+			public var description:String;
+			[Bindable]
+			public var inputLabel:String;
+			[Bindable]
+			public var inputValue:String;
+			
+			
+			private function init():void
+			{
+				comment.text = "";
+				var	ctrl:IUIElementDescriptor = VisualSelector.getInstance().getSelectedElement();
+				var ctrlStories : Array = [Conf.languageManager.getLanguage("New")] ;
+				// on va chercher si x story targettant ce controle existe
+				var i:int = 0;
+				for each (var story : Story in BrowsingManager.getInstance().getCurrentPage().getStoryArray())
+				{
+					if (ctrl.uuid == story.target )
+					{
+						ctrlStories.push(story);
+						i++;
+					}
+				}
+				affectEasingTypes();
+				changeBaseEasing();
+				this.story_list.dataProvider = ctrlStories;
+				this.story_list.labelField = "uuid";
+				this.story_list.addEventListener(ListEvent.CHANGE, changeStory, false, 0, true);
+				this.story_list.selectedIndex=i;
+				this.story_list.dispatchEvent(new ListEvent(ListEvent.CHANGE));
+			}
+			
+			private function changeStory(e:ListEvent):void
+			{
+				comment.text = "";
+				if(e.target.selectedIndex != 0)
+				{
+					nameBox.visible = false;
+					
+					loopform.visible = false;
+					autoplayform.visible = false;
+					autoplayonunloadform.visible = false;
+					
+					
+				}
+				else
+				{
+					nameBox.visible = true;
+					loopform.visible = true;
+					autoplayform.visible = true;
+					autoplay.selected = true;
+					autoplay.dispatchEvent(new Event(Event.CHANGE));
+					autoplayonunloadform.visible = true;
+				}
+				checkStartTime();
+			}
+			
+			private function changeBaseEasing():void
+			{
+				var i:int = 0;
+				var baseInterpolation:Class = Linear;
+				var baseEasing:String = "easeOut";
+				for(i = 0; i<InterpolationTypes.INTERPOLATIONS.length; i++)
+				{
+					if(InterpolationTypes.INTERPOLATIONS[i] == baseInterpolation)
+					break;
+				}
+				interpolCB.selectedIndex = i;
+				for(i=0; i<InterpolationTypes.EASINGS.length; i++)
+				{
+					if(InterpolationTypes.EASINGS[i] == baseEasing)
+					break;
+				}
+				easingCB.selectedIndex = i;
+			}
+
+			private function affectEasingTypes():void
+			{
+				interpolCB.dataProvider=InterpolationTypes.INTERPOLATIONS;
+				easingCB.dataProvider=InterpolationTypes.EASINGS;
+			}
+			
+			private function checkStartTime() : void
+			{
+				var actualStory:Story = story_list.selectedIndex > 0 ? Story(story_list.selectedItem) : null;
+				var actualTime:int = Ref.stageTimeLine.getCurrentTime();
+				if(actualStory != null)
+				{
+					if(Ref.stageTimeLine.getCurrentTime() < actualStory.minTime)
+					{
+						comment.text += getLang("story_start_at_zero") + " "+actualStory.maxTime/1000+" "+getLang("seconds");
+					}
+					else if(Ref.stageTimeLine.getCurrentTime() > actualStory.minTime && Ref.stageTimeLine.getCurrentTime() < actualStory.maxTime && actualStory.loop)
+					{
+						comment.text += "\r"+getLang("story_loop_comment");
+					}
+				}
+				else
+				{
+					if(Ref.stageTimeLine.getCurrentTime() == 0)
+					{
+						comment.text += getLang("story_start_at_zero") + " 2 "+getLang("seconds");
+					}
+				}
+			}
+			
+			private function checkSelected (e:Event) : void
+			{
+				
+				var commentString : String;
+				var checked:CheckBox = CheckBox(e.target);
+				switch (e.target.id)
+				{
+					case "loop" :
+						commentString = "\r"+getLang("story_loop_comment");
+						if(checked.selected)
+						{
+							comment.text += commentString;
+						}
+						else
+						{
+							comment.text = comment.text.split(commentString).join("");
+						}
+					
+					break;
+					case "autoplay" :
+						commentString = "\r"+getLang("story_autoplay_comment");
+					
+						if(checked.selected)
+						{
+							comment.text += commentString;
+						}
+						else
+						{
+							comment.text = comment.text.split(commentString).join("");
+						}
+					break;
+					case "autoplayonunload" :
+						
+						commentString = "\r"+getLang("story_autoplayonunload_comment");
+						if(checked.selected)
+						{
+							comment.text += commentString;
+						}
+						else
+						{
+							comment.text = comment.text.split(commentString).join("");
+						}
+					break;
+				}
+			}
+			
+			private function getLang(s:String) : String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+		]]>
+	</mx:Script>
+		<mx:HBox id="nameBox">
+			<mx:Label id="input_label" text="{inputLabel}" />
+			<mx:TextInput id="input" text="{inputValue}"
+						  width="100"/>
+		</mx:HBox>
+    <mx:HBox>
+    	<mx:ComboBox id="story_list"/>
+    	<mx:ComboBox id="interpolCB" labelFunction="{LabelUtils.setClassLabel}" />
+    	<mx:ComboBox id="easingCB" labelFunction="{LabelUtils.setLabel}" />
+    </mx:HBox>
+    <mx:HBox>
+    <mx:FormItem id="loopform" label="{getLang('Loop')}">
+    	<mx:CheckBox id="loop" change="checkSelected(event)"/>
+    </mx:FormItem>
+    	
+    <mx:FormItem id="autoplayform" label="{getLang('Autoplay')}">
+    	<mx:CheckBox id="autoplay" change="checkSelected(event)"/>
+    </mx:FormItem>
+    <mx:FormItem id="autoplayonunloadform" label="{getLang('AutoplayOnUnload')}">
+    	<mx:CheckBox id="autoplayonunload" change="checkSelected(event)"/>
+    </mx:FormItem>
+    </mx:HBox>
+    <mx:HBox>
+    	<mx:Text id="comment" maxWidth="400" />
+    </mx:HBox>
+</mx:VBox>

@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox paddingLeft="10"
+		 paddingRight="10"
+		 paddingTop="10"
+		 xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="600"
+		 height="460"
+		 xmlns:components="com.flashiteasy.admin.components.*"
+		 creationComplete="init()">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import com.flashiteasy.api.utils.NameSpaceUtils;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.admin.event.FieAdminEvent;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import mx.events.ListEvent;
+			import com.flashiteasy.admin.popUp.RemoteEditorPopUp;
+			import com.flashiteasy.api.controls.SwfElementDescriptor;
+			import com.flashiteasy.api.container.DynamicListElementDescriptor;
+			import com.flashiteasy.api.controls.VideoElementDescriptor;
+			import com.flashiteasy.api.controls.ImgElementDescriptor;
+			import com.flashiteasy.api.controls.TextElementDescriptor;
+			import flash.utils.getQualifiedClassName;
+			import com.flashiteasy.admin.xml.XMLUtils;
+			import com.flashiteasy.admin.parameter.Parameter;
+			import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+			import com.flashiteasy.api.core.CompositeParameterSet;
+			import com.flashiteasy.api.fieservice.transfer.vo.RemoteParameterSet;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.admin.visualEditor.VisualSelector;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+			import com.flashiteasy.api.core.IUIElementDescriptor;
+			import mx.collections.XMLListCollection;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.utils.LoaderUtil;
+
+			[Bindable]
+			private var dataTypes:Array=[{label: getLang("Choose..."), data: 0}, {label: "XML", data: 1}, {label: getLang("XMLList"), data: 2}, {label: getLang("dataBase"), data: 3}, {label: getLang("Other"), data: 4}];
+
+			public var fms : FileManagerService;
+			public var xmlStream:XML;
+			
+			private function init():void
+			{
+				if (this._pSet.source != null)
+				{
+					this.requestPreview.text = RemoteParameterSet( this._pSet ).request;
+					this.sourcePreview.text = RemoteParameterSet( this._pSet ).source;
+					this.dataTypesCB.selectedIndex = selectDataType();
+					fileSelected(new MouseEvent(MouseEvent.CLICK));
+				}
+				else
+				{
+					this.dataTypesCB.selectedIndex = selectDataType();
+				}
+				remoteTree.labelFunction=setLabel;
+			}
+
+			public function getLang(s:String):String
+			{
+
+				return Conf.languageManager.getLanguage(s);
+			}
+
+			private function fileSelected(e:MouseEvent):void
+			{
+				if (e.target != null)
+				{
+					requestPreview.text = "";
+					contentPreview.text = "";
+				}
+				//LoaderUtil.directLoad(this, fileLoaded, sourcePreview.text);
+				fms = new FileManagerService;
+				fms.addEventListener(FileManagerService.READ_XML, fileLoaded);
+				fms.addEventListener(FileManagerService.ERROR, fileLoaded)
+				fms.readXml(sourcePreview.text);
+			}
+
+			private function fileLoaded(e:Event):void
+			{
+				trace ('retour readXml() :: ' + e.type);
+				if(e.type == 'ERROR') 
+				{
+					
+				}
+				else 
+				{
+					remoteTree.dataProvider = null;
+					fms.removeEventListener(FileManagerService.READ_XML, fileLoaded);
+					fms.removeEventListener(FileManagerService.ERROR, fileLoaded);
+					xmlStream = XML( this.fms.content );
+					remoteTree.dataProvider=xmlStream;
+					remoteTree.validateNow();
+					if (requestPreview.text !="")
+					{
+						selectNode(RemoteParameterSet( this._pSet ).request);
+					}
+				}
+			}
+			
+			private function selectDataType():uint
+			{
+				var index:uint = 0
+				if (this._pSet == null || this._pSet.request == "" || this.requestPreview.text=="")
+				{ 
+					var selectedControl:IUIElementDescriptor=VisualSelector.getInstance().getSelectedElement();
+					index = selectedControl is DynamicListElementDescriptor ? 2 : 1;
+					//index = 0;
+				}
+				else
+				{
+					//fie://XMLList::article
+					var typeStr : String = String(this._pSet.request).split("//")[1].split("::")[0];
+					trace ("type = "+typeStr);
+					switch ( typeStr )
+					{
+						case "XML" :
+						index = 1;
+						break;
+						case "XMLList" :
+						index = 2;
+						break;
+						case "dataBase" :
+						index = 3;
+						case "Other" :
+						index = 4;
+						break;
+						default :
+						index = 4;
+					}
+				}
+				manageListLayout(index);
+				return index;
+			}
+			
+			private function manageListLayout(index : uint):void
+			{
+				if (index == 1)
+				{
+					this.list.visible = false;
+					this.list.includeInLayout=false;
+				}
+				else
+				{
+					this.list.visible = true;
+					this.list.includeInLayout=true;
+				}
+			}
+			
+			private function selectNode(request:String):void
+			{
+				// ex : fie://XMLList::channel/item#2#10
+				var requestArray: Array = request.split("::")[1].split("#");
+				var path : String = String(requestArray.splice(0,1));
+				var paramValues : Array = requestArray.length >0 ? requestArray[0].split("/") : [0,0];
+				var fromItem : uint = paramValues[0];
+				var qttyItem : uint = paramValues[1] || 0;
+				itemFrom.value = fromItem;
+				itemQuantity.value = qttyItem;
+				remoteTree.selectedItem = dataTypesCB.selectedIndex == 2 ? Object(buildListPath(path)) : Object(buildPath(path));
+				remoteTree.verticalScrollPosition = remoteTree.selectedIndex;
+				remoteTree.dispatchEvent(new ListEvent(ListEvent.CHANGE));
+			} 
+			
+			private function buildPath( request : String ) : XML
+			{
+				var propertyList : Array = request.split("/@");
+				var nameSpaceList : Array = propertyList[0].split("//");
+				var nodePathArray : Array = nameSpaceList.shift().split("/");
+				var pathArray : Array = new Array();
+				var lstXml : XML= XML( xmlStream );
+				for ( var i : uint =0; i<nodePathArray.length; i++)
+				{
+					var res:String="";
+					var pattern:RegExp = /\[(.+)\]/; 
+					var str:String = String(nodePathArray[i]);
+					var tempArray : Array = str.split("["); 
+					if (pattern.test(str))
+					{ 
+						res = pattern.exec(str)[1];
+					} 
+					else
+					{
+						res = pattern.exec(str+"[1]")[1];
+					}
+					
+					var index : Number = Number(res);
+					var trunc : String = tempArray[0];
+					remoteTree.expandItem(Object(lstXml), true);
+					remoteTree.validateNow();
+					//check for namespace
+					if(trunc.indexOf(":") != -1)
+					{
+						var nameSpace:Namespace = NameSpaceUtils.getNameSpaceFromPrefix(XML(xmlStream).namespaceDeclarations(),trunc.split(":")[0]);
+						lstXml = lstXml.nameSpace::[trunc.split(":")[1]][0];
+					}
+					else
+					{
+						lstXml = lstXml[trunc][index-1];
+					}
+				}
+				return lstXml;
+				
+			}
+
+			private function buildListPath( request : String ) : XML
+			{
+				var nodePathArray : Array = request.split("/");
+				var pathArray : Array = new Array();
+				var lstXml : XML= XML( xmlStream );
+				for ( var i : uint =0; i<nodePathArray.length; i++)
+				{
+					remoteTree.expandItem(Object(lstXml), true);
+					remoteTree.validateNow()
+					lstXml = lstXml[nodePathArray[i]][0];
+				}
+				return lstXml;
+				
+			}
+
+			private function setLabel(item:Object):String
+			{
+				var itemName : String = item.name() ? item.name() : item.toString() ;
+				//Check for nameSpace
+				if(itemName.indexOf("::") != -1)
+				{
+					itemName = buildNameSpaceShortCut(itemName);
+				}
+				return itemName;
+			}
+
+			private function remoteTreeClicked():void
+			{ 
+				propertiesPreview.dataProvider = null;
+				contentPreview.text=XML(remoteTree.selectedItem).valueOf().toString(); 
+				setPropertyTable(XML(remoteTree.selectedItem).attributes());
+				// si on est une liste (dataTypeCB selectedIndex = 2) on construit differemment
+				requestPreview.text= dataTypesCB.selectedIndex==2 ? buildListRequest(XML(remoteTree.selectedItem)) : buildRequest(XML(remoteTree.selectedItem));
+			}
+			[Bindable]
+      		public var initAttributes:ArrayCollection;
+
+			private function setPropertyTable(attributes:XMLList) : void
+			{
+				var attributeArray:Array = [];
+				for each (var name:XML in attributes) {
+
+				attributeArray.push({Name:name.name(),Value:name});
+				
+				}
+				initAttributes = new ArrayCollection(attributeArray);
+			}
+
+			private function buildRequest(item:XML):String
+			{
+				// ex : fie://XML::desc/text/sub
+				var reqStr:String="";
+				var protocole:String="fie://";
+				var dataType:String="";
+				var pathSep:String="/";
+				var elemStr:String="";
+				
+				var itemName : String = item.name() ? item.name() : item.toString() ;
+
+				reqStr=protocole + dataTypesCB.selectedItem.label + "::";
+				var tempArr:Array=new Array;
+				
+				var tempList:XMLList = XMLList(XML(item.parent())[String( item.name() )]);
+				var idx : uint = getNodeIndex(item, tempList)+1;
+				tempArr.push( buildNameSpaceShortCut(itemName) + "["+String( idx ) +"]");
+				
+				while (item.parent() != null)
+				{
+					var subItem : XML = XML(item.parent());
+					var subItemName : String = subItem.name() ? subItem.name() : subItem.toString() ;
+					var subList : XMLList = XMLList( XML(subItem.parent())[subItemName] );
+					var ind : uint = getNodeIndex(subItem, subList)+1;
+					tempArr.unshift( buildNameSpaceShortCut(subItemName) + "["+String( ind ) +"]");
+					item = XML( item.parent() );
+				}
+				// on retire le noeud de premier niveau
+				tempArr.shift();
+				reqStr+=tempArr.join("/");
+				
+				
+				return reqStr;
+			}
+			
+			private function buildNameSpaceShortCut(itemName:String):String
+			{
+				if(itemName.indexOf("::")!=-1)
+				{
+				var itemNameSpace :String = itemName.split("::")[0];
+				var itemPrefix : String = NameSpaceUtils.getNameSpacePrefixFromUri(XML(xmlStream).namespaceDeclarations(),itemNameSpace);
+				itemName = itemPrefix+":"+itemName.split("::")[1];
+				}
+				return itemName;
+			}
+			
+			private function buildListRequest(item:XML):String
+			{
+				// ex : fie://XML::desc/text/sub
+				var reqStr:String="";
+				var protocole:String="fie://";
+				var dataType:String="";
+				var pathSep:String="/";
+				var elemStr:String="";
+				var qttySep:String = "#";
+
+				reqStr=protocole + dataTypesCB.selectedItem.label + "::"; // tjrs sur XMLList
+				var tempArr:Array=new Array;
+				
+				var itemName : String = item.name() ? item.name() : item.toString() ;
+				tempArr.unshift(itemName);
+				while(item.parent() != null )
+				{
+					var subItem : XML = XML(item.parent());
+					var subItemName : String = subItem.name() ? subItem.name() : subItem.toString() ;
+					tempArr.unshift(subItemName);
+					item = subItem;	
+				} 
+				tempArr.shift();
+				reqStr+=tempArr.join("/");
+				if (itemFrom.value!=0 || itemQuantity.value !=0)
+				{
+					reqStr+="#"+itemFrom.value.toString()+pathSep+itemQuantity.value.toString();
+				}
+				return reqStr;
+			}
+			
+			private function changeListParameters():void
+			{
+				requestPreview.text = requestPreview.text.split("#")[0]+"#"+itemFrom.value.toString()+"/"+itemQuantity.value.toString();
+			}
+			
+			private function getNodeIndex( node:XML, list:XMLList):uint
+			{
+				var i:uint;
+				for (i=0; i<list.length(); i++)
+				{
+					var tmp : XML = XML( list[i] );
+					if ( tmp == node)
+					{
+						return i;
+						break;
+					}
+				}
+				return null;
+			}
+			
+			private function dataTypeSelected():void
+			{
+				manageListLayout(dataTypesCB.selectedIndex);
+			}
+			
+			private function validateRemote(e:Event):void
+			{
+				var selectedControl:IUIElementDescriptor=VisualSelector.getInstance().getSelectedElement();
+				RemoteParameterSet(this.getRemoteParameterSet()).request=requestPreview.text;
+				// si le controle selectionne est une liste dynamique
+				//com.flashiteasy.api.parameters::DynamicListParameterSet#dataProvider
+				var clzz:Class=selectedControl.getDescriptorType();
+				var name : String = "";
+				switch (clzz)
+				{
+					case DynamicListElementDescriptor :
+						name = "com.flashiteasy.api.parameters::DynamicListParameterSet#dataProvider";
+						break;
+					case TextElementDescriptor :
+						name = "com.flashiteasy.api.parameters::TextParameterSet#text";
+						break;	
+					case ImgElementDescriptor :
+						name = "com.flashiteasy.api.parameters::ImgParameterSet#source";
+						break;	
+					case VideoElementDescriptor :
+						name = "com.flashiteasy.api.parameters::VideoParameterSet#source";
+						break;	
+					case SwfElementDescriptor :
+						name = "com.flashiteasy.api.parameters::SwfParameterSet#source";
+						break;	
+					 
+					default:
+						throw new Error( "remote pSet not exisiting");
+						break;
+				}
+				_pSet.uiElementDescriptorIdentifier = selectedControl.uuid;
+				_pSet.name = name;
+				_pSet.request = requestPreview.text;
+				_pSet.enabled = true;
+				_pSet.source = sourcePreview.text;
+				_pSet.setApplied(false);
+				// on rafraichit la scene 
+				_initiator.pSet = _pSet;
+				_initiator.dispatchEvent(new Event(FieAdminEvent.COMPLETE));
+				// et on ferme
+				RemoteEditorPopUp(this._initiator).closePopUp();
+				AbstractBootstrap.getInstance().getBusinessDelegate().triggerPageRemoteStack(BrowsingManager.getInstance().getCurrentPage());
+			}
+
+			private var _pSet:RemoteParameterSet;
+
+			public function getRemoteParameterSet():RemoteParameterSet
+			{
+				return _pSet;
+			}
+
+			public function setRemoteParameterSet(value:RemoteParameterSet):void
+			{
+				_pSet=value;
+			}
+			
+			private var _initiator : RemoteEditorPopUp;
+			public function getRemoteEditorPopUp():RemoteEditorPopUp
+			{
+				return _initiator;
+			}
+
+			public function setRemoteEditorPopUp(value:RemoteEditorPopUp):void
+			{
+				_initiator=value;
+			}
+			
+			private function treeLabels(data:Object):String
+			{
+				var suffix:String = "";
+                if (XML( data ).children().length() > 0) {
+                    suffix = " (" + XML( data ).children().length() + ")";
+                }
+                return XML( data ) + suffix;
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:VBox width="50%" height="100%" >
+		<mx:Tree id="remoteTree"
+				 minWidth="160" width="100%"
+				 labelFunction="{treeLabels}"
+				 height="70%"
+				 change="remoteTreeClicked()"/>
+		<mx:HBox id="list" visible="false" >
+			<mx:Label text="{getLang('From')}" width="50"/>
+			<mx:NumericStepper id="itemFrom"  change="changeListParameters()"/>
+			<mx:Label text="{getLang('Quantity')}" width="50" />
+			<mx:NumericStepper id="itemQuantity" change="changeListParameters()" />
+		</mx:HBox>
+	</mx:VBox>
+	<mx:VBox width="50%" height="100%">
+			
+		<mx:ComboBox id="dataTypesCB"
+					 dataProvider="{this.dataTypes}" change="dataTypeSelected()"/>
+		<mx:HBox width="100%">
+			<mx:VBox>
+				<mx:Label text="{getLang('Source')}" width="100%"/>
+				<mx:HBox>
+					<mx:TextArea id="sourcePreview" />
+					<mx:Button id="readSourceBtn" click="fileSelected(event)" label="{getLang('Fetch')}" />
+				</mx:HBox>
+			</mx:VBox>
+		</mx:HBox>
+		<mx:VBox width="100%">
+			<mx:Label text="{getLang('Properties')}"/>
+			<mx:DataGrid id="propertiesPreview" dataProvider="{initAttributes}"
+                width="100%" showHeaders="false"
+                rowCount="3">
+            <mx:columns>
+                <mx:DataGridColumn id="attributeName"
+                        dataField="Name"
+                        headerText="{getLang('Name')}" />
+                <mx:DataGridColumn id="typeCol"
+                        dataField="Value"
+                        headerText="{getLang('Value')}" />
+            </mx:columns>
+		</mx:DataGrid>
+		</mx:VBox>
+		<mx:VBox width="100%">
+			<mx:Label text="{getLang('Content')}"/>
+			<mx:TextArea id="contentPreview" width="100%"/>
+		</mx:VBox>
+		<mx:VBox width="100%">
+			<mx:Label text="{getLang('Request')}"/>
+			<mx:TextArea id="requestPreview" width="100%"/>
+		</mx:VBox>
+		<mx:HBox horizontalAlign="right">
+			<mx:Spacer />
+			<mx:Button id="validateRemoteBtn" label="{getLang('Confirm')}"
+				   click="validateRemote(event)"/>
+		</mx:HBox>
+		
+	</mx:VBox>
+</mx:HBox>

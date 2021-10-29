@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="package-fie-2" default="package-php-installer">
+	
+	<property name="target-version" value="1.0"></property>
+	
+	<target name="package-php-installer">
+		<!-- create installation directory -->
+		<delete dir="target/install"></delete>
+	 	<mkdir dir="target/install"/>
+	 	<!-- copy all installation scripts -->
+	 	<copy todir="target/install">
+	 		<fileset dir="src/main/php/install"/>
+	 	</copy>
+	</target>
+	 
+</project>
+	
+	

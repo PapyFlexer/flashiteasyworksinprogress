@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="100%"
+		 paddingTop="0">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.parameter.Parameter;
+			import com.flashiteasy.admin.utils.LabelUtils;
+			import com.flashiteasy.api.events.FieEvent;
+			import mx.controls.CheckBox;
+			import mx.controls.Label;
+			import mx.controls.List;
+			import mx.events.ListEvent;
+			import mx.controls.TextInput;
+			import mx.containers.FormItem;
+
+			import fl.data.DataProvider;
+
+			import com.flashiteasy.api.core.IUIElementDescriptor;
+			import com.flashiteasy.api.core.FieUIComponent;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.api.core.IDescriptor;
+			import com.flashiteasy.api.core.project.storyboard.Story;
+			import com.flashiteasy.api.core.project.storyboard.Storyboard;
+			import com.flashiteasy.api.core.project.storyboard.Transition;
+			import com.flashiteasy.api.core.project.storyboard.Update;
+			import com.flashiteasy.api.ioc.ClassResolver;
+			import com.flashiteasy.api.motion.TimerStoryboardPlayerImpl;
+			import com.flashiteasy.api.selection.ElementList;
+
+			import com.flashiteasy.admin.components.componentsClasses.StoryPopUp;
+			import com.flashiteasy.admin.components.PageTimeLine;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.admin.ApplicationController;
+
+			//[Bindable]
+			private var _story:Story;
+
+			private var _descriptor:IDescriptor;
+			private var param:IParameterSet;
+			private var updates:Array;
+
+			private var popup:PopUp;
+
+			public function setStory(a:Story):void
+			{
+				callLater(initPanel, [a]);
+
+			}
+
+			private function initPanel(a:Story):void
+			{
+				_story=a;
+				_descriptor=a.getElementDescriptor();
+				target.dataProvider=ElementList.getInstance().getElementsAsString(BrowsingManager.getInstance().getCurrentPage());
+				if(_descriptor != null)
+				{
+					target.selectedItem=_descriptor.uuid;
+				}
+				else
+				{
+					target.selectedIndex = -1;
+				}
+				if(!target.hasEventListener(Event.CHANGE))
+					target.addEventListener(Event.CHANGE, targetChanged, false, 0, true);
+				loopCB.selected=_story.loop;
+				autoplayCB.selected=_story.autoPlay;
+				autoplayOnUnloadCB.selected=_story.autoPlayOnUnload;
+			}
+
+			private function targetChanged(e:Event):void
+			{
+				var elem : IUIElementDescriptor = ElementList.getInstance().getElement((e.target as ComboBox).selectedItem.toString(), BrowsingManager.getInstance().getCurrentPage());
+				ApplicationController.getInstance().addToSaveList(BrowsingManager.getInstance().getCurrentPage());
+				_story.setElementDescriptor(elem);
+			}
+
+			private function replay():void
+			{
+				_story.start();
+			}
+
+			private function parameterSetComboChanged(e:ListEvent):void
+			{
+				var x:XML=(e.target as ComboBox).selectedItem.data;
+
+				ApplicationController.getInstance().addToSaveList(BrowsingManager.getInstance().getCurrentPage());
+			}
+
+			private function editStory():void
+			{
+				var currentStory:Story=BrowsingManager.getInstance().getCurrentPage().getStoryboard().getStories()[ApplicationController.getInstance().getStoryEditor().getUIComponent().selectedIndex] as Story;
+				_story=currentStory;
+				popup=new StoryPopUp(currentStory, this, true, true);
+				var tm:PageTimeLine=new PageTimeLine;
+				tm.setUpdates(currentStory, _descriptor);
+				popup.addChild(tm);
+				popup.display();
+				tm.addEventListener(FieEvent.REMOVED, removePopUp, false, 0, true);
+				ApplicationController.getInstance().addToSaveList(BrowsingManager.getInstance().getCurrentPage());
+			}
+
+			private function removePopUp(e:Event):void
+			{
+				e.target.removeEventListener(FieEvent.REMOVED, removePopUp);
+				popup.closePopUp();
+				_story.destroy();
+				ApplicationController.getInstance().getStoryEditor().update();
+				ApplicationController.getInstance().getElementEditor().clearEditor();
+			}
+
+			private function manageStoryLoopParameter(e:MouseEvent):void
+			{
+				_story.loop=(e.target as CheckBox).selected;
+				ApplicationController.getInstance().addToSaveList(BrowsingManager.getInstance().getCurrentPage());
+			}
+
+			private function manageStoryAutoPlayParameter(e:MouseEvent):void
+			{
+				_story.autoPlay=(e.target as CheckBox).selected;
+				ApplicationController.getInstance().addToSaveList(BrowsingManager.getInstance().getCurrentPage());
+			}
+
+
+			private function manageStoryAutoPlayOnUnloadParameter(e:MouseEvent):void
+			{
+				_story.autoPlayOnUnload=(e.target as CheckBox).selected;
+				ApplicationController.getInstance().addToSaveList(BrowsingManager.getInstance().getCurrentPage());
+			}
+
+			private function getLoop():Boolean
+			{
+				return _story.loop;
+			}
+
+			private function getAutoPlay():Boolean
+			{
+				return _story.autoPlay;
+			}
+
+
+			private function getAutoPlayOnUnload():Boolean
+			{
+				return _story.autoPlayOnUnload;
+			}
+		]]>
+	</mx:Script>
+	<mx:FormItem label="{LabelUtils.getLang('Target')}">
+		<mx:ComboBox id="target"/>
+	</mx:FormItem>
+	<mx:HBox>
+		<mx:Button label="{LabelUtils.getLang('Replay')}"
+				   click="replay()"/>
+		<mx:Button label="{LabelUtils.getLang('Edit')}"
+				   click="editStory()"/>
+	</mx:HBox>
+	<mx:HBox>
+		<mx:CheckBox id="loopCB"
+					 label="{LabelUtils.getLang('Loop')}"
+					 click="manageStoryLoopParameter(event)"
+					 selected="{getLoop()}"/>
+		<mx:CheckBox id="autoplayCB"
+					 label="{LabelUtils.getLang('Autoplay')}"
+					 click="manageStoryAutoPlayParameter(event)"
+					 selected="{getAutoPlay()}"/>
+		<mx:CheckBox id="autoplayOnUnloadCB"
+					 label="{LabelUtils.getLang('AutoplayOnUnload')}"
+					 click="manageStoryAutoPlayOnUnloadParameter(event)"
+					 selected="{getAutoPlayOnUnload()}"/>
+	</mx:HBox>
+</mx:VBox>

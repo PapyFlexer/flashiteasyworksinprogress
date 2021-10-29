@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.parameter.Parameter;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.api.utils.ElementDescriptorUtils;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.selection.ElementList;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.api.parameters.ChangeValueParameterSet;
+			//import com.flashiteasy.api.action.ChangeParameterAction;
+			import com.flashiteasy.api.core.IAction;
+			import com.flashiteasy.api.core.IDescriptor;
+			
+			private var param : ChangeValueParameterSet;
+			private var target : IDescriptor;
+			private var pset : IParameterSet ;
+			
+			public function setParameter( parameter : ChangeValueParameterSet  ) : void 
+			{
+				param = parameter;
+				var paramList : Array = [] ;
+				if(param.target != null )
+				{
+					target = ElementList.getInstance().getElement(param.target, BrowsingManager.getInstance().getCurrentPage());
+					paramList = ParameterIntrospectionUtil.retrieveParameterSets(target);
+				}	
+				callLater(initComboBox , [paramList] );
+			}
+			
+			private function initComboBox( data : Array ) : void
+			{
+				targets.dataProvider = ElementList.getInstance().getElementsAsString(BrowsingManager.getInstance().getCurrentPage());
+				parameters.dataProvider = data ;	
+			}
+			
+			private function targetChanged( e : Event ) : void 
+			{
+				var selectedTarget : String = targets.selectedItem.toString();
+				if( selectedTarget != null ) 
+				{
+					target = ElementList.getInstance().getElement( selectedTarget , BrowsingManager.getInstance().getCurrentPage() );
+					parameters.dataProvider = ParameterIntrospectionUtil.retrieveParameterSets(target);
+				}
+			}
+			
+			private function parameterSelected( e : Event ) : void 
+			{
+				editorContainer.removeAllChildren();
+				pset = parameters.selectedItem as IParameterSet;
+				var params : Array = ParameterIntrospectionUtil.getParameterFromParameterSet(pset);
+				var factory : ParameterEditorFactory = new ParameterEditorFactory;
+				for each( var p : Parameter in params ) 
+				{
+					var control : DisplayObject = factory.getEditor( p , pset );
+					control.addEventListener("change", parameterChanged, false, 0, true);
+					editorContainer.addChild(control);
+				}
+			}
+			
+			private function parameterChanged( e : Event ) : void 
+			{
+				var factory : ParameterEditorFactory = new ParameterEditorFactory ;
+				param.parameterSet = ParameterIntrospectionUtil.getParameterSetName(IParameterSet(parameters.selectedItem));
+				param.target = targets.selectedItem.toString();
+				param.value = factory.getEditorValue( DisplayObject( e.target ));
+				param.property = e.target.name;
+				
+				//factory.updateParameterWithEditorValue(DisplayObject(e.target) , param );
+				dispatchEvent(new Event(Event.CHANGE )) ;
+			}
+		]]>
+	</mx:Script>
+	<mx:List id="targets" change="targetChanged(event)"/>
+	<mx:ComboBox id="parameters" change="parameterSelected(event)"/>
+
+	<mx:VBox id="editorContainer" />
+</mx:VBox>

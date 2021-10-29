@@ -1,0 +1,12 @@
+Export Process ::
+1.Select all src folders in fie-admin, fie-app, fie-services (make a Team/Commit if you have some changes) : make a Team/Update To HEAD.
+2.Run versionbuild.xml in  fie-app, fie-services, fie-admin (fie-admin should be the last).
+3.Export Release Build on fie-admin, fie-app and a build.xml in fie-services.
+4.Run the build.xml of fie-installer.
+
+Updates Process ::
+1.On ftp Flashiteasy open updates folder.
+2.Update the fie-version.xml that you find in WorkspaceMaven/fie/fie-admin/src/config
+3.Update index.swf in admin (wether from fie-installer/target/fie-admin or WorkspaceMaven/fie/fie-admin/bin-release
+4.Update fieApp.swf in client (wether from fie-installer/target/fie-projects/fie-sample-app or WorkspaceMaven/fie/fie-app/bin-release
+5.Update fie-services folder if you have to.

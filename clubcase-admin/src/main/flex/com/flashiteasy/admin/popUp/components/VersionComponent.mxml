@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:components="com.flashiteasy.admin.components.*"
+		 width="400"
+		 initialize="init()"
+		 paddingBottom="10"
+		 paddingLeft="10"
+		 paddingRight="10"
+		 paddingTop="10">
+
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.popUp.PopUp;
+			import com.flashiteasy.admin.utils.EditorUtil;
+			import com.flashiteasy.admin.popUp.InputStringPopUp;
+			import com.flashiteasy.admin.browser.FileManager;
+			import mx.controls.Alert;
+			import mx.events.ItemClickEvent;
+			import com.flashiteasy.admin.conf.Conf;
+			import mx.messaging.config.ServerConfig;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import mx.events.ListEvent;
+			import mx.controls.Tree;
+			import com.flashiteasy.admin.manager.LanguageManager;
+
+			private var fms:FileManagerService;
+
+			//private var _tree : Tree;
+			[Bindable]
+			public var selectedVersion:XML;
+			[Bindable]
+			public var pathToSelectedVersionDirectory:String;
+			[Bindable]
+			public var nameOfSelectedVersion:String;
+
+			private var current_action:String;
+
+			private var versions_directory:String="versions";
+
+
+			private function init():void
+			{
+				if (versionTree.hasEventListener(ListEvent.ITEM_CLICK))
+					versionTree.removeEventListener(ListEvent.ITEM_CLICK, changeSelect);
+				fms=new FileManagerService;
+				// buttons
+				deleteVersionBtn.enabled=false;
+				restoreVersionBtn.enabled=false;
+				createVersionBtn.enabled=false;
+				getFolder();
+				//_tree=new Tree();
+				versionTree.labelFunction=treeLabel;
+				versionTree.x=20;
+				versionTree.y=20;
+				versionTree.width=200;
+				versionTree.height=300;
+				versionTree.addEventListener(ListEvent.ITEM_CLICK, changeSelect);
+			}
+
+			private function treeLabel(item:Object):String
+			{
+				var node:XML=XML(item);
+				if (node.localName() == "root")
+					return versions_directory;
+				else
+					return node.@name || node.localName();
+			}
+
+			public function getFolder():void
+			{
+				fms.addEventListener(FileManagerService.READ_DIRECTORY, completeReadFolder);
+				fms.addEventListener(FileManagerService.ERROR, error);
+				fms.getFolderTree(Conf.APP_ROOT + "/" + versions_directory);
+			}
+
+			private function error(e:Event):void
+			{
+				trace("error listing versions");
+			}
+
+			private function completeReadFolder(e:Event):void
+			{
+				fms.removeEventListener(FileManagerService.READ_DIRECTORY, completeReadFolder);
+				fms.removeEventListener(FileManagerService.ERROR, completeReadFolder);
+				var s:String=fms.content;
+				versionTree.dataProvider=XMLList(s).children().length() == 0 ? null : XMLList(s);
+			}
+
+			private function changeSelect(e:ListEvent):void
+			{
+				selectedVersion=XML(Tree(e.currentTarget).selectedItem);
+				pathToSelectedVersionDirectory=Conf.APP_ROOT + "/" + versions_directory + "/" + selectedVersion.@url;
+				nameOfSelectedVersion=selectedVersion.localName() == "folder" ? "" : selectedVersion.@name
+				trace("directory :: " + pathToSelectedVersionDirectory);
+				//trace ("url :: " + nameOfSelectedVersion =="" ? pathToSelectedVersionDirectory : pathToSelectedVersionDirectory+nameOfSelectedVersion);
+				trace("url :: " + nameOfSelectedVersion);
+				trace("isDir ? :: " + (selectedVersion.localName() == "folder")); //? );
+			}
+
+			private function restoreVersion(e:MouseEvent):void
+			{
+				if (selectedVersion.localName() == "folder")
+				{
+					trace("restoreVersion invoked with rep=" + pathToSelectedVersionDirectory);
+					fms.addEventListener(FileManagerService.RESTORE_VERSION_DIR, onVersionOperationComplete);
+					fms.addEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+					fms.copyDirectory(Conf.APP_ROOT + "/" + versions_directory + "/" + selectedVersion.@url, Conf.APP_ROOT + "/xml/");
+				}
+				else
+				{
+					trace("restoreVersion invoked with file=" + pathToSelectedVersionDirectory + "/" + nameOfSelectedVersion);
+					fms.addEventListener(FileManagerService.RESTORE_VERSION_FILE, onVersionOperationComplete);
+					fms.addEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+					fms.copyFiles([Conf.APP_ROOT + "/" + versions_directory + "/" + selectedVersion.@url + nameOfSelectedVersion], [Conf.APP_ROOT + "/xml/" + nameOfSelectedVersion]);
+				}
+			}
+
+			private function createVersion(e:MouseEvent):void
+			{
+				trace("createVersion invoked with rep=" + pathToSelectedVersionDirectory + "::" + nameOfSelectedVersion);
+				fms.addEventListener(FileManagerService.DIRECTORY_COPY, onVersionOperationComplete);
+				fms.addEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+				fms.copyDirectory(Conf.APP_ROOT + "/xml", Conf.APP_ROOT + "/" + versions_directory + "/" + newVersionName.text);
+			}
+
+
+			private function deleteVersion(e:MouseEvent):void
+			{
+				trace("deleting dir = " + Conf.APP_ROOT + "/" + versions_directory + "/");
+				trace("deleting file = " + selectedVersion.@url);
+				fms.addEventListener(FileManagerService.DELETE_VERSION_DIR, onVersionOperationComplete);
+				fms.addEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+				fms.deleteVersionDirectory(String(selectedVersion.@url).substr(0, selectedVersion.@url.length - 1));
+			}
+
+			private function onVersionOperationComplete(e:Event):void
+			{
+
+				//trace (e.type);
+				switch (e.type)
+				{
+
+					//create
+					case "filemanager_copy_directory":
+						fms.removeEventListener(FileManagerService.DIRECTORY_COPY, onVersionOperationComplete);
+						fms.removeEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+						Alert.show(getLang("Version_Created"), getLang("Version_Manager"));
+						newVersionName.text="";
+						break;
+
+					//delete
+					case "versionmanager_delete_directory":
+						fms.removeEventListener(FileManagerService.DELETE_VERSION_DIR, onVersionOperationComplete);
+						fms.removeEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+						Alert.show(getLang("Version_Deleted"), getLang("Version_Manager"));
+						break;
+
+					//restore dir
+					case "versionmanager_restore_directory":
+						fms.removeEventListener(FileManagerService.RESTORE_VERSION_DIR, onVersionOperationComplete);
+						fms.removeEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+						Alert.show(getLang("Restoration_Finished"), getLang("Version_Manager"));
+						break;
+
+					//restore file
+					case "versionmanager_restore_file":
+						fms.removeEventListener(FileManagerService.RESTORE_VERSION_FILE, onVersionOperationComplete);
+						fms.removeEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+						Alert.show(getLang("Restoration_Finished"), getLang("Version_Manager"));
+						break;
+
+					// error
+					case "filemanager_error":
+						fms.removeEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+						Alert.show(getLang("Error"), getLang("Version_Manager"));
+
+					//default
+					default:
+						break;
+				}
+				init();
+			}
+
+			public function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+
+			private function startCreatingVersion(e:Event):void
+			{
+				var namePopUp:InputStringPopUp=new InputStringPopUp(this);
+				namePopUp.description=Conf.languageManager.getLanguage("New_Version");
+				namePopUp.label=Conf.languageManager.getLanguage("New_Version_Name") + ": ";
+				var dateStr:String=Conf.languageManager.getDateString().split("/").join("_");
+				//namePopUp.setInputDefaultValue(EditorUtil.findUniqueName(dateStr, getVersionNames()));
+				namePopUp.setInputDefaultValue(dateStr);
+				namePopUp.addEventListener(InputStringPopUp.SUBMIT, namePopUpHandler);
+				namePopUp.addEventListener(PopUp.CLOSED, creationCancel);
+			}
+
+			private function getVersionNames():Array
+			{
+				var firstNodeArray: XMLList = XMLList(versionTree.dataProvider).children().@name;
+				var index : int = -1;
+				var arrayToreturn:Array = [];//new Array(firstNodeArray.length);
+				for each (var label:XML in firstNodeArray)
+				{
+					arrayToreturn.push(label.toString());
+				}
+				return arrayToreturn;
+			}
+
+			private function creationCancel(e:Event):void
+			{
+				e.target.removeEventListener(PopUp.CLOSED, creationCancel);
+				e.target.removeEventListener(InputStringPopUp.SUBMIT, namePopUpHandler);
+			}
+
+			private function namePopUpHandler(e:Event):void
+			{
+
+
+				var name:String=e.target.getInput();
+
+				if (getVersionNames().indexOf(name) != -1)
+				{
+					e.target.setError(Conf.languageManager.getLanguage("name_already_used"));
+				}
+				else
+				{
+					e.target.removeEventListener(PopUp.CLOSED, creationCancel);
+					e.target.removeEventListener(InputStringPopUp.SUBMIT, namePopUpHandler);
+					e.target.closePopUp();
+					
+				fms.addEventListener(FileManagerService.DIRECTORY_COPY, onVersionOperationComplete);
+				fms.addEventListener(FileManagerService.ERROR, onVersionOperationComplete);
+				fms.copyDirectory(Conf.APP_ROOT + "/xml", Conf.APP_ROOT + "/" + versions_directory + "/" + name);
+				}
+
+			} /*
+
+			   Restore = Restaurer
+			   Delete_Version = Supprimer la version
+			   Version_Created = Version créée
+			   A_version_with_this_name_already_exist = Une version du même nom existe déjà
+			   Impossible_to_create_new_version = Impossible de créer une nouvelle version
+			   Create_New_Version = Créer une nouvelle version
+			   New_Version_Name = Nom de la nouvelle version
+			   New_Version = Nouvelle Version
+			   Current_Directory = Dossier courant
+			   Current_File = Fichier courant
+			   Do_you_want_to_delete_selected_version_? = Etes vous sur de vouloir supprimer la version selectionnée ?
+			   Restoration_Finished = Restauration terminée
+			   Version_Deleted = Version supprimée
+			   No_version_selected = Aucune version selectionnée
+			   Do_you_wish_to_restore_selection_? = Voulez vous restaurer la selection ?
+			 No_version_or_file_selected = Aucune version ou fichier selectionné*/
+		]]>
+	</mx:Script>
+	<mx:Tree id="versionTree" showRoot="false"/>
+	<mx:HBox>
+		<mx:Button id="deleteVersionBtn"
+				   click="deleteVersion(event)"
+				   label="{getLang('Delete')}"
+				   enabled="{selectedVersion.localName()=='folder'}"/>
+		<mx:Button id="restoreVersionBtn"
+				   click="restoreVersion(event)"
+				   label="{getLang('Restore')}"
+				   enabled="{versionTree.selectedItems.length>0}"/>
+	</mx:HBox>
+	<mx:HRule/>
+	<mx:HBox>
+		<mx:Label text="{getLang('Name')}"/>
+		<mx:TextInput id="newVersionName"/>
+		<mx:Button id="createVersionBtn"
+				   click="startCreatingVersion(event)"
+				   label="{getLang('New_Version')}"
+				   enabled="{newVersionName.text.length>0}"/>
+	</mx:HBox>
+</mx:VBox>

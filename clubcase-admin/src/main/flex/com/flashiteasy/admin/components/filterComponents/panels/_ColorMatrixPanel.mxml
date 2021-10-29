@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="380"
+		 height="100%"
+		 xmlns:components="com.flashiteasy.admin.components.*">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.conf.Conf;
+
+			public function getLang(s:String, len:int=-1):String
+			{
+
+				return Conf.languageManager.getLanguage(s, len);
+			}
+		]]>
+	</mx:Script>
+	<mx:Grid width="100%"
+			 height="100%">
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%" colSpan="2"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Sample')+'s'}"
+						 width="100%"
+						 height="100%"/>
+				<mx:ComboBox id="presetchooser"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Brightness')}"
+						  width="50"
+						  height="100%"/>
+				<components:advancedSlider id="brightnessValue"
+										   minimum="-100"
+										   maximum="100"
+										   interval="1"/>
+
+			</mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Contrast')}"
+						  width="50"
+						  height="100%"/>
+				<components:advancedSlider id="contrastValue"
+										   minimum="-100"
+										   maximum="100"
+										   interval="1"/>
+
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Saturation')}"
+						  width="50"
+						  height="100%"/>
+				<components:advancedSlider id="saturationValue"
+										   minimum="-100"
+										   maximum="100"
+										   interval="1"/>
+
+			</mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Hue')}"
+						  width="50"
+						  height="100%"/>
+				<components:advancedSlider id="hueValue"
+										   minimum="-100"
+										   maximum="100"
+										   interval="1"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="100%"
+						 colSpan="2"
+						 paddingLeft="10">
+				<mx:Label text=""
+						  width="100%"
+						  height="100%"/>
+				<mx:Label text="{getLang('Red',1)}"
+							  width="40"
+							  height="22"/>
+				<mx:Label text="{getLang('Green',1)}"
+							  width="40"
+							  height="22"/>
+				<mx:Label text="{getLang('Blue',1)}"
+							  width="40"
+							  height="22"/>
+				<mx:Label text="{getLang('Alpha',1)}"
+							  width="40"
+							  height="22"/>
+				<mx:Label text="{getLang('Offset',3)}"
+							  width="40"
+							  height="22"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="100%"
+						 colSpan="2"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Red',1)}"
+						  width="100%" textAlign="right"
+						  height="100%"/>
+				<mx:TextInput id="m0"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m1"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m2"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m3"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m4"
+							  width="40"
+							  height="22"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="100%"
+						 colSpan="2"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Green',1)}"
+						  width="100%" textAlign="right"
+						  height="100%"/>
+				<mx:TextInput id="m5"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m6"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m7"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m8"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m9"
+							  width="40"
+							  height="22"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="100%"
+						 colSpan="2"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Blue',1)}"
+						  width="100%" textAlign="right"
+						  height="100%"/>
+				<mx:TextInput id="m10"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m11"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m12"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m13"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m14"
+							  width="40"
+							  height="22"/>
+
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="100%"
+						 colSpan="2"
+						 paddingLeft="10">
+				<mx:Label text="{getLang('Alpha',1)}"
+						  width="100%" textAlign="right"
+						  height="100%"/>
+				<mx:TextInput id="m15"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m16"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m17"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m18"
+							  width="40"
+							  height="22"/>
+				<mx:TextInput id="m19"
+							  width="40"
+							  height="22"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="100%"
+						 colSpan="2"
+						 paddingLeft="10">
+				<mx:Button id="resetButton"
+						   label="{getLang('Reset')}"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+</mx:VBox>

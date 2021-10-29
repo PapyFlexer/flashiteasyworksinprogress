@@ -1,0 +1,46 @@
+<?php
+   
+require_once("com/flashiteasy/api/fieservice/transfer/tr/TransferObject.php");
+require_once("com/flashiteasy/admin/fieservice/transfer/tr/FileDataTO.php");
+require_once("com/flashiteasy/admin/fieservice/manager/indexation/IndexationManager.php");
+require_once("amfphp/services/BaseFieService.php");
+
+ 
+class FieFileUploadService extends BaseFieService
+{
+
+	public function testFileUpload()
+ 	{
+ 		return "test fileUpload";
+ 	}
+ 	
+		
+ 	public function upload( FileDataTO $transfer )
+	{
+		$temp = $transfer->bites;
+		$adata = $byteArray->data;
+		$folder = $transfer->directory;
+		//$folder = "http://localhost:8888/fie-admin/fie-projects/fie-app/media/lalala/";
+		$filename = $transfer->files[0];
+		$toToreturn = new FileDataTO;
+		$fileToUpload = $folder . '/' . $filename;
+		$f = fopen($fileToUpload, 'w');
+		fwrite($adata, $f);
+		fclose($f);
+		$numbytes = file_put_contents($folder . '/' . $filename , $adata);
+		return $numbytes;
+ 		/*if($numbytes == 0)
+		{
+ 			$toToreturn->code = 1;
+ 			$toToreturn->message = "[" . $numbytes . "]" . "upload not ok=>".$folder . $filename ;
+		}
+		else
+		{
+ 			$toToreturn->code = 0;
+ 			$toToreturn->message = $numbytes . "upload ok=>".$folder . $filename ;
+		}
+ 		return $toToreturn; 	*/
+	}
+}
+
+?>

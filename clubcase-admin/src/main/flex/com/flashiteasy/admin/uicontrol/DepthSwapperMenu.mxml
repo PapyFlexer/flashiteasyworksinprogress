@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ControlBar xmlns:mx="http://www.adobe.com/2006/mxml" horizontalAlign="center">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.conf.Ref;
+			public function getLang(s:String):String
+			{
+				
+				return Conf.languageManager.getLanguage(s);
+			}
+		]]>
+	</mx:Script>
+	<mx:Label text="{getLang('Arrange')}" />
+	<mx:ButtonBar id="arrange"
+				  width="100"
+				  itemClick="Ref.adminManager.swapDepthHandler(event);">
+		<mx:dataProvider>
+			<mx:Object toolTip="{getLang('Send_to_back')}"
+					   icon="@Embed(source='../resources/assets/shape_move_back.png')"/>
+			<mx:Object toolTip="{getLang('Move_backward')}"
+					   icon="@Embed(source='../resources/assets/shape_move_backwards.png')"/>
+			<mx:Object toolTip="{getLang('Move_forward')}"
+					   icon="@Embed(source='../resources/assets/shape_move_forwards.png')"/>
+			<mx:Object toolTip="{getLang('Bring_to_front')}"
+					   icon="@Embed(source='../resources/assets/shape_move_front.png')"/>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	<mx:Spacer
+	/>
+	<mx:ButtonBar id="group"
+				  width="50"
+				  itemClick="Ref.adminManager.groupHandler(event);">
+		<mx:dataProvider>
+			<mx:Object toolTip="{getLang('Group')}"
+					   icon="@Embed(source='../resources/assets/shape_group.png')"/>
+			<mx:Object toolTip="{getLang('Ungroup')}"
+					   icon="@Embed(source='../resources/assets/shape_ungroup.png')"/>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	<mx:Spacer
+	/>
+	<mx:Label text="{getLang('Align')}" />
+	<mx:ButtonBar id="alignh"
+				  width="75" 
+				  itemClick="Ref.adminManager.alignHandler(event);">
+		<mx:dataProvider>
+			<mx:Object toolTip="{getLang('Align_left')}"
+					   icon="@Embed(source='../resources/assets/align_left_ico.png')"/>
+			<mx:Object toolTip="{getLang('Align_center')}"
+					   icon="@Embed(source='../resources/assets/align_centerh_ico.png')"/>
+			<mx:Object toolTip="{getLang('Align_right')}"
+					   icon="@Embed(source='../resources/assets/align_right_ico.png')"/>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	<mx:ButtonBar id="alignv"
+				  width="75"
+				  itemClick="Ref.adminManager.alignHandler(event);">
+		<mx:dataProvider>
+			<mx:Object toolTip="{getLang('Align_top')}"
+					   icon="@Embed(source='../resources/assets/align_top_ico.png')"/>
+			<mx:Object toolTip="{getLang('Align_middle')}"
+					   icon="@Embed(source='../resources/assets/align_centerv_ico.png')"/>
+			<mx:Object toolTip="{getLang('Align_bottom')}"
+					   icon="@Embed(source='../resources/assets/align_bottom_ico.png')"/>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	<mx:Spacer
+	/>
+	<mx:ButtonBar id="distributeh"
+				  width="75"
+				  itemClick="Ref.adminManager.distributeHandler(event);">
+		<mx:dataProvider>
+			<mx:Object toolTip="{getLang('Distribute_left')}"
+					   icon="@Embed(source='../resources/assets/distribute_left_ico.png')"/>
+			<mx:Object toolTip="{getLang('Distribute_center')}"
+					   icon="@Embed(source='../resources/assets/distribute_centerh_ico.png')"/>
+			<mx:Object toolTip="{getLang('Distribute_right')}"
+					   icon="@Embed(source='../resources/assets/distribute_right_ico.png')"/>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	<mx:ButtonBar id="distributev"
+				  width="75"
+				  itemClick="Ref.adminManager.distributeHandler(event);">
+		<mx:dataProvider>
+			<mx:Object toolTip="{getLang('Distribute_top')}"
+					   icon="@Embed(source='../resources/assets/distribute_top_ico.png')"/>
+			<mx:Object toolTip="{getLang('Distribute_middle')}"
+					   icon="@Embed(source='../resources/assets/distribute_centerv_ico.png')"/>
+			<mx:Object toolTip="{getLang('Distribute_bottom')}"
+					   icon="@Embed(source='../resources/assets/distribute_bottom_ico.png')"/>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+	<mx:Spacer
+	/>
+	<mx:ButtonBar id="space"
+				  width="50"
+				  itemClick="Ref.adminManager.spaceHandler(event);">
+		<mx:dataProvider>
+			<mx:Object toolTip="{getLang('Space_horizontaly')}"
+					   icon="@Embed(source='../resources/assets/space_h_ico.png')"/>
+			<mx:Object toolTip="{getLang('Space_verticaly')}"
+					   icon="@Embed(source='../resources/assets/space_v_ico.png')"/>
+		</mx:dataProvider>
+	</mx:ButtonBar>
+</mx:ControlBar>

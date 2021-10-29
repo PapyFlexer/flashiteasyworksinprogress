@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<flex-config>
+<compiler>
+<define>
+    <name>VERSION::Version</name>
+    <value>'1.0.0'</value>
+</define>
+<define>
+    <name>VERSION::Revision</name>
+    <value>'@Revision@'</value>
+</define>
+<define>
+    <name>VERSION::LastChangedRev</name>
+    <value>'@LastChangedRev@'</value>
+</define>
+<define>
+    <name>VERSION::LastChangedDate</name>
+    <value>'@LastChangedDate@'</value>
+</define>
+<define>
+    <name>VERSION::ApiRevision</name>
+    <value>'@ApiRevision@'</value>
+</define>
+<define>
+    <name>VERSION::ServiceRevision</name>
+    <value>'@ServiceRevision@'</value>
+</define>
+<define>
+    <name>VERSION::Company</name>
+    <value>'Flash\'Iteasy'</value>
+</define>
+<define>
+    <name>VERSION::Team</name>
+    <value>'dany, didier, gilles many thanks to alexis, ghazi, jean-françois'</value>
+</define>
+</compiler>
+</flex-config>

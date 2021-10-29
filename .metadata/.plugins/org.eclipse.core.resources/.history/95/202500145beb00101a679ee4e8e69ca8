@@ -1,0 +1,222 @@
+/**
+ * FLASHITEASY API 1.0 : Framework for visual interactive developpement <http://www.flashiteasy.com/>
+ *
+ * FLASHITEASY API 1.0 is (c) 2008-2011 by Robert DEVOS, Didier REYT, Gilles ROQUEFEUIL & Dany SIRIPHOL
+ * This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php/>
+ * 
+ *
+ * 
+ */
+
+package com.flashiteasy.api.action
+{
+	import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+	import com.flashiteasy.api.core.BrowsingManager;
+	import com.flashiteasy.api.core.FieUIComponent;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.action.IFullScreenAction;
+	import com.flashiteasy.api.selection.ElementList;
+	
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.display.StageDisplayState;
+	import flash.events.Event;
+	import flash.events.FullScreenEvent;
+	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	
+	
+	/**
+	 * 
+	 * The <code><strong>FullScreenElementAction</strong></code> class defines an Action that triggers one element on stage to FullScreen
+	 */
+	public class FullScreenElementAction extends Action implements IFullScreenAction
+	{
+		
+		private var _element : IUIElementDescriptor;
+		private var _elementName : String;
+		
+		
+		private var _isFullScreen : Boolean;
+
+
+		private var d : FieUIComponent=new UIComponent();;
+		private var currentObject:DisplayObject;
+		private var initWidth:int;
+		private var initHeight:int;
+		private var initX:int;
+		private var initY:int;
+		private var parent:DisplayObjectContainer;
+		private var index:int;
+		
+		public function FullScreenElementAction()
+		{
+			super();
+		}
+		
+		public function setElementToFullScreen( elementUuid : String ) : void
+		{
+			trace ("setElementToFullScreen uuid="+elementUuid);
+			this.elementName = elementUuid;
+			this.element = ElementList.getInstance().getElement( this.elementName, BrowsingManager.getInstance().getCurrentPage() );
+			addListeners();
+		}
+		
+		
+		override public function apply( event : Event ):void
+		{
+			trace ("applying full screen");
+			setFull( event );
+		}
+		
+		private function setFull(e:Event):void
+		{
+			if (AbstractBootstrap.CLIENT_STAGE.displayState != StageDisplayState.FULL_SCREEN)
+			{
+				var p : Point = element.getFace().localToGlobal(new Point(0, 0));
+				var surfacePleinEcran : Rectangle;
+				var m : Matrix = DisplayObject( element.getFace() ).transform.concatenatedMatrix;
+				currentObject = DisplayObject( element.getFace() );
+				if (currentObject.width * m.a < 600 || 600 - currentObject.height * m.d < 600)
+				{
+
+					if ( isFullScreen )
+					{
+						initWidth = currentObject.width;
+						initHeight = currentObject.height;
+						initX = currentObject.x;
+						initY = currentObject.y;
+						if (currentObject.width > currentObject.height)
+						{
+							element.getFace().width = 500 / m.a;
+							element.getFace().height *= (500 / initWidth) / m.d;
+						}
+						else
+						{
+							element.getFace().height = 500 / m.d;
+							element.getFace().width *= (500 / initHeight) / m.a;
+
+						}
+					}
+
+					parent = element.getFace().parent;
+					index = parent.getChildIndex( DisplayObject( element.getFace() ) );
+
+					parent.removeChild(element.getFace() as DisplayObject);
+					AbstractBootstrap.getInstance().addChild(d);
+					AbstractBootstrap.getInstance().addChild(element.getFace() as DisplayObject);
+					d.width=600;
+					d.height=600;
+					d.x=p.x - ((600 - element.getFace().width * m.a) / 2);
+					d.y=p.y - ((600 - element.getFace().height * m.d) / 2);
+
+					d.graphics.clear();
+					//d.graphics.beginFill(fie_test.bc, 1);
+					d.graphics.beginFill(0xFFFFFF, 1)
+					d.graphics.moveTo(0, 0);
+					d.graphics.lineTo(600, 0);
+					d.graphics.lineTo(600, 600);
+					d.graphics.lineTo(0, 600);
+					d.graphics.lineTo(0, 0);
+					d.graphics.moveTo((600 - element.getFace().width * m.a) / 2, (600 - element.getFace().height * m.d) / 2);
+					d.graphics.lineTo((600 - element.getFace().width * m.a) / 2, ((600 - element.getFace().height * m.d) / 2) + element.getFace().height * m.d);
+					d.graphics.lineTo(((600 - element.getFace().width * m.a) / 2) + element.getFace().width * m.a, ((600 - element.getFace().height * m.d) / 2) + element.getFace().height * m.d);
+					d.graphics.lineTo(((600 - element.getFace().width * m.a) / 2) + element.getFace().width * m.a, ((600 - element.getFace().height * m.d) / 2));
+					d.graphics.lineTo(((600 - element.getFace().width * m.a) / 2), ((600 - element.getFace().height * m.d) / 2));
+					d.graphics.endFill();
+					//element.getFace().parent.addChild(d);
+
+					//element.getFace().x=element.getFace().localToGlobal(new Point(0,0)).x;
+					currentObject.x=p.x
+					currentObject.scaleX=m.a;
+					currentObject.scaleY=m.d;
+					//element.getFace().y=element.getFace().localToGlobal(new Point(0,0)).y;
+					currentObject.y=p.y;
+					surfacePleinEcran=new Rectangle(d.x, d.y, d.width, d.height);
+				}
+				else
+				{
+					surfacePleinEcran=new Rectangle(p.x, p.y, element.getFace().width * m.a, element.getFace().height * m.d);
+				}
+				//var surfacePleinEcran:Rectangle = new Rectangle ( p.x, p.y, d.width, d.height );
+				//surfacePleinEcran.width=525;
+				//surfacePleinEcran.height=525;
+				// la zone est spécifiée
+
+				AbstractBootstrap.CLIENT_STAGE.fullScreenSourceRect=surfacePleinEcran;
+				AbstractBootstrap.CLIENT_STAGE.displayState=StageDisplayState.FULL_SCREEN;
+			}
+			else
+			{
+
+				AbstractBootstrap.CLIENT_STAGE.displayState=StageDisplayState.NORMAL;
+			}
+		}
+
+		private function fullScreen(e:FullScreenEvent):void
+		{
+			if (!e.fullScreen)
+			{
+				//fie_test.GLOBAL_STAGE.displayState=StageDisplayState.NORMAL;
+				if (currentObject != null)
+				{
+					currentObject.scaleX=1;
+					currentObject.scaleY=1;
+					currentObject.width=initWidth;
+					currentObject.height=initHeight;
+					currentObject.x=initX;
+					currentObject.y=initY;
+				}
+				if (AbstractBootstrap.getInstance().contains(d))
+				{
+					AbstractBootstrap.getInstance().removeChild(d);
+					AbstractBootstrap.getInstance().removeChild(currentObject);
+					parent.addChildAt(currentObject, index);
+				}
+
+			}
+		}
+
+		public function get element() : IUIElementDescriptor
+		{
+			return _element;
+		}
+
+
+		public function set element( value : IUIElementDescriptor ) : void
+		{
+			_element = value;
+		}
+		
+		public function get elementName() : String
+		{
+			return _elementName;
+		}
+
+
+		public function set elementName( value : String ) : void
+		{
+			_elementName = value;
+		}
+
+		public function get isFullScreen() : Boolean
+		{
+			return _isFullScreen;
+		}
+
+		public function set isFullScreen( value : Boolean ) : void
+		{
+			_isFullScreen = value;
+		}
+		
+		public function addListeners():void
+		{
+			IUIElementDescriptor(this.element).getFace().addEventListener(MouseEvent.CLICK, setFull);
+			//AbstractBootstrap.CLIENT_STAGE.addEventListener(FullScreenEvent.FULL_SCREEN, this.fullScreen);
+		
+		}
+		
+	}
+}

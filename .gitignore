@@ -4,6 +4,9 @@ bin-release/
 [Oo]bj/
 [Bb]in/
 
+#svn old folders
+.svn/
+
 # Other files and folders
 .settings/
 

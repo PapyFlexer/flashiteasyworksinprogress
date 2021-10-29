@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="package-fie-version">
+	
+
+	<exec executable="svn" output="svn.properties">
+    <arg value="info" />
+  </exec>
+  <property prefix="svn" file="svn.properties"/>
+  <echo>Sandbox Revision: ${svn.Revision}</echo>
+	
+	 
+</project>

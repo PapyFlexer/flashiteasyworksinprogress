@@ -1,0 +1,89 @@
+package com.flashiteasy.api.controls {
+	import com.flashiteasy.api.controls.Validator.*;
+	import com.flashiteasy.api.core.IUIElementContainer;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.elements.IFormElementDescriptor;
+
+	/**
+	 * Flash'Iteasy
+	 * Fie team is
+	 * dany, didier, gilles
+	 * & many thanks to alexis, ghazi, jean-françois
+	 */
+
+	public class FormItemElementDescriptor extends SimpleUIElementDescriptor implements IUIElementDescriptor,IFormElementDescriptor 
+	{
+		
+		private var _name:String;
+		private var _validator:IValidator=new NoValidator();
+		private var _error:String;
+		private var _required:Boolean;
+		
+		public function set name( value : String	) : void 
+		{
+			this._name=value;
+		}
+		public function get name():String
+		{
+			return _name;
+		}
+		
+		public function getValue() : String 
+		{
+			// MUST BE OVERRIDDEN
+			return null;
+		}
+		protected override function onComplete():void
+		{
+
+			super.onComplete();
+			end();
+		}
+		public function set validator(value:IValidator):void
+		{
+			this._validator=value;
+		}
+		
+		public function get validator( ):IValidator
+		{
+			return _validator;
+		}
+		
+		public function check():Boolean{
+			return _validator.check(this.getValue());
+		}
+		
+		public function set error(value : String) : void 
+		{
+			_error=value;
+		}
+		
+		public function get error() : String 
+		{	
+			return _error;
+		}
+		
+		public function set required(value : Boolean) : void {
+			_required=value;
+		}
+		
+		public function get required() : Boolean {
+			
+			return _required;
+		}
+		
+		public function getParentForm() : IUIElementContainer
+		{
+			return this.parentBlock;
+		}
+		
+		public function resetValues():void
+		{
+			throw new Error("MUST BE OVERRIDDEN");
+		}
+		public function displayError(s:String):void
+		{
+			throw new Error("MUST BE OVERRIDDEN");
+		}
+	}
+}

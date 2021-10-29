@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     15 avril 2011                                                        
+
+     Clocklib    
+                   
+     G.R.                                                               
+     ====================================================================== -->
+<project name="clock-lib" default="clock-lib">
+
+    <!-- ================================= 
+          target: clock-lib             
+         ================================= -->
+    <target name="clock-lib" >
+        <unzip dest="../fie-app/src/main/resources/external" src="bin/clock-lib.swc" overwrite="true">
+        	<patternset> 
+        	        <include name="*.swf"/>
+			</patternset>
+    	</unzip>
+    	<delete file="com_flashiteasy_clock_clock-lib_0.2-SNAPSHOT.swf" failonerror="false"/>
+    	<move file="../fie-app/src/main/resources/external/library.swf" tofile="../fie-app/src/main/resources/external/com_flashiteasy_clock_clock-lib_0.2-SNAPSHOT.swf"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clock_clock-lib_0.2-SNAPSHOT.swf" todir="../fie-admin/src/main/resources/libraries"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clock_clock-lib_0.2-SNAPSHOT.swf" todir="../../../../../../Applications/MAMP/htdocs/target/fie-admin/libraries"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clock_clock-lib_0.2-SNAPSHOT.swf" todir="../../../../../../Applications/MAMP/htdocs/target/fie-projects/fie-app/external"/>
+    	<copy file="../fie-app/src/main/resources/external/com_flashiteasy_clock_clock-lib_0.2-SNAPSHOT.swf" todir="../../../../../../Applications/MAMP/htdocs/target/fie-projects/fie-sample-app/external"/>
+    </target>
+</project>

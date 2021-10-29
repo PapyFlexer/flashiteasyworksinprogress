@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties version="1">
+  <includeClasses>
+    <classEntry path="com.flashiteasy.sample.lib.CircleElementDescriptor"/>
+    <classEntry path="com.flashiteasy.sample.editor.impl.SimpleBackgroundColorEditorImpl"/>
+    <classEntry path="com.flashiteasy.sample.parameters.CircleBackgroundColorParameterSet"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

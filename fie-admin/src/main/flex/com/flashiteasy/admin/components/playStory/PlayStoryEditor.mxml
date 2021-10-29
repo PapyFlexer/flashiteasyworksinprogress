@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.api.core.CompositeParameterSet;
+			import mx.collections.ArrayCollection;
+			import fl.data.DataProvider;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.selection.StoryList;
+			import com.flashiteasy.api.parameters.ToggleStoryParameterSet;
+			
+			private function init():void
+			{
+				
+			}
+			
+			private var param : ToggleStoryParameterSet;
+			
+			public function setPlayStoryParameter( p : ToggleStoryParameterSet ) : void 
+			{
+				param = p;	
+			}
+			
+			public function setComboDataProvider( data : Array ) : void 
+			{
+				if(combo == null )
+				{
+					callLater(setComboDataProvider,[data]);
+				}
+				else
+				{
+					combo.dataProvider = data ;
+					combo.selectedIndex = data.length-1
+				}
+			}
+			public function setListDataProvider( data : Array ) : void 
+			{
+				if(list == null )
+				{
+					callLater(setListDataProvider,[data]);
+				}
+				else
+				{
+					list.dataProvider = data ;
+				}
+			}
+			
+			private function updateList( e : Event ) : void 
+			{
+				//param.pageURL = this.page;
+				//param.storyList = [];
+				//dispatchEvent(new Event(Event.CHANGE));
+				list.dataProvider=StoryList.getInstance().getStoriesId(BrowsingManager.getInstance().getPageByUrl(AbstractBootstrap.getInstance().getProject(),this.page));	
+			}
+			
+			public function get page():String
+			{
+				var s : String = "";
+				for(var i : uint = 0; i < combo.selectedIndex; i++)
+				{
+					s += String(combo.dataProvider[i]) +  "/";
+				}
+				
+				return s + String(combo.selectedItem);
+			}
+			
+			private function setStory( e : Event ) : void 
+			{
+				//param.storyList = list.selectedItems;
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+			
+			public function get changedList() : Array
+			{
+				return ["storyList","pageURL"];
+			}
+			
+			public function getParameter():ToggleStoryParameterSet
+			{
+				if(list.selectedIndex != -1)
+				{
+					param.pageURL = this.page;
+					param.storyList = list.selectedItems;
+					
+				}
+				return param;
+			}
+			
+			public function setSelectedStories( pageUrl:String, storyList:Array) : void
+			{
+				if(list == null || combo == null )
+				{
+					callLater(setSelectedStories, [pageUrl, storyList]);
+				}
+				else
+				{
+					list.selectedItems = storyList ;
+					combo.selectedIndex = pageUrl != null ? pageUrl.split("/").length - 1 : ArrayCollection(combo.dataProvider).length - 1;
+				}
+				
+			}
+			public function getList() : List
+			{
+				return list;
+			}
+			public function getComboBox() : ComboBox
+			{
+				return combo;
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:ComboBox id="combo" change="updateList(event)" width="100%">
+		
+	</mx:ComboBox>
+	<mx:List id="list" allowMultipleSelection="true" itemClick="setStory(event)" width="100%" height="100%" >
+		
+	</mx:List>
+</mx:VBox>

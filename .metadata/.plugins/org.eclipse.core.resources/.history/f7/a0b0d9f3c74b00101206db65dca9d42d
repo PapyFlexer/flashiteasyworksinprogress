@@ -1,0 +1,117 @@
+package com.flashiteasy.snow.lib
+{
+	import com.flashiteasy.api.controls.SimpleUIElementDescriptor;
+	
+	import flash.events.Event;
+	import flash.geom.Rectangle;
+	import flash.utils.Timer;
+	
+	public class SnowElementDescriptor extends SimpleUIElementDescriptor implements ISnowableElementDescriptor
+	{
+		// timer
+		private var timer:Timer;
+		
+		private const FPS:Number = 30 / 1000;
+		
+		// and define a rectangle to store the screen dimensions in. 
+		private var faceArea:Rectangle;
+		
+		// and decide the maximum number of flakes we want
+		private var numFlakes : uint = 100;
+		 
+		
+		// first make an array to put all our snowflakes in
+		private var snowFlakes : Array = new Array();
+		
+		override public function applySize() : void
+		{
+			super.applySize();
+ 		}
+ 		
+		
+		public function setSnowStorm (quantity : Number ):void
+		{
+			numFlakes = quantity;
+		}
+		
+		protected override function onSizeChanged():void
+		{
+			faceArea= new Rectangle(0,0,width,height)
+		}
+		
+		
+		protected override function drawContent():void
+		{
+			timer = new Timer (	30/1000 );
+			timer.start();
+			faceArea = new Rectangle(0,0,width,height)
+			face.addEventListener(Event.ENTER_FRAME, timeLoop);
+			//face.addEventListener(TimerEvent.TIMER, timeLoop);
+			end();
+		}
+
+		public override function destroy():void 
+		 {
+			face.removeEventListener(Event.ENTER_FRAME, timeLoop);
+			timer.stop();
+			timer = null;
+			super.destroy();
+		}
+
+		// What a pity that ActionScript does not support Generics...
+		override public function getDescriptorType() : Class
+		{
+			return SnowElementDescriptor;
+		}
+		
+		private function timeLoop(e:Event) : void
+		{
+			
+			var snowflake : SnowFlake; 
+			
+			// if we don't have the maximum number of flakes... 
+			if(snowFlakes.length<numFlakes)
+			{
+				// then make a new one!
+				snowflake = new SnowFlake(faceArea); 
+				
+				// add it to the array of snowflakes
+				snowFlakes.push(snowflake); 
+				
+				// and add it to the stage
+				getFace().addChild(snowflake); 
+				
+			}
+			if( snowFlakes.length > numFlakes)
+			{
+				while(snowFlakes.length> numFlakes)
+				{
+					var snow : SnowFlake = SnowFlake(snowFlakes.pop());
+					face.removeChild(snow);
+				}
+			}
+			
+			// now calculate the wind factor by looking at the x position 
+			// of the mouse relative to the centre of the screen
+			var wind : Number = ((faceArea.width/2) - getFace().mouseX) ;
+			
+			// and divide by 60 to make it smaller
+			wind /=60; 
+			
+			// now loop through every snowflake
+			for(var i:uint = 0; i<snowFlakes.length; i++)
+			{
+				
+				snowflake = snowFlakes[i]; 
+				
+				// and update it
+				snowflake.update(wind); 
+			}
+		}
+		
+	}
+}
+
+
+
+

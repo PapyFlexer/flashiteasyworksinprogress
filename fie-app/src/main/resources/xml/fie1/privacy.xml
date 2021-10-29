@@ -1,0 +1,134 @@
+<page>
+  <control type="com.flashiteasy.api.controls::RectElementDescriptor" id="Sizer">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>1700</y>
+      <x>65</x>
+    </PositionParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+  </control>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="Block">
+    <BlockListParameterSet>
+      <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Textblock">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <y>142</y>
+          <x>51</x>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <width>574</width>
+          <height>365</height>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <TextOptionParameterSet>
+          <borderColor>0</borderColor>
+          <multiLines>true</multiLines>
+          <autoSize>center</autoSize>
+          <wordWrap>true</wordWrap>
+        </TextOptionParameterSet>
+        <TextParameterSet>
+          <police>Arial</police>
+          <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;At Flash’Iteasy we are committed to protecting your privacy and personal information to the best of our ability.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;The information contained in the Flash’Iteasy Online Privacy Policy (&amp;quot;Privacy Policy&amp;quot;) should help you understand how we collect information and how we use it.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;By using the online services, websites and software (collectively: &amp;quot;Services&amp;quot;) provided by Flash’Iteasy SAS and its subsidiaries (collectively: &amp;quot;Flash’Iteasy&amp;quot;) you agree to the terms set forth in this Privacy Policy. Should you have any objection to our Privacy Policy, you should stop using our Services immediately.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt; &lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="16" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;Information Collection&lt;FONT COLOR="#FFFFFF"&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;You might voluntarily subscribe to informational or commercial newsletters published by Flash’Iteasy, and provide personal information such as an email address or a name. Such subscription can be cancelled at any time.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;When contacting Flash’Iteasy, you may be requested to provide an email address so we can answer your query. Such an e-mail address will be used only to answer your message.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;Flash’Iteasy may use cookies or similar devices such as web beacons for statistical purposes and to help us analyze and adapt our Services. It also includes the collection of aggregated and non-personal information in order to compute data such as numbers of hits on our website, the websites that referred users to us, the pages accessed by our users, etc.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt; &lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="16" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;Information Use&lt;FONT COLOR="#FFFFFF"&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;Flash’Iteasy will not sell, lease or rent your e-mail address or personal information to third parties, unless you have specifically allowed Flash’Iteasy to do so.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;Under certain circumstances we may have to disclose your personal information in order to (i) comply with any applicable law, regulation, law enforcement, legal process or enforceable request from the government, (ii) protect and defend the property, rights or safety of Flash’Iteasy, (iii) detect, prevent, or otherwise address security or technical issues, or (iiii) protect the integrity, privacy and safety of our users.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;You acknowledge that the collection, transfer, storage, and processing of your information may be undertaken by trusted third party vendors or agents of Flash’Iteasy such as web hosting and email service providers. Such third parties are bound by contract not to use your personal information for their own purposes or provide it to any third parties.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;In the event Flash’Iteasy is acquired, in full or in part, merges with another entity, or sells part of its assets, you agree that Flash’Iteasy may provide to such entity customer information according said entity agrees to comply with this Privacy Policy.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt; &lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="16" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;Links&lt;FONT COLOR="#FFFFFF"&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;This website may contain links to other sites that are not owned nor managed by Flash’Iteasy. This Privacy Policy applies solely to information collected through Flash’Iteasy&amp;apos;s Services.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt; &lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="16" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;How we protect your personal information&lt;FONT COLOR="#FFFFFF"&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;We are committed to protecting your privacy and personal information to the best of our ability. For that purpose we use industry-standard practices to protect your personally identifiable information from loss, misuse or alteration.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;How to access, modify or remove your personal information&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;You can at any time cancel any subscription or registration you made in relation with our Services. We will always do our best to display all means necessary to do so in an easy and fast way.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt; &lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="16" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;Note to French users&lt;FONT COLOR="#FFFFFF"&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;In accordance with Article 34 of the &amp;quot;Informatique et Libertés&amp;quot; French law dated January 6, 1978, you have the right to access, modify, rectify and delete your personal information. You can at any time contact us and ask for your personal information to be modified or removed. You can also write to us at: Flash’Iteasy SAS, 10bis rue Beteaux Dumas, 92200- Neuilly, France.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt; &lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="16" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;Note aux utilisateurs français&lt;FONT COLOR="#FFFFFF"&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;Conformément à l&amp;apos;article 34 de la loi &amp;quot;Informatique et Libertés&amp;quot; du 6 janvier 1978, vous disposez d&amp;apos;un droit d&amp;apos;accès, de modification, de rectification et de suppression des données vous concernant. Vous pouvez à tout moment nous contacter afin de demander que vos informations soient modifiées ou supprimées. Vous pouvez également nous écrire à cet effet à l&amp;apos;adresse suivante : Flash’Iteasy SAS, 10bis rue Berteaux Dumas, 92200 - Neuilly, France.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt; &lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="16" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;Changes to the Flash’Iteasy Online Privacy Policy&lt;FONT COLOR="#FFFFFF"&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;This Privacy Policy might be amended and updated from time to time. Please note that your use of our Services is governed by this Privacy Policy, and not the Privacy Policy in effect at the time we collected your personal information. For that purpose we invite you to periodically review the Flash’Iteasy Online Privacy Policy.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt; &lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="16" COLOR="#666666" LETTERSPACING="0" KERNING="0"&gt;How to contact us&lt;FONT COLOR="#FFFFFF"&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;If you have questions about this Privacy Policy, please contact us. You can also write to us at: Flash’Iteasy SAS, 10bis rue Berteaux Dumas, 92200 - Neuilly, France.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt; &lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="JUSTIFY"&gt;&lt;FONT FACE="_Arial" SIZE="12" COLOR="#000000" LETTERSPACING="0" KERNING="0"&gt;Last update: January 1, 2011.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+        </TextParameterSet>
+      </control>
+      <container type="com.flashiteasy.api.container::XmlElementDescriptor" id="download">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <y>139</y>
+          <x>655</x>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <width>246</width>
+          <height>157</height>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <XmlParameterSet>
+          <xml>fie</xml>
+        </XmlParameterSet>
+      </container>
+      <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="Title">
+        <PositionParameterSet>
+          <mode>bottom</mode>
+          <y>42</y>
+          <x>60</x>
+        </PositionParameterSet>
+        <SizeParameterSet>
+          <width>842</width>
+          <height>97</height>
+        </SizeParameterSet>
+        <RotationParameterSet>
+          <rotationX>0</rotationX>
+          <rotationY>0</rotationY>
+        </RotationParameterSet>
+        <TextOptionParameterSet>
+          <borderColor>0</borderColor>
+          <multiLines>true</multiLines>
+          <autoSize>center</autoSize>
+          <wordWrap>true</wordWrap>
+        </TextOptionParameterSet>
+        <TextParameterSet>
+          <police>Arial</police>
+          <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="CENTER"&gt;&lt;FONT FACE="_Arial" SIZE="72" COLOR="#AAB3B3" LETTERSPACING="0" KERNING="0"&gt;Privacy Policy&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+        </TextParameterSet>
+      </control>
+    </BlockListParameterSet>
+    <PositionParameterSet>
+      <mode>bottom</mode>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <is_percent_w>true</is_percent_w>
+      <height>1497</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <MaskTypeParameterSet>
+      <enable>true</enable>
+      <RoundedCornerParameterSet>
+        <topRight>10</topRight>
+        <bottomLeft>10</bottomLeft>
+        <topLeft>10</topLeft>
+        <bottomRight>10</bottomRight>
+      </RoundedCornerParameterSet>
+    </MaskTypeParameterSet>
+    <BackgroundColorParameterSet>
+      <backgroundColor>16777215</backgroundColor>
+    </BackgroundColorParameterSet>
+  </container>
+  <storyboard>
+    <story uuid="down" autoPlay="true" autoPlayOnUnload="false" target="Sizer" loop="false">
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="0">
+          <easing type="Exponential" easingType="easeOut"/>
+          <value>760</value>
+        </keyframe>
+        <keyframe time="2600">
+          <easing type="Exponential" easingType="easeOut"/>
+          <value>1700</value>
+        </keyframe>
+      </update>
+    </story>
+    <story uuid="up" autoPlay="false" autoPlayOnUnload="true" target="Sizer" loop="false">
+      <update target="PositionParameterSet" targetProperty="y">
+        <keyframe time="0">
+          <easing type="Exponential" easingType="easeIn"/>
+          <value>1700</value>
+        </keyframe>
+        <keyframe time="2600">
+          <easing type="Exponential" easingType="easeIn"/>
+          <value>760</value>
+        </keyframe>
+      </update>
+    </story>
+  </storyboard>
+</page>

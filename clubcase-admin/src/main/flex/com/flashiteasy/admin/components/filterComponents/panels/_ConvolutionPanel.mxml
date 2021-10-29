@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="380"
+		 height="100%"
+		 xmlns:components="com.flashiteasy.admin.components.*">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.conf.Conf;
+			
+			import com.flashiteasy.admin.conf.Ref;
+			public function getLang(s:String):String
+			{
+				
+				return Conf.languageManager.getLanguage(s);
+			}
+		]]>
+	</mx:Script>
+	<mx:Grid width="100%"
+			 height="100%">
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%" colSpan="2"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Sample')+'s'}"
+						 width="100%"
+						 height="100%"/>
+				<mx:ComboBox id="presetchooser"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Color')}"
+						 width="100%"
+						 height="100%"/>
+				<components:FieColorPicker id="colorValue"/>
+			</mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Alpha')}"
+						 width="100%"
+						 height="100%"/>
+				<components:advancedSlider id="alphaValue" minimum="0" maximum="1" interval="0.01"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Clamp')}"
+						 width="100%"
+						 height="100%"/>
+				<mx:CheckBox id="clampValue"/>
+			</mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Preserve_Alpha')}"
+						 width="100%"
+						 height="100%"/>
+				<mx:CheckBox id="preserveAlphaValue"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Divisor')}"
+						 width="100%"
+						 height="100%"/>
+				<mx:TextInput id="divisorValue"
+						  width="40"
+						  height="22"/>
+				</mx:GridItem>		  
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Matrix')}"
+						 width="100%"
+						 height="100%"/>
+				<mx:TextInput id="matrixTL" 
+						  width="40"
+						  height="22"/>
+				<mx:TextInput id="matrixTC"
+						  width="40"
+						  height="22"/>
+				<mx:TextInput id="matrixTR"
+						  width="40"
+						  height="22"/>
+			</mx:GridItem>
+			
+			</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text="{getLang('Bias')}"
+						 width="100%"
+						 height="100%"/>
+				<mx:TextInput id="biasValue"
+						  width="40"
+						  height="22"/>
+						  </mx:GridItem>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text=""
+						 width="100%"
+						 height="100%"/>
+				<mx:TextInput id="matrixML"
+						  width="40"
+						  height="22"/>
+				<mx:TextInput id="matrixMC"
+						  width="40"
+						  height="22"/>
+				<mx:TextInput id="matrixMR"
+						  width="40"
+						  height="22"/>
+			</mx:GridItem>
+			</mx:GridRow>
+		<mx:GridRow width="100%">
+			<mx:GridItem width="50%"
+						 paddingLeft="10"/>
+			<mx:GridItem width="50%"
+						 paddingLeft="10">
+
+				<mx:Label text=""
+						 width="100%"
+						 height="100%"/>
+				<mx:TextInput id="matrixBL"
+						  width="40"
+						  height="22"/>
+				<mx:TextInput id="matrixBC"
+						  width="40"
+						  height="22"/>
+				<mx:TextInput id="matrixBR"
+						  width="40"
+						  height="22"/>
+			</mx:GridItem>
+			</mx:GridRow>
+	</mx:Grid>
+
+</mx:VBox>

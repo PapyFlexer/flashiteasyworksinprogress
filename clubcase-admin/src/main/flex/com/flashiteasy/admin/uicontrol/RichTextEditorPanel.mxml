@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox width="100%" height="100%" xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import com.flashiteasy.admin.manager.LanguageManager;
+			import mx.utils.ArrayUtil;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import com.flashiteasy.api.text.Style;
+			import com.flashiteasy.api.assets.StyleList;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.components.filterComponents.panels._BevelPanel;
+			import com.flashiteasy.admin.components.textComponents.FieRichTextEditor;
+			import mx.controls.ComboBox;
+			import com.flashiteasy.api.utils.FontLoader;
+			import com.flashiteasy.api.parameters.TextParameterSet;
+			import mx.core.Application;
+			import mx.controls.RichTextEditor;
+			import com.flashiteasy.admin.popUp.PopUp;
+			import mx.core.mx_internal;
+			use namespace mx_internal;
+			
+		
+			private var pop : PopUp ;
+			private var textEditor : FieRichTextEditor = new FieRichTextEditor();
+			private var styleCombo : ComboBox = new ComboBox;
+			
+			public function openTextEditor():void
+			{
+				
+				// Create a pop up and add the editor
+			
+				pop = new PopUp( Application.application as DisplayObject, true );
+				pop.addChild( textEditor );
+				
+				textEditor.htmlText= textBox.htmlText ;
+				textEditor.addEventListener(Event.CHANGE, textChanged );
+				textEditor.fontFamilyCombo.dataProvider = FontLoader.getFontFamilies();
+				/*var fontList:Array = Font.enumerateFonts();
+				var fontProvider:Array = [];
+				for each(var font:Font in fontList)
+				{
+					if(!ArrayUtils.isItemInArray(fontProvider, font.fontName))
+					fontProvider.push(font.fontName);
+					trace("fontProvider :: "+fontProvider);
+				}
+				textEditor.fontFamilyCombo.dataProvider = fontProvider;*/
+				pop.display();
+				//pop.setWidth(600);
+				//pop.setHeight(600);
+				//pop.setActualSize(600, 600);
+			}
+			
+			public function openStyleEditor():void
+			{
+				
+			}
+			
+			private function textChanged( e : Event ) : void 
+			{
+				//param.text = textEditor.htmlText;
+				//param.style = "";
+				textBox.htmlText = textEditor.htmlText;
+				callLater(dispatchChange);
+				//dispatchEvent(new Event(Event.CHANGE));	
+			}
+			
+			private function dispatchChange():void
+			{
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+			
+			public function setText( value : String ) : void 
+			{
+				callLater(setValue,[value]);
+			}
+			
+			private function setValue( value : String ) : void 
+			{
+				textBox.setStyle("fontFamily" , "_Arial" ) ;
+				textBox.htmlText = value ;
+				// Load style List
+				var nullObject:Object = {name:'none', data:null};
+				styleList.dataProvider= StyleList.getInstance().getStyles().slice(0);
+				ArrayCollection(styleList.dataProvider).addItemAt(nullObject,0);
+				if(param.style != null && param.style != "")
+				{
+					trace("Style :: "+param.style);
+					selectStyle(param.style);
+				}
+				else
+				{
+					selectedStyle = null;
+					styleList.selectedIndex = 0;
+					
+					callLater(setTextDefaultStyle,[param.getDefaultTextFormat(), value]);
+					//(textBox.getTextField() as TextField).setTextFormat(param.getDefaultTextFormat());
+					
+					//textBox.htmlText = value ;
+				}
+				
+			}
+			
+			private function selectStyle(value:String) : void
+			{
+				//for (var i:uint = 0; i<StyleList.getInstance().getStyles().length; i++)
+				for (var i:uint = 0; i<styleList.dataProvider.length; i++)
+				{
+					if(styleList.dataProvider[i].name == value)
+					{
+						styleList.selectedIndex = i;
+						selectedStyle = styleList.dataProvider[i];
+						var style : Style = StyleList.getInstance().getStyle(value);
+						//setTextAreaStyle(style);
+						callLater(setTextAreaStyle,[style]);
+						break;
+					}
+				}
+			}
+			
+			private var param : TextParameterSet;
+			
+			public function setTextParameter ( param : TextParameterSet ) : void 
+			{
+				this.param = param ;
+			}
+			
+			private var selectedStyle : Style ;
+			private function styleSelected() : void 
+			{
+				var style : Style = StyleList.getInstance().getStyle(styleList.selectedLabel);
+				if(style != null )
+				{
+					
+					setTextAreaStyle(style);
+					//param.style = style.name;
+				}
+				else
+				{
+					var htmlString : String = (textBox.getTextField() as TextField).htmlText;
+					(textBox.getTextField() as TextField).setTextFormat(param.getDefaultTextFormat());
+					textBox.htmlText = htmlString;
+				}
+				selectedStyle = style;
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+			
+			private function setTextDefaultStyle( tf : TextFormat , value:String):void
+			{
+				(textBox.getTextField() as TextField).setTextFormat(tf);
+				if(value.indexOf("<TEXTFORMAT")!=-1)
+					textBox.htmlText = value;
+				//textEditor.textField().setTextFormat(style.getTextFormat());
+			}
+			
+			private function setTextAreaStyle( style : Style ):void
+			{
+				(textBox.getTextField() as TextField).setTextFormat(style.getTextFormat());
+				//textEditor.textField().setTextFormat(style.getTextFormat());
+			}
+			
+			private function styleLabelFunction( data : Object ) : String
+			{
+				return data.name;
+			}
+			private function changeLang( s : String ) : String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+			
+			public function get changedList() : Array
+			{
+				return ["text","style"];
+			}
+			
+			public function getParameter():TextParameterSet
+			{
+				
+				param.style = selectedStyle != null ? selectedStyle.name : null;//param.style;
+				param.text = selectedStyle != null ? (textBox.getTextField() as TextField).text : textBox.htmlText;
+				return param;
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:TextArea width="100"
+				  id="textBox"
+				  enabled="false"
+				  height="100"/>
+	<mx:VBox>
+		
+
+	<mx:Button width="100" click="openTextEditor()" label="{changeLang('edit_text')}"/>
+	<mx:ComboBox width="100" id="styleList" labelFunction="styleLabelFunction"/>
+	<mx:Button width="100" click="styleSelected()" label="{changeLang('change_style')}"/>
+	</mx:VBox>
+</mx:HBox>

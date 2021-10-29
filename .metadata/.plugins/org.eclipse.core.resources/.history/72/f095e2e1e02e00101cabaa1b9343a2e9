@@ -1,0 +1,39 @@
+package com.flashiteasy.api.controls {
+	import com.flashiteasy.api.core.IUIElementContainer;
+	import com.flashiteasy.api.core.IUIElementDescriptor;
+	import com.flashiteasy.api.core.project.Page;
+	
+	import fl.controls.ColorPicker;
+	
+	/**
+	 * @author hanne
+	 */
+	public class ColorPickerElementDescriptor extends FormItemElementDescriptor implements IUIElementDescriptor {
+		
+		private var cp:ColorPicker;
+
+		protected override function initControl():void
+		{
+			cp=new ColorPicker();
+			face.addChild(cp);
+		}
+		
+		override public function getValue():String
+		{
+			return ""+cp.selectedColor;
+		}
+		
+		protected override function onSizeChanged():void
+		{
+			cp.height = face.height;
+			cp.width = face.width;
+		}
+		//===============================
+
+		override public function getDescriptorType():Class
+		{
+			return ColorPickerElementDescriptor;
+		}
+
+	}
+}

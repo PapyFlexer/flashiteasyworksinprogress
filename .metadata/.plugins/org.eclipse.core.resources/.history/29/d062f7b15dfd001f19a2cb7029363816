@@ -1,0 +1,77 @@
+10
+
+dir
+281
+https://svn.codespaces.com/flashiteasy/moby/trunk/fie/fie-admin
+https://svn.codespaces.com/flashiteasy/moby
+
+
+
+2010-11-30T15:42:29.374642Z
+276
+Didier Reyt
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+ce3b1aac-1f8f-4ec8-963c-1804e095d3b6
+
+src
+dir
+
+libs
+dir
+
+pom.xml
+file
+
+
+
+
+2010-04-06T13:18:49.000000Z
+a3631fac2fa078adf41322f0974e1803
+2010-04-06T13:22:22.361421Z
+7
+groquefeuil
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2816
+
+bin-debug
+dir
+
+html-template
+dir
+
+.settings
+dir
+

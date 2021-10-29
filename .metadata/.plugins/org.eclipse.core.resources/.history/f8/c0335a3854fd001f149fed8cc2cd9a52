@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml"
+		xmlns:flexlib="com.flashiteasy.admin.uicontrol.story.*"
+		width="100%" creationComplete="init()"
+		height="50">
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import com.flashiteasy.admin.utils.EditorUtil;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.popUp.NewStoryPopUp;
+			import com.flashiteasy.api.parameters.OverflowParameterSet;
+			import com.flashiteasy.api.events.FieEvent;
+			import mx.utils.ArrayUtil;
+			import com.flashiteasy.admin.uicontrol.story.TimelineContainer;
+			import com.flashiteasy.admin.manager.AdminManager;
+			import mx.controls.Alert;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import com.flashiteasy.admin.utils.FlexComponentsUtils;
+			import com.flashiteasy.api.core.IUIElementDescriptor;
+			import com.flashiteasy.admin.visualEditor.VisualSelector;
+			import mx.controls.List;
+			import com.flashiteasy.api.core.FieUIComponent;
+			import com.flashiteasy.api.utils.DisplayListUtils;
+			import com.flashiteasy.admin.conf.Ref;
+			import mx.controls.sliderClasses.Slider;
+			import flash.utils.getQualifiedClassName;
+			import com.flashiteasy.api.bootstrap.AbstractBootstrap;
+			import com.gskinner.motion.easing.Linear;
+			import com.flashiteasy.api.core.project.storyboard.Transition;
+			import com.flashiteasy.api.core.project.storyboard.Update;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.api.selection.ElementList;
+			import com.flashiteasy.api.selection.StoryList;
+			import com.flashiteasy.api.utils.NameUtils;
+			import com.flashiteasy.api.core.project.storyboard.Story;
+			import com.flashiteasy.admin.workbench.impl.StoryElementEditorImpl;
+			import com.flashiteasy.admin.workbench.IElementEditor;
+			import com.flashiteasy.admin.uicontrol.story.SliderThumb;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.core.project.Page;
+			import com.flashiteasy.api.core.project.storyboard.Storyboard;
+			import com.flashiteasy.admin.motion.TimeLineStoryBoardPlayerImpl;
+			import com.flashiteasy.api.core.motion.IStoryboardPlayer;
+			import mx.events.SliderEvent;
+			import mx.events.ListEvent;
+			import flash.events.Event;
+			import com.flashiteasy.admin.utils.SkinUtils;
+
+			private var player:TimeLineStoryBoardPlayerImpl;
+			private var sb:Storyboard;
+			private var editor:StoryElementEditorImpl;
+			[Bindable]
+			public var timelineDuration:Number;
+
+			private var maximumDuration:Number;
+
+			private var initListeners:Boolean=false;
+
+			public function init():void
+			{
+				if (!initListeners)
+				{
+					initListeners=true;
+					BrowsingManager.getInstance().addEventListener(FieEvent.PAGE_CHANGE, pageChanged, false, 0, true);
+				}
+				editor=new StoryElementEditorImpl();
+				ApplicationController.getInstance().changeElementEditor(editor);
+				sb = BrowsingManager.getInstance().getCurrentPage().getStoryboard();
+				var currentTime:int=AbstractBootstrap.getInstance().getTimerStoryboardPlayer().currentTime;
+				maximumDuration=AbstractBootstrap.getInstance().getTimerStoryboardPlayer().getMaxTime() + 2000;
+				timeMax = maximumDuration;
+				startTimeWidth=0;
+				// on veut afficher la page dans son état de base (avant anims)
+				duration.dispatchEvent(new ListEvent(ListEvent.CHANGE));
+				timeline.thumbCount=1;
+				timeline.values=[currentTime];
+				timeline.maximum=timelineDuration;
+				refreshTimelines();
+
+			}
+
+			public function refreshTimelines():void
+			{
+				DisplayListUtils.removeAllChildren(Ref.timelineComponent);
+				Ref.timelineComponent.sliders=new Dictionary;
+				updateViewList = [];
+				if (sb != null)
+				{
+					////for each (var story:Story in sb.getStories())
+					for each (var story:Story in StoryList.getInstance().getStories(BrowsingManager.getInstance().getCurrentPage()))
+					{
+						if (storiesType.selectedItem.data == "auto" && story.autoPlay)
+						{
+							Ref.timelineComponent.addTimeLine(story);
+							this.updateViewList.push(story.uuid);
+						}
+						else if (storiesType.selectedItem.data == "triggered" && !story.autoPlay)
+						{
+							Ref.timelineComponent.addTimeLine(story);
+							this.updateViewList.push(story.uuid);
+						}
+						else if (storiesType.selectedItem.data == "all")
+						{
+							Ref.timelineComponent.addTimeLine(story);
+							this.updateViewList.push(story.uuid);
+						}
+					}
+				}
+			}
+
+			private function pageChanged(e:Event):void
+			{
+				init();
+			}
+
+			[Bindable]
+			public var currentKeyFrame:int=0;
+
+			public function setKeyFrame(e:Event):void
+			{
+				currentKeyFrame=HSlider(e.target).value;
+			}
+
+			private var inputName:NewStoryPopUp;
+
+			private function createStoryPopUp(e:MouseEvent):void
+			{
+				inputName=new NewStoryPopUp(mx.core.Application.application as DisplayObject, true);
+				inputName.description=Conf.languageManager.getLanguage("New_Story");
+				inputName.label=Conf.languageManager.getLanguage("Name") + ": ";
+				inputName.setInputDefaultValue(EditorUtil.findUniqueName("story", StoryList.getInstance().getStoriesId(BrowsingManager.getInstance().getCurrentPage())));
+				inputName.addEventListener(NewStoryPopUp.SUBMIT, checkName);
+			}
+
+			private function checkName(e:Event):void
+			{
+				var newTime:uint=timeline.value;
+				var page:Page=BrowsingManager.getInstance().getCurrentPage();
+				inputName.closePopUp();
+				if (inputName.isNewStory())
+				{
+					createNewStory(newTime, page, inputName.getInterpolationName(), inputName.getEasingType(), inputName.getInput());
+				}
+				else
+				{
+					addKeyFrameToStory(newTime, inputName.getChoosedStory(), page, inputName.getInterpolationName(), inputName.getEasingType());
+				}
+
+				editor.emptyOverrideMap();
+				Ref.adminManager.changedParameterList=null;
+				Ref.adminManager.changedDescriptor=null;
+				init();
+				VisualSelector.getInstance().flushElements();
+				ApplicationController.getInstance().getStoryEditor().update();
+			}
+
+			/*//This function is not used anymore
+			   public function generateStories(e:MouseEvent):void
+			   {
+			   var overridemap : Dictionary = editor.getOverridesMap();
+			   // on recupere les infos : quel est le temps, y a-t-il déjà une story sur cette face, etc?
+			   var newTime : uint = timeline.value;
+			   var page : Page = BrowsingManager.getInstance().getCurrentPage();
+			   var storiesNum : uint = page.getStoryArray().length;
+			   var ctrl:IUIElementDescriptor = null;
+			   // si un élément est sélectionné, on édite la story qui le cible
+			   if (VisualSelector.getInstance() != null)
+			   {
+			   var selectedElements : Array = VisualSelector.getInstance().getSelectedElements();
+			   // TODO : gerer la multiselection
+			   ctrl = VisualSelector.getInstance().getSelectedElements()[0];
+			   }
+			   else
+			   // s'il n'y a selection ni sur la scene, ni dans la liste,
+			   {
+			   Alert.show("selectionnez un control ou une story", "Error", mx.controls.Alert.OK, Ref.workspaceContainer );
+			   return void;
+			   }
+
+			   //trace ("controle animé = "+ctrl.uuid);
+			   // on va chercher si une story targettant ce controle existe
+			   var hasStory : Boolean = false ;
+			   for each (var story : Story in page.getStoryArray())
+			   {
+			   trace ("invoking 'generate stories' with ctrl.uuid="+ctrl.uuid);
+			   if (ctrl.uuid == story.target )
+			   // si une story existe on ajoute une keyframe
+			   {
+			   trace ("a story exist, adding a keyframe to it in a second...");
+			   //addKeyFrameToStory(newTime, story, page);
+			   hasStory = true ;
+			   break;
+			   }
+			   }
+			   if( !hasStory )
+			   {
+			   //createNewStory(newTime, page, Linear, "easeNone", storyName);
+			   }
+			   editor.emptyOverrideMap();
+			   Ref.adminManager.changedParameterList=null;
+			   Ref.adminManager.changedDescriptor=null;
+			   init();
+			   VisualSelector.getInstance().flushElements();
+			   ApplicationController.getInstance().getStoryEditor().update();
+			   }
+			 */
+
+			private function createKeyFrame(e:MouseEvent):void
+			{
+				timeline.snapInterval=0.01;
+				var newValue:Number=timeline.minimum + (e.localX / timeline.width) * (timeline.maximum - timeline.minimum);
+				newValue=int(newValue * 100) / 100;
+				if (!(e.target is SliderThumb))
+				{
+					timeline.thumbCount++;
+					var arr:Array=timeline.values;
+					arr.push(newValue);
+					timeline.values=arr.sort(Array.NUMERIC);
+					timeline.invalidateProperties();
+				}
+
+			}
+
+
+			private function addKeyFrameToStory(t:uint, story:Story, page:Page, easingClass:String, easingType:String="easeNone"):void
+			{
+				// plusieurs cas possibles : la keyframe existe déjà dans la story ou non
+				var existingKeyframesArray:Array=story.getAllKeyframes();
+				var overridesMap:Dictionary=editor.getOverridesMap();
+				var existingParameterSets:Array=new Array;
+				// on liste tous les parametersets et props utilisés dans la story
+
+				for (var descriptorName:String in overridesMap)
+				{
+					var parameters:Array=overridesMap[descriptorName];
+					var updateIndex:int=0;
+					for each (var o:Object in parameters)
+					{
+						var paramStr:String=getQualifiedClassName(o.param).split("::")[1]
+						var property:String=o.prop;
+						var value:Number=o.param[property];
+						var update:Update=getPropertyExistence(story, paramStr, property);
+						//trace ("paramStr="+paramStr + "\tproperty="+property+"\tvalue="+value);
+
+						if (update == null)
+						{
+							story.addUpdateAtKeyframe(paramStr, property, value, editor.getBeginValue(o), t, easingClass, easingType);
+						}
+						else
+						{
+
+							if (story.loop)
+							{
+								t=t % story.maxTime;
+							}
+							var keyFrameExistsInStory:int=getKeyframesIndex(story, update, t);
+							if (keyFrameExistsInStory != -1)
+							{
+								//At the very beginning of the story
+								if (keyFrameExistsInStory == 0 && update.getTransitions()[keyFrameExistsInStory].begin == t)
+								{
+									update.changeKeyframeValue(keyFrameExistsInStory, value, true);
+								}
+								//At the very end
+								else if (keyFrameExistsInStory == update.getTransitions().length - 1 && update.getTransitions()[keyFrameExistsInStory].end == t)
+								{
+									update.changeKeyframeValue(keyFrameExistsInStory, value, false);
+								}
+								//All the rest
+								else
+								{
+									update.changeKeyframeValue(keyFrameExistsInStory, value, false);
+									update.changeKeyframeValue(keyFrameExistsInStory + 1, value, true);
+								}
+								update.changeKeyframeEasing(keyFrameExistsInStory, easingClass, easingType);
+							}
+							else
+							{
+								update.addKeyFrameAtTime(t, value, easingClass, easingType);
+							}
+						}
+					}
+				}
+			}
+
+			private function getPropertyExistence(story:Story, paramSet:String, property:String):Update
+			{
+				var exist:Update=null;
+				for each (var update:Update in story.getUpdates())
+				{
+					var prmStr:String=update.getParameterSetName();
+					var prop:String=update.getPropertyName();
+
+					if (prmStr == paramSet && prop == property)
+					{
+						exist=update;
+						var idx:uint=0;
+					}
+				}
+				return exist;
+			}
+
+			private function getKeyframesIndex(story:Story, update:Update, time:int):int
+			{
+				var FieAdmin:int=-1;
+				var start:int=-1;
+				for each (var transition:Transition in update.getTransitions())
+				{
+					start++;
+					if (transition.end == time || transition.begin == time)
+					{
+						FieAdmin=start;
+						return FieAdmin;
+					}
+				}
+
+				return FieAdmin;
+			}
+
+			private function createNewStory(time:uint, page:Page, easingClass:String="Linear", easingType:String="easeNone", storyName:String="story"):void
+			{
+				// compute keyframes
+				if (page == null)
+					page=BrowsingManager.getInstance().getCurrentPage();
+
+				var keyFrame1:int=0;
+				var keyFrame2:int=time;
+
+				var overridesMap:Dictionary=editor.getOverridesMap();
+				var page:Page=BrowsingManager.getInstance().getCurrentPage();
+				var ClassReference:Class=getDefinitionByName("com.gskinner.motion.easing." + easingClass) as Class;
+
+				for (var descriptorName:String in overridesMap)
+				{
+					var s:Story=new Story();
+					s.init(NameUtils.findUniqueName(storyName, StoryList.getInstance().getStoriesId(page)), ElementList.getInstance().getElement(descriptorName, page), false, true);
+					s.createStory(page);
+					var parameters:Array=overridesMap[descriptorName];
+					var updateNumber:int=0;
+
+					for each (var o:Object in parameters)
+					{
+						var param:IParameterSet=o.param;
+						var update:Update=new Update();
+						update.init(getQualifiedClassName(param).split("::")[1], o.prop, s.uuid + "Update" + updateNumber, s);
+						var transitions:Array=[];
+						var tr:Transition=new Transition();
+						tr.begin=keyFrame1;
+						tr.end=keyFrame2;
+						tr.beginValue=Number(editor.getBeginValue(o));
+						tr.endValue=param[o.prop];
+						tr.easingClass=ClassReference;
+						tr.easingType=easingType;
+						transitions.push(tr);
+						update.setTransitions(transitions);
+						s.addUpdate(update);
+					}
+					page.getStoryboard().addStory(s);
+				}
+				AbstractBootstrap.getInstance().getTimerStoryboardPlayer().start(page.getStoryboard());
+			}
+
+			private function getPageMaxTime():Number
+			{
+				return AbstractBootstrap.getInstance().getTimerStoryboardPlayer().getMaxTime() + 2000;
+			}
+
+			[Bindable]
+			public var totalTimeWidth:Number;
+
+			[Bindable]
+			public var timeMax:Number = 10000;
+
+			[Bindable]
+			public var startTimeWidth:Number=0;
+
+			[Bindable]
+			private var startTime:Number=0;
+
+			private var sizeFactor:Number;
+
+			private var totalTime:Number;
+
+			private function setTimelineDuration(e:ListEvent):void
+			{
+
+				timelineDuration=ComboBox(e.target).selectedIndex == 0 ? AbstractBootstrap.getInstance().getTimerStoryboardPlayer().getMaxTime() + 2000 : ComboBox(e.target).selectedItem.data;
+				sizeFactor=timeline.width / timelineDuration;
+				totalTime=(timelineDuration + startTime) < maximumDuration ? maximumDuration : timelineDuration + startTime;
+
+				totalTimeWidth=totalTime * sizeFactor;
+				timeMax=totalTime;
+				startTimeWidth=-startTime * sizeFactor;
+			}
+
+			private function setTimelineStart(e:ListEvent):void
+			{
+				startTime=ComboBox(e.target).selectedIndex == 0 ? 0 : ComboBox(e.target).selectedItem.data;
+				totalTime=(timelineDuration + startTime) < maximumDuration ? maximumDuration : timelineDuration + startTime;
+				totalTimeWidth=totalTime * sizeFactor;
+				timeMax=totalTime < maximumDuration ? maximumDuration : totalTime;
+				startTimeWidth=-startTime * sizeFactor;
+			}
+
+
+			private function playAnim(e:SliderEvent):void
+			{
+				var currentTime:int=(e.target as HSlider).value;
+				var page:Page=BrowsingManager.getInstance().getCurrentPage();
+				var story:Story;
+				var storyArray:Array=StoryList.getInstance().getStories(BrowsingManager.getInstance().getCurrentPage());
+				switch (storiesType.selectedItem.data)
+				{
+					case "auto":
+						//AbstractBootstrap.getInstance().getTimerStoryboardPlayer().goToTimeAndStop(page.getStoryboard(), currentTime);
+						
+						for each (story in storyArray)
+						{
+							if (story.autoPlay && ArrayUtils.isItemInArray(updateViewList,story.uuid))
+								story.goToTimeAndStop(currentTime);
+						}
+						
+						break;
+					case "triggered":
+						for each (story in storyArray)
+						{
+							if (!story.autoPlay && ArrayUtils.isItemInArray(updateViewList,story.uuid))
+								story.goToTimeAndStop(currentTime);
+						}
+						break;
+					case "all":
+						for each (story in storyArray)
+						{
+							if (ArrayUtils.isItemInArray(updateViewList,story.uuid))
+							story.goToTimeAndStop(currentTime);
+						}
+						break;
+				}
+			}
+
+			public function autoAnimToEnd():void
+			{
+				var page:Page=BrowsingManager.getInstance().getCurrentPage();
+				AbstractBootstrap.getInstance().getTimerStoryboardPlayer().goToTimeAndStop(page.getStoryboard(), totalTime);
+			}
+			
+			
+			public function animToStart(storyUuid:String, toCurrentTime:Boolean = false):void
+			{
+				var page:Page=BrowsingManager.getInstance().getCurrentPage();
+				var story:Story = StoryList.getInstance().getStory(storyUuid, page);
+				
+				var currentTime:int = toCurrentTime ? timeline.value : 0;
+				story.goToTimeAndStop(currentTime);
+			}
+			
+			public var updateViewList:Array = [];
+
+			private function setTimelineVisibility(e:ListEvent):void
+			{
+				switch (ComboBox(e.target).selectedItem.data)
+				{
+					case "auto":
+						refreshTimelines();
+						break;
+					case "triggered":
+						autoAnimToEnd();
+						refreshTimelines();
+						break;
+					case "all":
+						refreshTimelines();
+						break;
+				}
+			}
+			[Bindable]
+			private var durationArray:ArrayCollection=new ArrayCollection([{label: "Auto", data: null}, {label: "5s", data: 5000}, {label: "10s", data: 10000}, {label: "15s", data: 15000}, {label: "20s", data: 20000}, {label: "25s", data: 25000}, {label: "30s", data: 30000}]);
+			[Bindable]
+			private var visibilityArray:ArrayCollection=new ArrayCollection([{label: Conf.languageManager.getLanguage("AutoStart"), data: "auto"}, {label: Conf.languageManager.getLanguage("Triggered"), data: "triggered"}, {label: Conf.languageManager.getLanguage("All"), data: "all"}]);
+			
+			private function getLang(s:String) : String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+		]]>
+	</mx:Script>
+
+	<mx:HBox width="100%">
+		<mx:Label width="80"
+				  text="Time"/>
+		<flexlib:HSlider id="timeline"
+						 showTrackHighlight="true"
+						 trackHighlightSkin="{SkinUtils.TrackHighlight}"
+						 trackSkin="{SkinUtils.Track}"
+						 thumbDisabledSkin="{SkinUtils.ThumbDisabled}"
+						 thumbUpSkin="{SkinUtils.ThumbUpRed}"
+						 thumbDownSkin="{SkinUtils.ThumbDownRed}"
+						 thumbOverSkin="{SkinUtils.ThumbOverRed}"
+						 width="100%"
+						 tickInterval="1000"
+						 maximum="{timelineDuration+startTime}"
+						 minimum="{startTime}"
+						 snapInterval="10"
+						 liveDragging="true"
+						 allowTrackClick="true"
+						 allowThumbOverlap="true"
+						 change="playAnim(event)"/>
+	</mx:HBox>
+	<mx:HBox width="100%">
+		<mx:Button label="{getLang('Generate_Story')}"
+				   enabled="{VisualSelector.getInstance().selectedElementExist}"
+				   click="createStoryPopUp(event)"/>
+		<mx:ComboBox id="start"
+					 change="setTimelineStart(event)"
+					 dataProvider="{durationArray}"/>
+		<mx:ComboBox id="duration"
+					 change="setTimelineDuration(event)"
+					 dataProvider="{durationArray}"/>
+		<mx:ComboBox id="storiesType"
+					 change="setTimelineVisibility(event)"
+					 dataProvider="{visibilityArray}"/>
+	</mx:HBox>
+
+</mx:Box>

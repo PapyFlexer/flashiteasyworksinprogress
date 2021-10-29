@@ -1,0 +1,14 @@
+<project>
+  <dependencies>
+    <dependency>com.flashiteasy.sample:sample-lib:0.2-SNAPSHOT</dependency>
+    <dependency>com.flashiteasy.snow:snow-lib:0.2-SNAPSHOT</dependency>
+    <dependency>com.flashiteasy.clouds:cloud-lib:0.2-SNAPSHOT</dependency>
+  </dependencies>
+  <params>
+  	<param key="AMF_ENDPOINT" value="@@AMF_ENDPOINT@@" />
+  </params>
+  <pages>
+  	<page link="home">
+  	</page>
+  </pages>
+</project>

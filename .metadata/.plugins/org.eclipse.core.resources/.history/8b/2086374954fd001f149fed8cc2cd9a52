@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%">
+
+<mx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import com.flashiteasy.admin.utils.LabelUtils;
+			import com.flashiteasy.admin.utils.IconUtility;
+			import com.flashiteasy.api.utils.ElementDescriptorUtils;
+			import flash.utils.getQualifiedClassName;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.admin.popUp.NewTransitionPopup;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import com.flashiteasy.api.events.FieEvent;
+			import com.flashiteasy.admin.uicontrol.story.TransitionEditor;
+			import flash.utils.getTimer;
+			import com.flashiteasy.api.core.project.storyboard.Transition;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.api.core.project.storyboard.Update;
+			
+			public static var UPDATE_DELETED : String = " update_deleted" ;
+			
+			private var _update : Update ;
+			private var property : String;
+			private var parameter : IParameterSet;
+			private var transitionEditorList : Array = [];
+			
+			public function get update():Update
+			{
+				return _update;
+			}
+			
+			public function set update( value : Update ) : void 
+			{
+				_update = value ;
+				parameter=update.getParameterSet();
+				property= update.getPropertyName();
+				callLater(init);
+			}
+			
+			private function init():void
+			{
+				parameterBox.dataProvider=ParameterIntrospectionUtil.getTweenableParameterList(update.story.getElementDescriptor());
+				parameterBox.selectedItem=update.getParameterSetName();
+				parameterBox.addEventListener(Event.CHANGE , changeParameterSet);
+					
+				propertyBox.dataProvider=ParameterIntrospectionUtil.getNumericPropertyList(parameter);
+				propertyBox.selectedItem=property;
+				propertyBox.addEventListener(Event.CHANGE , changeProperty );
+				
+				createTransitionEditors();
+				
+			}
+			
+			private function createTransitionEditors():void
+			{
+				// Init a transitionEditor for each transition of the update 
+				for each (var transition:Transition in _update.getTransitions())
+				{
+					var transitionEditor:TransitionEditor=new TransitionEditor;
+					transitionEditor.setUpdate(_update);
+					transitionEditor.setTransition(transition);
+					// Listen to transition delete 
+					transitionEditor.addEventListener(FieEvent.REMOVED, transitionDeleted );
+					// listen to transition time change , to be able to change the time of other transitions
+					transitionEditor.addEventListener(Event.CHANGE , transitionChanged);
+					
+					transitionEditor.addEventListener(Event.REMOVED_FROM_STAGE , removeListeners);
+					
+					transitionBox.addChild(transitionEditor);
+					transitionEditorList.push(transitionEditor ) ; 
+				}
+				
+				// Set the drag limit of each transitionEditor 
+				calculateTransitionLimit( _update );
+			}
+			
+			private function removeListeners(e:Event):void
+			{
+				
+					// Listen to transition delete 
+					e.target.removeEventListener(FieEvent.REMOVED, transitionDeleted );
+					// listen to transition time change , to be able to change the time of other transitions
+					e.target.removeEventListener(Event.CHANGE , transitionChanged);
+					
+					e.target.removeEventListener(FlexEvent.REMOVE , removeListeners);
+			}
+			
+			private function calculateTransitionLimit( update : Update ):void
+			{							
+				var i : int = 0;
+				var tes : Array = transitionEditorList;
+				var previousTransition : Transition;
+				var nextTransition : Transition;
+				for each ( var te:TransitionEditor in tes)
+				{	
+					if( i == tes.length-1 )
+					{
+						previousTransition = update.getTransitions()[i-1];
+						if( tes.length >1 )
+						{
+							te.beginTimeLimit = previousTransition.begin;
+						}
+						else
+						{
+							te.beginTimeLimit = 0;
+						}
+						te.endTimeLimit = 100000000;
+					}
+					else
+					{
+						nextTransition = update.getTransitions()[i+1];
+						if( i == 0 )
+						{
+							te.beginTimeLimit =  0 ;	
+						}
+						else
+						{
+							previousTransition = update.getTransitions()[i-1];
+							te.beginTimeLimit = previousTransition.begin;
+						}
+						te.endTimeLimit = nextTransition.end;
+					}
+					i++;
+						
+				}
+			}
+			
+			private function transitionChanged( e : Event ) : void 
+			{
+				var te : TransitionEditor = e.target as TransitionEditor ;
+				var FieAdmin : int = transitionEditorList.indexOf(te);
+				var changed : Boolean = false ; 
+				var tes : Array = transitionEditorList;
+				var nextTransitionEditor : TransitionEditor;
+				var previousTe : TransitionEditor;
+				if(tes.length>1)
+				{
+				if( FieAdmin == 0 ) 
+				{
+					nextTransitionEditor = tes[FieAdmin +1 ];
+					nextTransitionEditor.changeAndMoveBeginValue( te.getTransition().end );
+				}
+				else
+				{
+					if(FieAdmin == tes.length -1 ) 
+					{
+						previousTe = tes[FieAdmin -1 ];
+						previousTe.changeAndMoveEndValue( te.getTransition().begin );
+					}
+					else
+					{
+						nextTransitionEditor = tes[FieAdmin +1 ];
+						previousTe = tes[FieAdmin -1 ];
+						previousTe.changeAndMoveEndValue( te.getTransition().begin );
+						nextTransitionEditor.changeAndMoveBeginValue( te.getTransition().end );
+					}
+				}
+				calculateTransitionLimit( _update );
+				}
+			}
+			
+			private function changeParameterSet(e:Event):void
+			{
+				//var clazz : Class = getQualifiedClassName( e.target.selectedItem.toString()) ;
+				parameter = ElementDescriptorUtils.findParameterSet( _update.story.getElementDescriptor() , e.target.selectedItem.toString());
+				propertyBox.dataProvider = ParameterIntrospectionUtil.getNumericPropertyList(parameter);
+				propertyBox.selectedIndex = 0 ;
+				changeProperty(e);
+				//_update.changeParameter( parameter , property );
+			}
+			
+			private function changeProperty(e:Event):void
+			{
+				property = propertyBox.selectedItem.toString();
+				_update.changeParameter( parameter , property, e.target.selectedItem.toString() );
+			}
+			
+			private function transitionDeleted( e : Event ) : void 
+			{
+				var te: TransitionEditor = e.target as TransitionEditor;
+				e.target.removeEventListener( FieEvent.REMOVED , transitionDeleted ) ;
+				transitionBox.removeChild(te);
+				
+				if(!_update.hasTransition())
+				{
+					dispatchEvent( new Event ( UPDATE_DELETED ));
+				}
+				else
+				{
+					ArrayUtils.removeElement(transitionEditorList ,te ) ;
+					// modify transitions time to avoid holes in timeline 
+					recalculateTransitionTime();
+					calculateTransitionLimit( _update );
+					
+				}
+			}
+			
+			private function recalculateTransitionTime():void
+			{
+				var i:int;
+				for( i = 0 ; i<transitionEditorList.length ; i++ )
+				{
+					var t: Transition = transitionEditorList[i].getTransition();
+					if(i!=transitionEditorList.length-1)
+					{
+						var t2 : Transition = TransitionEditor(transitionEditorList[i+1]).getTransition();
+						if( t.end != t2.begin )
+						{
+							TransitionEditor(transitionEditorList[i]).changeAndMoveEndValue(t2.begin);
+						}
+					}
+				}
+			}
+			
+			
+			private function addTransition( e : Event ):void
+			{
+				var popup : NewTransitionPopup = new NewTransitionPopup( _update );
+				popup.allowedMinTime = _update.calculateMaxTime();
+				popup.addEventListener(NewTransitionPopup.TRANSITION_CREATED , refresh , false , 0 , true ) ;		
+			}
+			
+			private function refresh ( e : Event ) :void 
+			{
+				transitionBox.removeAllChildren();
+				transitionEditorList = [];
+				createTransitionEditors();
+				// restart story
+				_update.story.start();
+			}
+			
+			private function deleteUpdate( e : Event ):void
+			{
+				_update.destroy(true);
+				dispatchEvent(new Event(UPDATE_DELETED));
+			}
+			
+					
+			]]>
+	</mx:Script>
+	
+	<mx:HRule width="100%" strokeColor="0xCCCCCC"/>
+	<mx:HBox width="100%">
+		<mx:ComboBox id="parameterBox" labelFunction="{LabelUtils.setParameterLabel}" />
+		<mx:ComboBox id="propertyBox" labelFunction="{LabelUtils.setLabel}" width="100%" />
+		<mx:Button id="add" click="addTransition(event)" toolTip="{LabelUtils.getLang('add_transition')}" icon="{IconUtility.getClass(add, 'assets/add.png')}"/>
+		<mx:Button id="deleteButton" click="deleteUpdate(event)" toolTip="{LabelUtils.getLang('delete_update')}" icon="{IconUtility.getClass(deleteButton, 'assets/DeleteRecord.png')}" />
+	</mx:HBox>
+	<!--<mx:HBox width="100%">
+		<mx:Button id="add" click="addTransition(event)" label="{getLang('add_transition')}"/>
+		mx:Button id="deleteButton" click="deleteUpdate(event)" label="{getLang('delete_update')}" />
+	</mx:HBox>-->
+	<mx:VBox id="transitionBox" width="100%"/>
+</mx:VBox>

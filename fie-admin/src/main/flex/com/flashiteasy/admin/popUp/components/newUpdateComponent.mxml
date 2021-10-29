@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" paddingTop="10" paddingRight="10" paddingLeft="10" paddingBottom="10" >
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import com.flashiteasy.admin.parameter.Parameter;
+			import com.flashiteasy.admin.manager.LanguageManager;
+			import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.admin.utils.LabelUtils;
+			import com.flashiteasy.api.core.project.storyboard.Update;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.ioc.ClassResolver;
+			import flash.utils.getDefinitionByName;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.api.core.project.storyboard.Story;
+		
+			private var _story : Story ;
+			public static var UPDATE_CREATED : String = "update_created";
+			
+			public function set story( value : Story ) : void 
+			{
+				_story = value ;
+				callLater(init);
+			}
+			
+			
+			private function getParameterSetLabel(item:Object):String 
+			{
+				var s:String = ParameterIntrospectionUtil.getParameterSetEditionDescriptor(IParameterSet(item)).getDescription();
+				if(s == "null")
+				{
+					s = Conf.languageManager.getLanguage(LabelUtils.getClassLabel(item).split("ParameterSet")[0]);
+				}
+				else
+				{
+					s = Conf.languageManager.getLanguage(s)
+				}
+				return s;
+			}
+			
+			
+			private function getPropertyLabel(item:Object):String 
+			{
+				var s:String = Parameter(item).getLabel();
+				if(s == "null")
+				{
+					s = Conf.languageManager.getLanguage(Parameter(item).getName());
+				}
+				else
+				{
+					s = Conf.languageManager.getLanguage(s)
+				}
+				return s;
+			}
+			
+			private function init():void
+			{
+				var parametersArray:Array = ParameterIntrospectionUtil.getEditableParameters(_story.getElementDescriptor());
+				parameter.dataProvider=parametersArray;
+				parameter.selectedIndex = 0 ;
+				parameter.addEventListener(Event.CHANGE , changeParameter , false , 0 , true ) ;
+				
+				var editionDescriptor:ParameterSetEditionDescriptor=ParameterIntrospectionUtil.getParameterSetEditionDescriptor(IParameterSet(parameter.selectedItem));
+				propertyCollection.source = editionDescriptor.getParameters();
+				//property.selectedIndex = 0 ;
+			}
+			[Bindable]
+			private var propertyCollection:ArrayCollection = new ArrayCollection;
+			
+			private function changeParameter( e : Event ) : void 
+			{
+				var editionDescriptor:ParameterSetEditionDescriptor=ParameterIntrospectionUtil.getParameterSetEditionDescriptor(IParameterSet(parameter.selectedItem));
+				propertyCollection.source = editionDescriptor.getParameters();
+				propertyCollection.refresh();
+			}
+			
+			private function createUpdate( e : Event ) : void 
+			{
+				var update : Update = new Update();
+				update.init(LabelUtils.getClassLabel( parameter.selectedItem ) , Parameter(property.selectedItem).getName() , _story.uuid + _story.getUpdates().length , _story );
+				_story.addUpdate(update);
+				dispatchEvent(new Event(UPDATE_CREATED));
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox width="100%">
+		<mx:ComboBox id="parameter" labelFunction="{getParameterSetLabel}" width="120"/>
+		<mx:ComboBox id ="property" dataProvider="{propertyCollection}" labelFunction="getPropertyLabel" width="120" />
+	</mx:HBox>
+	<mx:Button label="{LabelUtils.getLang('create_update')}" click="createUpdate(event)" />
+</mx:VBox>

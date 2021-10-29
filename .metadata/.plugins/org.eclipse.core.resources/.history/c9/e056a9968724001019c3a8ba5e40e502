@@ -1,0 +1,14 @@
+package com.flashiteasy.api.controls.Validator
+{
+	public class ValidatorTypes
+	{
+		public static const RESTRICT 	: String = "RestrictValidator";
+		public static const IS_EMAIL 	: String = "IsEmailValidator";
+		public static const IS_NULL 	: String = "IsNullValidator";
+		public static const IS_EQUAL 	: String = "IsEqual";
+		public static const NONE 		: String = "NoValidator";
+		
+		
+		//public static const VALIDATORS : Array = [NONE, IS_EQUAL, IS_NULL, IS_EMAIL, RESTRICT];
+	}
+}

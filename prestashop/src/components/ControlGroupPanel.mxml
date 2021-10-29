@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flexlibContainer:WindowShade xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:flexlibContainer="flexlib.containers.*"
+        xmlns:flexlibControl="flexlib.controls.*"
+		label="{groupname}" styleName="linkButtonWindowShade" width="200" paddingBottom="0" paddingTop="0"
+		>
+	<mx:Script>
+		<![CDATA[
+
+			[Bindable]
+			public var groupname:String;
+		]]>
+	</mx:Script>
+
+</flexlibContainer:WindowShade>

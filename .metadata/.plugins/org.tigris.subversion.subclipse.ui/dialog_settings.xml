@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item value="378" key="RevertDialog.location.x"/>
+	<item value="135" key="RevertDialog.location.y"/>
+	<item value="136" key="BranchTag.location.y"/>
+	<item value="358" key="BranchTag.location.x"/>
+	<item value="2" key="ResolveConflictDialog.lastChoice"/>
+	<item value="525" key="RevertDialog.size.x"/>
+	<item value="410" key="RevertDialog.size.y"/>
+	<item value="541" key="LockDialog.location.x"/>
+	<item value="799" key="ChooseUrlDialog.location.x"/>
+	<item value="193" key="LockDialog.location.y"/>
+	<item value="220" key="ChooseUrlDialog.location.y"/>
+	<item value="324" key="TreeConflictsView.col.Resource"/>
+	<item value="true" key="TreeConflictsView.container"/>
+	<item value="500" key="CommitDialog.weights.0"/>
+	<item value="271" key="ResolveTreeConflict.location.x"/>
+	<item value="481" key="ChooseUrlDialog.size.x"/>
+	<item value="500" key="CommitDialog.weights.1"/>
+	<item value="353" key="ChooseUrlDialog.size.y"/>
+	<item value="65" key="ResolveTreeConflict.location.y"/>
+	<item value="410" key="BranchTag.size.y"/>
+	<item value="678" key="ResolveTreeConflict.size.x"/>
+	<item value="373" key="MarkResolvedDialog.location.x"/>
+	<item value="528" key="ResolveTreeConflict.size.y"/>
+	<item value="565" key="BranchTag.size.x"/>
+	<item value="135" key="MarkResolvedDialog.location.y"/>
+	<item value="525" key="LockDialog.size.x"/>
+	<item value="448" key="LockDialog.size.y"/>
+	<item value="22" key="CommitDialog.location.y"/>
+	<item value="26" key="CommitDialog.location.x"/>
+	<item value="/Users/gillesroquefeuil/Documents/WorkspaceMaven/fie/fie-api/src/main/flex/com/flashiteasy/api" key="TreeConflictsView.resource"/>
+	<item value="530" key="MarkResolvedDialog.size.x"/>
+	<item value="410" key="MarkResolvedDialog.size.y"/>
+	<item value="1254" key="CommitDialog.size.x"/>
+	<item value="774" key="CommitDialog.size.y"/>
+	<item value="691" key="TreeConflictsView.col.Description"/>
+	<section name="CommitWizard">
+		<item value="false" key="ShowCompare"/>
+		<item value="500" key="VWeight2"/>
+		<item value="500" key="VWeight1"/>
+	</section>
+	<section name="IgnoreResourcesDialog">
+		<item value="2" key="Action"/>
+	</section>
+	<section name="NewLocationWizard">
+	</section>
+</section>

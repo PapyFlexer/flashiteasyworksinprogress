@@ -1,0 +1,85 @@
+<page>
+  <container type="com.flashiteasy.api.container::BlockElementDescriptor" id="fond">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <width>640</width>
+      <height>480</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <RemoteParameterSet/>
+    <FullScreenParameterSet/>
+    <FilterParameterSet>
+      <types>[ColorMatrixFilter]</types>
+      <filterString>[0.05, 0.11, 0.01, 0, 139.84, 0.05, 0.11, 0.01, 0, 139.84, 0.05, 0.11, 0.01, 0, 139.84, 0, 0, 0, 1, 0]</filterString>
+    </FilterParameterSet>
+    <BackgroundColorParameterSet>
+      <backgroundColor>0xffffff</backgroundColor>
+    </BackgroundColorParameterSet>
+    <BackgroundImageParameterSet>
+      <source>media/image/fonds/03.jpg</source>
+    </BackgroundImageParameterSet>
+    <BlockListParameterSet/>
+  </container>
+  <control type="com.flashiteasy.api.controls::TextElementDescriptor" id="annonce">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>215</y>
+      <x>81</x>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <width>420</width>
+      <height>165</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <RemoteParameterSet/>
+    <FullScreenParameterSet/>
+    <FilterParameterSet>
+      <types>[DropShadowFilter]</types>
+      <filterString>[4,45,0x000000,1,4,4,1,1,false,false,false]</filterString>
+    </FilterParameterSet>
+    <TargetParameterSet/>
+    <TextOptionParameterSet>
+      <multiLines>true</multiLines>
+      <autoSize>center</autoSize>
+      <borderColor>0x000000</borderColor>
+      <wordWrap>true</wordWrap>
+    </TextOptionParameterSet>
+    <TextParameterSet>
+      <police>Arial</police>
+      <text>&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_DINBold" SIZE="36" COLOR="#FFFFFF" LETTERSPACING="0" KERNING="0"&gt;Bienvenue sur&lt;FONT FACE="_DINBlack"&gt; Flash&amp;apos;Iteasy,&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING="2"&gt;&lt;P ALIGN="LEFT"&gt;&lt;FONT FACE="_Tahoma" SIZE="18" COLOR="#FFFFFF" LETTERSPACING="0" KERNING="0"&gt;l&amp;apos;éditeur de contenus multimedia interactifs&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;</text>
+    </TextParameterSet>
+  </control>
+  <control type="com.flashiteasy.api.controls::ImgElementDescriptor" id="Img">
+    <PositionParameterSet>
+      <mode>bottom</mode>
+      <y>33</y>
+      <x>36</x>
+    </PositionParameterSet>
+    <SizeParameterSet>
+      <width>292</width>
+      <height>188</height>
+    </SizeParameterSet>
+    <RotationParameterSet>
+      <rotationX>0</rotationX>
+      <rotationY>0</rotationY>
+    </RotationParameterSet>
+    <RemoteParameterSet/>
+    <FullScreenParameterSet/>
+    <BackgroundImageParameterSet>
+      <source>media/image/graphiques/logo_new.swf</source>
+    </BackgroundImageParameterSet>
+    <ResizableParameterSet>
+      <mode>no_scale</mode>
+      <resizable>true</resizable>
+    </ResizableParameterSet>
+  </control>
+  <storyboard/>
+</page>

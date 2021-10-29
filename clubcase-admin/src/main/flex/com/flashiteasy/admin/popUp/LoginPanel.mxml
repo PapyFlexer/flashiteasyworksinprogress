@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+		  layout="absolute">
+
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			import mx.core.Application;
+			import com.flashiteasy.admin.conf.Conf;
+			[Bindable]
+			[Embed(source="../resources/assets/newLogoIco.png")]
+			public var logoFIE:Class;
+
+			[Bindable]
+			public var loggedTxt:String;
+
+			public function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+
+			private function setLogInfo(event:MouseEvent):void
+			{
+				var loginStr:String=login.text;
+				var passwdStr:String=mdp.text;
+				mx.core.Application.application.checkLogin(loginStr, passwdStr);
+
+
+			}
+
+			private function changeLanguage(e:Event):void
+			{
+				var cb:ComboBox=e.currentTarget as ComboBox;
+				var index:int = cb.selectedIndex;
+				switch (cb.selectedItem.data)
+				{
+					case "french":
+						Conf.languageManager.init("fr_FR");
+						break;
+					case "english":
+						Conf.languageManager.init();
+						break;
+
+				}
+				refreshLang();
+				cb.selectedIndex = index;
+			}
+			
+			private function refreshLang() : void
+			{
+				langDP = new ArrayCollection([{data:"french", label:getLang("French")},{data:"english", label:getLang("English")}]);
+				loginlabel.label = getLang("Login");
+				passlabel.label = getLang("Password");
+				langlabel.label = getLang("Language");
+				logBtn.label = getLang('Connection');
+			}
+			[Bindable]
+			private var langDP : ArrayCollection = new ArrayCollection([{data:"french", label:getLang("French")},{data:"english", label:getLang("English")}]);
+		]]>
+	</mx:Script>
+
+	<mx:Form id="loginForm" width="100%">
+		<mx:Box width="100%"
+				horizontalAlign="center">
+			<mx:Image horizontalAlign="center"
+					  source="{logoFIE}"/>
+		</mx:Box>
+		<mx:Spacer/>
+		<mx:FormItem id="loginlabel" label="{getLang('Login')}"
+					 color="#333333">
+			<mx:TextInput id="login"/>
+		</mx:FormItem>
+		<mx:FormItem id="passlabel" label="{getLang('Password')}"
+					 color="#333333">
+			<mx:TextInput id="mdp"
+						  displayAsPassword="true"/>
+		</mx:FormItem>
+		<mx:FormItem width="100%" id="langlabel" label="{getLang('Language')}"
+					 color="#333333">
+			<mx:ComboBox id="lang" width="100%"
+						 dataProvider="{langDP}"
+						 change="changeLanguage(event)"/>
+		</mx:FormItem>
+	</mx:Form>
+
+
+	<mx:ControlBar>
+		<mx:VBox width="100%">
+			<mx:Text id="loginTextNotifier"
+					 text="{loggedTxt}"
+					 selectable="false"/>
+
+			<mx:HBox width="100%"
+					 verticalAlign="bottom">
+				<mx:Spacer width="100%"/>
+				<mx:Button id="logBtn"
+						   label="{getLang('Connection')}"
+						   click="setLogInfo(event)"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:ControlBar>
+
+</mx:Panel>

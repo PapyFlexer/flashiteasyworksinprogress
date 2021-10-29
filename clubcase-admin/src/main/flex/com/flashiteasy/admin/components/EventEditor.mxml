@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" initialize="init()">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.api.utils.ControlUtils;
+			import com.flashiteasy.admin.utils.EditorUtil;
+			import com.flashiteasy.api.utils.CloneUtils;
+			import mx.utils.ObjectUtil;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.admin.ApplicationController;
+			import com.flashiteasy.admin.edition.ParameterSetEditionDescriptor;
+			import com.flashiteasy.api.selection.ActionList;
+			import com.flashiteasy.admin.popUp.StoryEventEditorPopup;
+			import com.flashiteasy.admin.event.StoryEvent;
+			import com.flashiteasy.admin.event.TriggerEvent;
+			import com.flashiteasy.admin.popUp.KeyBoardEventEditorPopUp;
+			import com.flashiteasy.admin.popUp.TimerEventEditorPopUp;
+			import com.flashiteasy.admin.popUp.MouseEventEditorPopUp;
+			import com.flashiteasy.admin.popUp.PopUp;
+        
+			import com.flashiteasy.api.core.ITrigger;
+			import com.flashiteasy.api.triggers.TimerTrigger;
+			import com.flashiteasy.api.triggers.KeyBoardTrigger;
+			import com.flashiteasy.api.triggers.MouseTrigger;
+			import com.flashiteasy.api.triggers.StoryTrigger;
+			
+			import mx.events.ListEvent;
+			import mx.collections.ArrayCollection;
+			
+		    private var popup : PopUp; 
+		    private var editMode : Boolean = false;
+		    
+		    /**
+		     * Initializes the component
+		     */
+		    private function init() : void
+		    {
+		    	this.addEventListener(TriggerEvent.REMOVE_EVENT, removeEventHandler);
+		    }
+		    
+		    public function get triggers() : Array
+		    {
+		        return ArrayCollection(triggerList.dataProvider).toArray();
+		    }
+		    
+		    private var _previousValueList:Object;
+		    public function initValues(pSet:IParameterSet, value: Array): void
+		    {
+		    	
+				var descriptor:ParameterSetEditionDescriptor=ParameterIntrospectionUtil.getParameterSetEditionDescriptor(pSet);
+				
+		    	_previousValueList = ApplicationController.getInstance().getElementEditor().getParameterValueList(["triggers"], descriptor) ;
+		    	//Òvar toto : Array = CloneUtils.cloneArray(_previousValueList["ToggleSite"]);
+		    	setTriggers(value);
+		    }
+		    
+		   	public function get previousValueList() : Object
+		    {
+		    	return _previousValueList;
+		    }
+		    private var _previous:*;
+		    public function setTriggers( value : Array ) : void
+		    {
+		    	if ( triggerList )
+		    	{
+			    	triggerList.dataProvider = [];
+			    	triggerList.dataProvider = value;
+		    	}
+		    	else
+		    	{
+		    		callLater( setTriggers, [value] ); 
+		    	}
+		    }
+		    
+	        /* -------------------------------------------------------------------------- */
+	        /* Add an Event Handling */
+	        /* -------------------------------------------------------------------------- */
+		    private function openAddMouseEvent( event : MouseEvent ) : void
+		    {
+		    	popup = new MouseEventEditorPopUp();
+		    	addListenerToPopUp();
+		    }
+		    private function openAddKeyBoardEvent( event : MouseEvent ) : void
+		    {
+		    	popup = new KeyBoardEventEditorPopUp();
+		    	addListenerToPopUp();
+		    }
+		    
+		    private function openAddTimerEvent( event : MouseEvent ) : void
+		    {
+                popup = new TimerEventEditorPopUp();
+		    	addListenerToPopUp();
+            }
+            
+            private function openAddStoryEvent( event : MouseEvent ) : void
+            {
+            	popup = new StoryEventEditorPopup;
+            	addListenerToPopUp();
+            }
+            
+            
+            /**
+             * Add event listeners to popup
+             */
+            private function addListenerToPopUp() : void
+            {
+            	popup.addEventListener(TriggerEvent.ADD_OR_UPDATE, addOrUpdateTriggerHandler, false, 0, true );
+            	popup.addEventListener(PopUp.CLOSED, closeHandler);
+            }
+            
+            private function removeListenersToPopUp() : void
+            {
+            	popup.removeEventListener(TriggerEvent.ADD_OR_UPDATE, addOrUpdateTriggerHandler);
+            }
+            
+            /**
+             * Handles adding new trigger
+             */
+            private function addOrUpdateTriggerHandler( event : TriggerEvent ) : void
+            {
+            	removeListenersToPopUp();
+            	makeStartValue();
+            	if ( triggerList.dataProvider == null )
+            	{
+            		triggerList.dataProvider = [];
+            	}
+            	var trigger : ITrigger = event.getTrigger();
+            	if ( editMode )
+            	{
+            		(triggerList.dataProvider as ArrayCollection).setItemAt(trigger, triggerList.selectedIndex);
+            	}
+            	else
+            	{
+	            	(triggerList.dataProvider as ArrayCollection).addItem( trigger );
+            	}
+            	dispatchEvent( new Event(Event.CHANGE) );
+            }
+            
+            /**
+             * Handlses editing a trigger
+             */
+            private function triggerTriggerHandler( event : TriggerEvent ) : void
+            {
+            	removeListenersToPopUp();
+            }
+            
+            /**
+             * Opens a popup to start editing an event
+             */
+            private function editEvent( event : ListEvent ) : void
+            {
+            	var trigger : ITrigger = triggerList.selectedItem as ITrigger;
+            	if ( trigger is MouseTrigger )
+            	{
+	            	openAddMouseEvent(null);
+	            	MouseEventEditorPopUp(popup).setTrigger(trigger as MouseTrigger);
+            	}
+            	else if ( trigger is KeyBoardTrigger )
+            	{
+            		openAddKeyBoardEvent(null);
+	            	KeyBoardEventEditorPopUp(popup).setTrigger(trigger as KeyBoardTrigger);
+            	}
+            	else if  ( trigger is TimerTrigger )
+            	{
+            		openAddTimerEvent(null);
+	            	TimerEventEditorPopUp(popup).setTrigger(trigger as TimerTrigger);
+            	}
+            	editMode = true;
+            }
+            
+            /**
+             * Handles removing the selected event from an action
+             */
+            private function removeEventHandler( event : TriggerEvent ) : void
+            {
+            	
+            	//makeStartValue();
+            	ArrayCollection(triggerList.dataProvider).removeItemAt(triggerList.selectedIndex);
+            	dispatchEvent( new Event(Event.CHANGE) );
+            	
+            }
+            
+            private function makeStartValue():void
+            {
+            	//dispatchEvent( new Event(Event.CHANGE) );
+            }
+            
+            private function closeHandler( event : Event ) : void
+            {
+            	editMode = false;
+            }
+		]]>
+	</mx:Script>
+	
+	<mx:List width="100%" id="triggerList" itemRenderer="com.flashiteasy.admin.components.componentsClasses.EventItemRenderer" minWidth="110" doubleClickEnabled="true" itemDoubleClick="editEvent(event)" />
+	<mx:VBox>
+		<mx:Button id="addMouseBtn" click="openAddMouseEvent( event )" label="M"/>
+		<mx:Button id="addKeyboardBtn"  click="openAddKeyBoardEvent( event )" label="K"/>
+		<mx:Button id="addTimerBtn"  click="openAddTimerEvent( event )" label="T"/>
+		<mx:Button id="addStoryBtn"  click="openAddStoryEvent( event )" label="S"/>
+	</mx:VBox>
+	
+</mx:HBox>

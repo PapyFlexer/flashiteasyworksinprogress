@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<remote>
+	<article>
+		<title>Premier titre</title>
+		<text>Vivamus rhoncus rutrum risus, sit amet volutpat eros lacinia et. Etiam interdum mattis velit, sit amet auctor purus sodales quis. Nullam dignissim magna quis dui mollis ultricies. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla pretium ultricies tortor non semper. In pharetra fringilla tempor. Curabitur at lectus eget diam lobortis gravida at ut lectus. Nullam sollicitudin orci</text>
+		<img>http://jordibertran.com/blog/thumbnails/thumb_sfe-arbre-pota.jpg</img>
+	</article>
+	<article>
+		<title>Titre du second article</title>
+		<text>Etiam interdum mattis velit, Vivamus rhoncus rutrum risus, sit amet volutpat eros lacinia et.  sNullam dignissim magna quis dui mollis ultricies. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla pretium ultricies tortor non semper. In pharetra fringilla tempor. Curabitur at lectus eget diam lobortis gravida at ut lectus. Nullam sollicitudin orci</text>
+		<img>http://media-divers.scrapmalin.com/produit/200/63656_arbre1.png</img>
+	</article>
+</remote>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- LINE COMMAND TOOL REFERENCE
+
+Warning : this reference is on Gilles's computer. Please change paths accordingly to your config. 
+
+/Applications/Adobe Flex Builder 3/sdks/flex_sdk_3.5.0.12683/bin/asdoc -source-path "/Users/gillesroquefeuil/Documents/WorkspaceMaven/fie/fie-api/src/main/flex" -output "/Users/gillesroquefeuil/Documents/WorkspaceMaven/fie/fie-api/src/main/flex/docs" -doc-sources "/Users/gillesroquefeuil/Documents/WorkspaceMaven/fie/fie-api/src/main/flex" -library-path+="/Users/gillesroquefeuil/Documents/WorkspaceMaven/fie/fie-api/libs" -library-path+="/Users/gillesroquefeuil/Desktop/a_trier/libsasdocs" -library-path+="/Applications/Adobe Flex Builder 3/sdks/flex_sdk_3.5.0.12683/lib" -main-title "FIE-MOBY API" -window-title "FlashIteasy API" -footer "©FlashIteasy 2009-2011" -templates-path "/Applications/Adobe Flex Builder 3/sdks/flex_sdk_3.5.0.12683/asdoc/templates" 
+-->
+<!-- Flex Library Project ASDocs -->
+<project name="ASDocsTest" default="compile" basedir=".">
+	<!-- import our build properties file -->
+	<property file="./build.properties" />
+
+	<property name="www.path" location="http://localhost:8888/" />
+	<property name="main.path" location="." />
+	<property name="src.path" location="./src/main/flex" />
+	<property name="flex.path" location="/Applications/Adobe Flex Builder 3/sdks/flex_sdk_3.5.0.12683" />
+	<property name="deploy.path" location="/Applications/MAMP/htdocs/fie-docs" />
+	<property name="comps.path" location="/Users/gillesroquefeuil/Desktop/a_trier/libsasdocs" />
+	<property name="libs.path" location="/Users/gillesroquefeuil/Documents/WorkspaceMaven/fie/fie-api/libs" />
+	<property name="comps.path" location="/Users/gillesroquefeuil/Desktop/a_trier/libsasdocs" />
+	<property name="fllib.path" location="/Applications/Adobe Flex Builder 3/sdks/flex_sdk_3.5.0.12683/lib" />
+
+	<!-- Flex Ant Tasks used to perform compc and mxml compiling more info at http://labs.adobe.com/wiki/index.php/Flex_Ant_Tasks -->
+	<taskdef name="mxmlc" classpath="${flex.path}/flexTasks/lib/flexTasks.jar" classname="flex.ant.MxmlcTask"/>
+	<taskdef name="compc" classpath="${flex.path}/flexTasks/lib/flexTasks.jar" classname="flex.ant.CompcTask"/>
+	<taskdef name="html-wrapper" classpath="/Applications/Adobe Flex Builder 3/sdks/flex_sdk_3.5.0.12683/flexTasks/lib/flexTasks.jar" classname="flex.ant.HtmlWrapperTask"/>
+	<target name="setup" description="perform an setup operations"/>
+	
+	<!-- Execute the ASDoc Compile wich runs 3 seperate tasks in a series -->
+	<target name="compile" description="series of tasks to create docs and swc">
+
+		<antcall target="cleanDir" description="clean the docs directory"/>
+	
+		<antcall target="asDocs" description="full build of asdocs"/>
+	
+		<!-- <antcall target="buildSWC" description="build the SWC file"/> -->
+
+	</target>
+
+	<target name="deploy" description="perform an deployment operations"/>
+
+	<target name="install" description="perform an installation operations"/>
+
+	<!--
+
+	DELETE the existing output folder and files and then re-generate the output folder
+
+	-->
+
+	<target name="cleanDir" description="DELETE the existing output folder and files and then re-generate the output folder">
+
+		<delete dir="${main.path}/${docsoutputfolder}" failOnError="true" includeEmptyDirs="true"/>
+	
+		<mkdir dir="${main.path}/${docsoutputfolder}"/>
+		
+		<!-- echo dumps output to the console window -->
+		<echo>doc directory cleaned</echo>
+
+	</target>
+
+
+	<!--
+
+	Run the ASDoc executable and generate the ASDocs to the new output folder
+
+	-->
+
+	<target name="asDocs" description="Run the ASDoc executable and generate the ASDocs to the new output folder">
+
+		<exec executable="${asdoc.exe}" failonerror="false">
+	
+			<arg line="-doc-sources ${domainextensions}"/>
+		
+			<arg value="-window-title" />
+			<arg value="'${title}'"/>
+		
+			<arg value="-output" />
+			<arg value="${main.path}/${docsoutputfolder}"/>
+		
+			<arg value="-external-library-path" />
+			<arg value="${libs.path}" />
+	
+			<arg value="-external-library-path" />
+			<arg value="${comps.path}" />
+			
+			<arg value="-external-library-path" />
+			<arg value="${fllib.path}" />
+
+			<arg value="-templates-path" />
+			<arg value="/Applications/Adobe Flex Builder 3/sdks/flex_sdk_3.5.0.12683/asdoc/templates"  />
+
+			<!-- 	-library-path+="/Users/gillesroquefeuil/Documents/WorkspaceMaven/fie/fie-api/libs"
+			-library-path+="/Users/gillesroquefeuil/Desktop/a_trier/libsasdocs" 
+			-library-path+="/Applications/Adobe Flex Builder 3/sdks/flex_sdk_3.5.0.12683/lib" 
+			
+			-main-title "FIE-MOBY API" -window-title "FlashIteasy API" -footer "©FlashIteasy 2009-2011" -templates-path "/Applications/Adobe Flex Builder 3/sdks/flex_sdk_3.5.0.12683/asdoc/templates"  -->
+			<arg value="-doc-sources" />
+			<arg value="/Users/gillesroquefeuil/Documents/WorkspaceMaven/fie/fie-api/src/main/flex"/>
+		
+		</exec>
+	
+		<echo>docs created</echo>
+
+	</target>
+
+	<!-- 
+
+	Compile the  SWC file library including libs folder and the path to our classes, we use compc for library, but we 
+	would use mxml for MXML files, check the docs for Flex Ant Tasks, http://labs.adobe.com/wiki/index.php/Flex_Ant_Tasks.
+
+	-->
+
+	<target name="buildSWC" description="Compile the SWC file for the Library Project">
+
+		<compc output="${main.path}/${liboutputfolder}/${liboutputfile}">
+			
+			<!-- 
+				Include the path to any external SWC files used in our document, you may have to place name of SWC (corelib.swc) at end of path
+				I didn't inlcude it because I didn't want to redistribute the corelib.swc. So file path would be file="${main.path}/${libpath}/corelib.swc"
+			 -->
+			<include-libraries file="${main.path}/${libpath}/playerglobal.swc" />
+		
+			<source-path path-element="${main.path}" />
+			
+			<!-- include our Class packages into the build (com folder) -->
+			<include-sources dir="${main.path}/${domainextensions}" includes="*" />
+	
+		</compc>
+	
+		<echo>SWC created</echo>
+
+	</target>
+
+</project>

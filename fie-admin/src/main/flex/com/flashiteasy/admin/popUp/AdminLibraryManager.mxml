@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.api.core.project.Artifact;
+			import com.flashiteasy.api.ioc.LibraryManager;
+			import flexlib.controls.textClasses.StringBoundaries;
+			import mx.core.Application;
+			import com.flashiteasy.admin.browser.Browser;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import com.flashiteasy.admin.manager.LanguageManager;
+			import com.flashiteasy.admin.conf.Conf;
+			
+			private var adminLibraryXml : String = "res/libraries.xml";
+			private var adminLibraryFolder : String = "libraries";
+			private var fms : FileManagerService;
+			
+			private function init():void
+			{
+				adminLibraries.dataProvider=Conf.libraries;
+				remove.label = Conf.languageManager.getLanguage("Remove")+ " "+Conf.languageManager.getLanguage("library");
+				remove.enabled = false ;
+				add.label = Conf.languageManager.getLanguage("Add")+ " "+Conf.languageManager.getLanguage("library");
+				fms = new FileManagerService;
+			}
+			
+			private function itemClickHandler( e : Event ) : void 
+			{
+				remove.enabled = true ;
+				trace("conf" + Conf.APP_ROOT);
+			}
+			
+			private function removeLibrary ( e : MouseEvent ) : void 
+			{
+				var removedLibrary : String = String(adminLibraries.selectedItem) ;
+				ArrayUtils.removeElement(Conf.libraries , removedLibrary);
+				var libraryXML : XML = generateXML();
+				fms.saveContent( adminLibraryXml, libraryXML );
+				
+			}
+			
+			private function generateXML() : XML 
+			{
+				var xml : XML = new XML("<libraries />");
+				for each( var libraryName : String in Conf.libraries )
+				{
+					xml.* += new XML("<dependency>"+libraryName+"</dependency>");
+				}
+				return xml;
+			}
+			
+			private var addLibraryPopUp : PopUp ;
+			
+			private function addLibrary( e : Event ) : void 
+			{
+				addLibraryPopUp =  new PopUp(Application.application as DisplayObject );
+				var b : Browser = new Browser(adminLibraryFolder, true );
+				addLibraryPopUp.addChild(b);
+				addLibraryPopUp.display();
+				b.addEventListener(Browser.BROWSE_COMPLETE , librarySelected , false , 0 , true );
+			}
+			
+			private function librarySelected( e : Event ) : void 
+			{
+				addLibraryPopUp.closePopUp();
+				var libraryFile : String = Browser(e.target).getSelectedFile() ;
+				libraryFile = libraryFile.split(".swf")[0];
+				var tmpString : String = libraryFile.substr( 0 , libraryFile.lastIndexOf("_"));
+				var tmpString2 : String = tmpString.substr( 0 , tmpString.lastIndexOf("_"));
+				
+				var tmpString3 : String = tmpString.substr(tmpString.lastIndexOf("_")+1);
+				var tmpString4 : String = libraryFile.substr( libraryFile.lastIndexOf("_")+1);
+				libraryFile = tmpString2 + ":" + tmpString3 + ":" + tmpString4;
+				
+				libraryFile = libraryFile.split("_").join(".");
+				Conf.libraries.push(libraryFile);
+				var artifactName : Array = libraryFile.split(":");
+				trace("library " + libraryFile );
+				LibraryManager.getInstance().loadLibrary(new Artifact(artifactName[0],artifactName[1],artifactName[2]),"libraries");
+				var libraryXML : XML = generateXML();
+				trace("library " + libraryFile );
+				fms.saveContent( adminLibraryXml, libraryXML );
+			}
+			
+			
+			public function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+		]]>
+	</mx:Script>
+<mx:Label text="{getLang('Existing_Libraries')}">
+	
+</mx:Label>
+	<mx:List id="adminLibraries" itemClick="itemClickHandler(event)">
+		
+	</mx:List>
+	<mx:HBox>
+		
+	<mx:Button id="remove" click="removeLibrary(event)"/>
+	<mx:Spacer width="100%"/>
+	<mx:Button id="add" click="addLibrary(event)" />
+	</mx:HBox>
+</mx:VBox>

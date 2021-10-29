@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="100%"
+		 minHeight="30"
+		 creationComplete="addListeners(event)">
+	<mx:Script>
+		<![CDATA[
+			import flash.utils.getQualifiedClassName;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.api.parameters.ValidatorParameterSet;
+			import com.flashiteasy.api.utils.PageUtils;
+			import com.flashiteasy.api.parameters.RestrictParameterSet;
+			import com.flashiteasy.api.parameters.ValidatorTargetParameterSet;
+			import com.flashiteasy.api.parameters.IsEqualParameterSet;
+			import com.flashiteasy.api.selection.ElementList;
+			import com.flashiteasy.admin.conf.Conf;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.parameters.ValidatorTypeParameterSet;
+			import mx.utils.ObjectProxy;
+			import mx.validators.Validator;
+			import com.flashiteasy.api.controls.Validator.*;
+			import com.flashiteasy.api.controls.Validator.ValidatorTypes;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.api.utils.ArrayUtils;
+			import mx.containers.FormItem;
+			import mx.events.FlexEvent;
+
+			[Bindable]
+			private var values:Array=ValidatorTypes.getValidatorTypes(); //ValidatorTypes.VALIDATORS;
+			//private var values:Array = ["IsNone","IsCreditCard","IsEmail","IsNumber","IsPhoneNumber","IsZipCode","IsEqual"];
+
+			[Bindable]
+			private var targets:Array=PageUtils.getTextInputItems(BrowsingManager.getInstance().getCurrentPage());
+
+			private var _enable:Boolean;
+			private var pSet:IParameterSet;
+			private var typeIndex:int=0;
+
+			[Bindable]
+			private var targetObj:ObjectProxy=new ObjectProxy({targetIndex: null});
+
+			public function init(enable:Boolean, p:IParameterSet):void
+			{
+				_enable=enable;
+				pSet=ValidatorTypeParameterSet(p).getParametersSet()[0];
+				if (pSet == null)
+				{
+					pSet=ValidatorParameterSet(pSet)
+				}
+				trace("initing validator before " + getQualifiedClassName(pSet));
+				if (pSet is ValidatorParameterSet)
+				{
+					//[NONE, IS_NUMBER, IS_EMAIL, IS_PHONE_NUMBER, IS_CREDIT_CARD, IS_ZIPCODE, IS_EQUAL]
+					var typeString:String=ValidatorParameterSet(pSet).type;
+					trace("initing validator " + typeString);
+					switch (typeString)
+					{
+						case "IsNoneValidator":
+							typeIndex=0;
+							break;
+						case "IsNumberValidator":
+							typeIndex=1;
+							break;
+						case "IsEmailValidator":
+							typeIndex=2;
+							break;
+						case "IsPhoneNumberValidator":
+							typeIndex=3;
+							break;
+						case "IsCreditCardValidator":
+							typeIndex=4;
+							break;
+						case "IsZipCodeValidator":
+							typeIndex=5;
+							break;
+						//throw new Error("nothing to do here");
+					}
+				}
+				else if (pSet is ValidatorTargetParameterSet)
+				{
+					typeIndex=6;
+					targetObj.target=ValidatorTargetParameterSet(pSet).target;
+				}
+				//this.type.selectedIndex = 0;
+			}
+
+
+			[Bindable]
+			private var targetIndex:int=-1;
+
+			private function addListeners(e:Event):void
+			{
+				trace("listening to change validator event on index... " + typeIndex);
+				this.type.addEventListener(Event.CHANGE, changeValidatorType);
+				this.addEventListener(Event.REMOVED_FROM_STAGE, removeListeners);
+				type.selectedIndex=typeIndex;
+				vs.selectedIndex=typeIndex;
+				targetIndex=targets.indexOf(targetObj.target);
+			}
+
+			private function removeListeners(e:Event):void
+			{
+				this.type.removeEventListener(Event.CHANGE, changeValidatorType);
+			}
+
+			private function changeValidatorType(e:Event):void
+			{
+				trace("changeValidatorType in mxml ValidatorType : " + e.target.selectedIndex);
+				vs.selectedIndex=e.target.selectedIndex;
+				setSize(e.target.selectedIndex);
+				//if( targetIndex != -1 && e.target.selectedIndex < 7 )
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+
+			private function setSize(i:int):void
+			{
+				switch (i)
+				{
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+						this.height=28;
+						vs.height=0;
+						break;
+					case 6:
+
+						this.height=150;
+						vs.height=120;
+						break;
+				}
+			}
+
+			private function valueChange(e:Event):void
+			{
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+
+			public function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+
+			public function getParameter():Array
+			{
+				trace("getting Parameter for vs.index=" + vs.selectedIndex)
+				switch (vs.selectedIndex)
+				{
+					case 0:
+						var validator:ValidatorTypeParameterSet=new ValidatorTypeParameterSet;
+						validator.enable=false;
+						//validator.type = "IsNoneValidator";
+						return [validator];
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+						var validatorParameter:ValidatorParameterSet=new ValidatorParameterSet;
+						validatorParameter.enable=true;
+						validatorParameter.type=String(this.type.selectedItem);
+						return [validatorParameter];
+
+					case 6:
+						var target:ValidatorTargetParameterSet=new ValidatorTargetParameterSet;
+						target.target=String(targetList.selectedItem);
+						return [target];
+				}
+				return null;
+			}
+
+			public function getEnable():Boolean
+			{
+				//return true;
+				return type.selectedIndex != 0;
+			}
+		]]>
+	</mx:Script>
+
+	<mx:HBox width="100%">
+		<mx:Label text="{getLang('Validator')}"
+				  width="50"/>
+		<mx:ComboBox dataProvider="{values}"
+					 width="120"
+					 id="type"/>
+	</mx:HBox>
+
+	<mx:ViewStack id="vs"
+				  width="100%"
+				  creationPolicy="all">
+
+		<!--  ViewStack index 0 :isNone  -->
+		<mx:VBox id="IsNoneValidator">
+		</mx:VBox>
+
+		<!--  ViewStack index 1 : isCreditCard  -->
+		<mx:VBox id="IsCreditCardValidator">
+		</mx:VBox>
+
+		<!--  ViewStack index 2 : isEmail  -->
+		<mx:VBox id="IsEmailValidator">
+		</mx:VBox>
+
+		<!--  ViewStack index 3 : isNumber -->
+		<mx:VBox id="IsNumberValidator">
+		</mx:VBox>
+
+		<!--  ViewStack index 4 : isPhoneNumber  -->
+		<mx:VBox id="IsPhoneNumberValidator">
+		</mx:VBox>
+
+		<!--  ViewStack index 5 : isZipCode  -->
+		<mx:VBox id="IsZipCodeValidator">
+		</mx:VBox>
+
+		<!--  ViewStack index 6 : isEqual needs target...  -->
+		<mx:VBox id="IsEqualValidator"
+				 width="100%">
+			<mx:HBox width="100%">
+				<mx:Label text="{getLang('target')}"
+						  width="50"/>
+				<mx:List id="targetList"
+						 selectedIndex="{targetIndex}"
+						 dataProvider="{targets}"
+						 change="valueChange(event)"
+						 width="100%"/>
+			</mx:HBox>
+		</mx:VBox>
+
+	</mx:ViewStack>
+
+
+
+</mx:VBox>

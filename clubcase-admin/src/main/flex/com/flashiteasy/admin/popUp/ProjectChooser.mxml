@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="420"
+		   height="220"
+		   creationComplete="init();"
+		   currentState="listProjects">
+	<mx:states>
+		<mx:State name="addProject">
+			<mx:RemoveChild target="{projectList}"/>
+			<mx:RemoveChild target="{deleteProjectButton}"/>
+			<mx:RemoveChild target="{deleteSpacer}"/>
+			<mx:RemoveChild target="{chooseProjectButton}"/>
+			<mx:RemoveChild target="{addProjectButton}"/>
+			<mx:RemoveChild target="{copyProjectButton}"/>
+			<mx:AddChild relativeTo="{contentBox}">
+				<mx:Label text="{getLang('newProjectName')}"/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{contentBox}">
+				<mx:TextInput id="newProjName" width="100%"/>
+			</mx:AddChild>
+			<!--
+				 <mx:AddChild relativeTo="{mainBox}">
+				 <mx:Label text="{getLang('newProjectUrl')}"/>
+				 </mx:AddChild>
+				 <mx:AddChild relativeTo="{mainBox}">
+				 <mx:TextInput id="newProjUrl"/>
+				 </mx:AddChild>
+				 <mx:AddChild relativeTo="{mainBox}">
+				 <mx:Label text="{getLang('newProjectRealPath')}"/>
+				 </mx:AddChild>
+				 <mx:AddChild relativeTo="{mainBox}">
+				 <mx:TextInput id="newProjRealPath"/>
+				 </mx:AddChild>
+			-->
+			<mx:AddChild relativeTo="{buttonBox}">
+				<mx:Button label="{getLang('cancel')}"
+						   id="cancelButton"
+						   click="{this.currentState = possibleStates[0]}"/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{buttonBox}">
+				<mx:Spacer width="100%"/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{buttonBox}">
+				<mx:Button label="{getLang('ok')}"
+						   id="validateNewProjButton"
+						   click="addNewProj(event)"/>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="listProjects"/>
+	</mx:states>
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.fieservice.FileManagerService;
+			import com.flashiteasy.admin.utils.IconUtility;
+			import com.flashiteasy.admin.event.ProjectEvent;
+			import mx.events.ListEvent;
+			import mx.core.IFlexDisplayObject;
+			import com.flashiteasy.admin.conf.Ref;
+			import com.flashiteasy.admin.manager.AdminManager;
+			import com.flashiteasy.admin.manager.ProjectManager;
+			import com.flashiteasy.admin.conf.Conf;
+			import mx.managers.PopUpManager;
+
+			[Bindable]
+			private var possibleStates:Array=["listProjects", "addProject"];
+
+			[Bindable]
+			private var projectToCopy:String="";
+			
+			[Bindable]
+			private var projectToDelete:String="";
+
+			private var selectedProject:Object={};
+
+			private function init():void
+			{
+				//trace( "initing project chooser" );
+				projectList.dataProvider=ProjectManager.getInstance().projects;
+			}
+
+			public function getLang(s:String):String
+			{
+				return Conf.languageManager.getLanguage(s);
+			}
+
+			private function doLoadProject(e:MouseEvent):void
+			{
+				var selectedProjectName:String=projectList.selectedItem.label;
+				var selectedProjectUrl:String=projectList.selectedItem.data;
+				var selectedProjectNature:String=projectList.selectedItem.nature;
+				Conf.APP_ROOT=selectedProjectUrl;
+				Conf.PROJECT_NATURE=selectedProjectNature;
+				Ref.adminManager.loadProjectFromChooser(selectedProjectUrl, selectedProjectName, selectedProjectNature);
+				PopUpManager.removePopUp(this.parent as IFlexDisplayObject);
+
+			}
+
+			private function onProjectSelected(e:ListEvent):void
+			{
+				selectedProject=(e.currentTarget as List).selectedItem;
+				selectNatureCombo();
+			}
+
+			private function doDeleteProject(e:MouseEvent) : void
+			{
+				var o:Object=new Object;
+				o.label=this.projectList.selectedItem.label;
+				o.data="../fie-projects/" + o.label;
+				o.nature=projectNatureCB.selectedItem.label;
+				currentState=possibleStates[0];
+				ProjectManager.getInstance().addEventListener(FileManagerService.PROJECT_DELETED, onRefreshProjectList);
+				ProjectManager.getInstance().deleteProject(o);
+			}
+			
+			private function onRefreshProjectList(e : ProjectEvent):void
+			{
+				trace ("refreshing project list...");
+				ProjectManager.getInstance().removeEventListener(ProjectEvent.PROJECTS_INFO_REFRESHED, onRefreshProjectList);
+				projectList.dataProvider=ProjectManager.getInstance().projects;
+				projectList.dataProvider=projectList.dataProvider;
+				projectList.invalidateList();
+			}
+			private function selectNatureCombo():void
+			{
+				var nat:String=String(selectedProject.nature);
+				var projects:Array=ProjectManager.getInstance().PROJECT_NATURES;
+				for (var i:uint=0; i < projects.length; i++)
+				{
+					if (projects[i] == nat)
+					{
+						projectNatureCB.selectedIndex=i;
+						break;
+					}
+				}
+			}
+
+			private var copy:Boolean=false;
+
+			private function doCopyNewProject(e:MouseEvent):void
+			{
+				copy=true;
+				projectToCopy=projectList.selectedItem.label;
+				selectNatureCombo();
+				currentState=possibleStates[1];
+			}
+
+			private function doAddNewProject(e:MouseEvent):void
+			{
+				copy=false;
+				projectNatureCB.enabled=true;
+				selectedProject=ProjectManager.getInstance().getFirstProject();
+				currentState=possibleStates[1];
+			}
+
+			private var newProject:Object;
+
+			private function addNewProj(e:MouseEvent):void
+			{
+				if (ProjectManager.getInstance().getProjectByName(newProjName.text) == null && newProjName.text !="")
+				{
+					var o:Object=new Object;
+					o.label=newProjName.text;
+					o.data="../fie-projects/" + o.label;
+					o.nature=projectNatureCB.selectedItem.label;
+					currentState=possibleStates[0];
+					newProject=o;
+
+					ProjectManager.getInstance().addEventListener(ProjectManager.PROJECT_CREATED, projectCreated);
+					ProjectManager.getInstance().addEventListener(ProjectManager.CREATION_FAILED, creationFailed);
+
+					if (copy)
+					{
+						ProjectManager.getInstance().writeNewProject(o, projectToCopy);
+					}
+					else
+					{
+						ProjectManager.getInstance().writeNewProject(o);
+					}
+				}
+				else
+				{
+					var message:String = newProjName.text !="" ? Conf.languageManager.getLanguage("Project_name_already_used") : Conf.languageManager.getLanguage("Invalid_name");
+					var alert:MessagePopUp=new MessagePopUp(message, null, true, true);
+					alert.showOk();
+				}
+				projectList.dataProvider=ProjectManager.getInstance().projects;
+			}
+
+			private function creationFailed(e:Event):void
+			{
+				ProjectManager.getInstance().removeEventListener(ProjectManager.PROJECT_CREATED, projectCreated);
+				ProjectManager.getInstance().removeEventListener(ProjectManager.CREATION_FAILED, creationFailed);
+			}
+
+			private function projectCreated(e:Event):void
+			{
+				ProjectManager.getInstance().removeEventListener(ProjectManager.CREATION_FAILED, creationFailed);
+				//ProjectManager.getInstance().projects.push(newProject);
+				projectList.dataProvider=ProjectManager.getInstance().projects;
+				ProjectManager.getInstance().removeEventListener(ProjectManager.PROJECT_CREATED, projectCreated);
+			}
+
+			private function onProjectNatureChanged(e:ListEvent):void
+			{
+				trace("project nature = " + (e.currentTarget as ComboBox).selectedItem.label);
+				var nature:String=(e.currentTarget as ComboBox).selectedItem.label;
+				selectedProject.nature=nature;
+			}
+		]]>
+	</mx:Script>
+
+
+	<mx:VBox id="mainBox" width="100%"
+			 paddingBottom="10"
+			 paddingLeft="10"
+			 paddingRight="10"
+			 paddingTop="10">
+		<mx:HBox width="100%" id = "contentBox">
+			<mx:List id="projectList"
+					 dataProvider="{ProjectManager.getInstance().projects}"
+					 width="250"
+					 height="140"
+					 change="onProjectSelected(event)"/>
+			<mx:ComboBox id="projectNatureCB"
+						 width="120"
+						 dataProvider="{ProjectManager.getInstance().getProjectNatures()}"
+						 enabled="{this.projectList.selectedIndices.length}"
+						 change="{onProjectNatureChanged(event)}"/>
+		</mx:HBox>
+		<!--		<mx:ButtonBar id = "stateButtons"
+			 x = "10"
+			 y = "10"
+			 width = "250"
+			 height = "45" dataProvider="{possibleStates}" />
+		-->
+		<mx:Spacer height="10"/>
+		<mx:HBox width="100%" id="buttonBox">
+
+			<mx:Button id="deleteProjectButton"
+					   icon="{IconUtility.getClass(deleteProjectButton, 'assets/DeleteRecord.png')}"
+					   enabled="{this.projectList.selectedIndices.length}"
+					   click="doDeleteProject(event)"
+					   width="25 "/>
+			<mx:Spacer width="100%" id ="deleteSpacer"/>
+			<mx:Button id="chooseProjectButton"
+					   label="{getLang('openProject')}"
+					   enabled="{this.projectList.selectedIndices.length}"
+					   width="100"
+					   click="doLoadProject(event)"/>
+			<mx:Spacer/>
+			<mx:Button id="addProjectButton"
+					   label="{getLang('addNewProject')}"
+					   click="doAddNewProject(event);"
+					   width="100"/>
+			<mx:Button id="copyProjectButton"
+					   enabled="{this.projectList.selectedIndices.length}"
+					   label="{getLang('addNewProjectFromCopy')}"
+					   click="doCopyNewProject(event);"
+					   width="100"/>
+
+
+		</mx:HBox>
+
+
+	</mx:VBox>
+</mx:Canvas>

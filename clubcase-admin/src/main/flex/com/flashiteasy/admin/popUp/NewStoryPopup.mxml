@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   creationComplete="initPopUp()"
+		   width="500"
+		   height="300" >
+	<mx:Script>
+		<![CDATA[
+			import com.flashiteasy.admin.uicontrol.story.TransitionEditor;
+			import com.flashiteasy.api.easing.InterpolationTypes;
+			import com.flashiteasy.api.core.project.storyboard.Transition;
+			import com.flashiteasy.api.core.project.storyboard.Update;
+			import com.flashiteasy.api.core.IDescriptor;
+			import com.flashiteasy.api.core.IParameterSet;
+			import com.flashiteasy.admin.parameter.ParameterIntrospectionUtil;
+			import com.flashiteasy.api.ioc.ClassResolver;
+			import mx.events.ListEvent;
+			import com.flashiteasy.api.core.project.storyboard.Story;
+			import com.flashiteasy.api.core.BrowsingManager;
+			import com.flashiteasy.api.selection.ElementList;
+			import mx.controls.ComboBox;
+			import mx.controls.Button;
+			
+			
+			private var _story:Story;
+			private var _update:Update;
+			private var _trans:Transition;
+			
+			private var numUpdates:uint = 1;
+			private var numTransitions:uint = 1.
+
+			private function initPopUp():void
+			{
+				targetsCB.dataProvider = ElementList.getInstance().getElementsAsString(BrowsingManager.getInstance().getCurrentPage());
+				targetsCB.selectedIndex = 1;
+				targetsCB.dispatchEvent(new ListEvent(ListEvent.CHANGE));
+				addTransition()
+			}
+			
+			private function targetChanged(e:ListEvent):void
+			{
+				var descr:IDescriptor = ElementList.getInstance().getElement(targetsCB.selectedItem.toString(), BrowsingManager.getInstance().getCurrentPage())
+				paramSetCB.dataProvider = ParameterIntrospectionUtil.getTweenableParameterList(descr);
+				paramSetCB.selectedIndex = 0;
+				paramSetCB.dispatchEvent(new ListEvent(ListEvent.CHANGE));
+			}
+			
+			private function paramSetChanged(e:ListEvent):void
+			{
+				var clazz : Class = ClassResolver.resolve(e.target.selectedItem.toString(),ClassResolver.PARAMETERS_PACKAGE);
+          		propCB.dataProvider =  ParameterIntrospectionUtil.getNumericPropertyList(new clazz as IParameterSet)
+         		propCB.selectedIndex = 0;
+         		propCB.dispatchEvent(new ListEvent(ListEvent.CHANGE));		
+			}
+			
+			private function propChanged(e:ListEvent):void
+			{
+				//
+			}
+			
+			private function interpolationChanged(e:ListEvent):void
+			{
+				//
+			}
+			
+			private function easingChanged(e:ListEvent):void
+			{
+				//
+			}
+			
+			private function addTransition():void
+			{
+				var trans:TransitionEditor = new TransitionEditor;
+				transitionCtn.addChild(trans as DisplayObject);
+			}
+			
+			private function addUpdate():void
+			{
+				
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:VBox width="100%" height="100%">
+		<mx:VBox>
+			<mx:Label text="Target" />
+			<mx:ComboBox id="targetsCB" change="targetChanged(event)" />
+		</mx:VBox>
+		<mx:HRule />
+		<mx:HBox width="100%" id="updateBox">
+				<mx:VBox>
+					<mx:Label text="ParameterSet" />
+					<mx:ComboBox id="paramSetCB" change="paramSetChanged(event)" />
+				</mx:VBox>
+				<mx:VBox>
+					<mx:Label text="Property" />
+					<mx:ComboBox id="propCB" change="propChanged(event)" />
+				</mx:VBox>
+				<mx:Button label="addUpdate" click="addUpdate()" />
+			</mx:HBox>
+			
+			<mx:VBox id="transitionCtn" />
+			<mx:Button label="addTransition" click="addTransition()" />
+	</mx:VBox>
+</mx:Canvas>

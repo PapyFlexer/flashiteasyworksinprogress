@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<libraries>
+	<dependency>com.flashiteasy.clouds:cloud-lib:0.2-SNAPSHOT</dependency>
+	<dependency>com.flashiteasy.snow:snow-lib:0.2-SNAPSHOT</dependency>
+</libraries>
