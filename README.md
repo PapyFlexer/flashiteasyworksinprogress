@@ -1,4 +1,6 @@
-Flash'Iteasy est un CMS (Content Management System) dont la vocation etait de permettre à des agences web professionnelles de faire travailler grpahistes, UX/UI-istes et développeurs au sein d'un seul et même environnement (fie-admin).
+Flash'Iteasy est un CMS (Content Management System) dont la vocation etait de permettre à des agences web professionnelles de faire travailler grpahistes, UX/UI-istes et développeurs au sein d'un seul et même environnement (fie-admin). 
+
+Une video de démonstration est visible à cette adresse : http://www.aguabuena.fr/fie/TutoFIE_fluxRSS.mov
 
 Le projet est architecturé de la manière suivante :
 
