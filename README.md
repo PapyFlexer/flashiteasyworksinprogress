@@ -1,7 +1,8 @@
-Flash'Iteasy est un CMS (Content Management System) dont la vocation etait de permettre à des agences web professionnelles de faire travailler grpahistes, UX/UIistes et développeurs au sein d'un même environnement.
+Flash'Iteasy est un CMS (Content Management System) dont la vocation etait de permettre à des agences web professionnelles de faire travailler grpahistes, UX/UI-istes et développeurs au sein d'un seul et même environnement (fie-admin).
+
 Le projet est architecturé de la manière suivante :
 
-- fie-api : moteur de rendu graphique précompilé. Le conteneur général de tout contenu Flash'Iteasy, basé sur de l'injection de dépendance et de l'inversion de contrôle
+- fie-api : moteur de rendu graphique précompilé. Le conteneur général de tout contenu Flash'Iteasy, basé sur de l'injection de dépendance et de l'inversion de contrôle. Un conteneur graphique général vient charger des éléments divers (blocs image, blocs texte, animations, filtres, interactions utilisateur ou autres, formulaires, sources de données, etc.). Chaque objet éditable est doté d'une liste de ParameterSets dont le typoage permet de générer les éditeurs correspondants. Par exemple, un bloc texte standard est doté des éléments suivants
 - fie-admin : module d'administration des contenus en mode graphique. Principalement destiné aux graphistes et intégrateurs
 - fie-app : moteur de création d'appli iOS
 - fie-services : microservices backend pour génération de fontes, de documents pdf, etc. On y trouve également les connexions aux bases de données, aux objets json et API REST
